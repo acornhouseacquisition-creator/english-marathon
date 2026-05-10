@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>30-Day American English Marathon 🇺🇸</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',system-ui,sans-serif;background:#F8FAFC;color:#1F2937}
+  button{cursor:pointer;font-family:inherit}
+  textarea{font-family:monospace}
+  pre{font-family:monospace}
+
+  /* LANG SCREEN */
+  #lang-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1B2A4A 0%,#2563EB 100%);padding:24px}
+  .lang-card{background:white;border-radius:20px;padding:40px 36px;max-width:480px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+  .lang-card h1{font-size:22px;font-weight:800;color:#1B2A4A;margin:12px 0 6px}
+  .lang-card p{font-size:14px;color:#6B7280;margin-bottom:20px}
+  .lang-divider{height:1px;background:#E5E7EB;margin:0 0 20px}
+  .lang-choose{font-size:13px;color:#374151;margin-bottom:20px;line-height:1.5}
+  .lang-btn-row{display:flex;gap:16px;justify-content:center}
+  .lang-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 32px;border:2.5px solid #1D4ED8;border-radius:14px;background:white;cursor:pointer;transition:all .2s;flex:1}
+  .lang-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.1)}
+  .lang-btn span.lbl{font-size:16px;font-weight:700;color:#1B2A4A}
+  .lang-btn span.sub{font-size:12px;color:#6B7280}
+  .lang-btn.ru{border-color:#DC2626}
+
+  /* HERO */
+  .hero{background:linear-gradient(135deg,#1B2A4A 0%,#1E3A6E 50%,#2563EB 100%);padding:40px 20px 32px}
+  .hero-inner{max-width:960px;margin:0 auto}
+  .hero-flag-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+  .hero-tag{font-size:11px;color:rgba(255,255,255,.65);font-weight:700;letter-spacing:1px;text-transform:uppercase}
+  .hero h1{color:white;font-size:clamp(22px,4vw,38px);font-weight:800;margin:2px 0;line-height:1.15}
+  .hero-para{color:rgba(255,255,255,.8);font-size:14px;max-width:600px;line-height:1.6;margin:0 0 18px}
+  .lang-switch{display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap}
+  .lang-switch span{font-size:12px;color:rgba(255,255,255,.65)}
+  .ls-btn{padding:5px 14px;border-radius:20px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:rgba(255,255,255,.75);font-size:12px;font-weight:600;cursor:pointer}
+  .ls-btn.active{background:rgba(255,255,255,.2);color:white;border-color:rgba(255,255,255,.6)}
+  .stats-row{display:flex;gap:12px;flex-wrap:wrap}
+  .stat-box{background:rgba(255,255,255,.1);border-radius:12px;padding:12px 20px;text-align:center;min-width:70px;border:1px solid rgba(255,255,255,.15)}
+  .stat-num{color:#FCD34D;font-size:22px;font-weight:800;line-height:1}
+  .stat-lbl{color:rgba(255,255,255,.65);font-size:11px;margin-top:3px}
+
+  /* PROGRESS BAR */
+  .prog-wrap{height:5px;background:rgba(0,0,0,.1)}
+  .prog-fill{height:100%;background:linear-gradient(90deg,#FCD34D,#F59E0B);transition:width .6s ease;min-width:4px}
+
+  /* FILTER */
+  .filter-bar{display:flex;gap:8px;padding:14px 20px;flex-wrap:wrap;max-width:960px;margin:0 auto}
+  .filter-btn{padding:5px 14px;border-radius:20px;border:1.5px solid #E5E7EB;background:white;font-size:12px;color:#374151;font-weight:600}
+  .filter-btn.active{background:#1B2A4A;color:white;border-color:#1B2A4A}
+
+  /* GRID */
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:0 20px 24px;max-width:960px;margin:0 auto}
+  .day-card{background:white;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-top:4px solid #ccc;transition:transform .15s}
+  .day-card.unlocked{cursor:pointer}
+  .day-card.unlocked:hover{transform:translateY(-2px)}
+  .day-card.locked{opacity:.65}
+  .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .day-num{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+  .score-pill-sm{color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
+  .card-title{font-size:12px;font-weight:700;margin:0 0 5px;line-height:1.35;color:#1B2A4A}
+  .card-grammar{font-size:11px;color:#374151;margin:0 0 3px;line-height:1.4}
+  .card-vocab{font-size:10px;color:#6B7280;margin:0 0 8px}
+  .review-badge{display:inline-block;background:#EFF6FF;color:#1D4ED8;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;margin-bottom:8px}
+  .grad-badge{display:inline-block;background:#FEF9C3;color:#92400E;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;margin-bottom:8px}
+  .lock-hint{font-size:11px;color:#6B7280;margin-bottom:6px}
+  .card-btns{display:flex;gap:6px;margin-top:8px}
+  .card-btn{flex:1;padding:6px 4px;border-radius:7px;border:none;font-size:11px;font-weight:600;color:white}
+  .card-btn.grey{background:#E5E7EB;color:#9CA3AF;cursor:not-allowed}
+  .unlocked-dot{width:8px;height:8px;border-radius:50%;background:#D1FAE5;border:2px solid #059669;display:block}
+
+  /* PAGES */
+  .page{display:none;min-height:100vh}
+  .page.active{display:block}
+
+  /* LESSON HERO */
+  .lesson-hero{padding:28px 20px 24px}
+  .back-btn{background:rgba(255,255,255,.15);border:none;color:white;padding:6px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;font-weight:600}
+  .day-badge{color:rgba(255,255,255,.75);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
+  .lesson-title{color:white;font-size:clamp(17px,3vw,26px);font-weight:800;margin:0 0 8px;line-height:1.25}
+  .score-pill{display:inline-block;background:rgba(255,255,255,.18);color:white;padding:4px 12px;border-radius:16px;font-size:12px;font-weight:700;margin-top:8px}
+  .locked-banner{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.25);color:rgba(255,255,255,.85);padding:8px 14px;border-radius:8px;font-size:12px;margin-top:10px;font-weight:600}
+  .lesson-body{padding:16px 20px;max-width:820px;margin:0 auto}
+  .lock-msg{display:flex;flex-direction:column;align-items:center;padding:48px 20px;text-align:center}
+  .lock-msg .lock-icon{font-size:56px}
+  .lock-msg h2{color:#374151;font-size:20px;margin:12px 0 8px}
+  .lock-msg p{color:#6B7280;font-size:14px;max-width:320px;line-height:1.6}
+
+  /* TWO COL */
+  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+  @media(max-width:520px){.two-col{grid-template-columns:1fr}}
+  .info-card{background:white;border-radius:10px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.07);border-top:3px solid #ccc}
+  .info-label{font-size:10px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px}
+  .info-val{font-size:13px;color:#1B2A4A;font-weight:600}
+  .section-h{font-size:16px;font-weight:700;color:#1B2A4A;margin:0 0 12px}
+  .pdf-card{background:white;border-radius:12px;padding:18px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.07);border:1px solid #E5E7EB}
+  .pdf-card .icon{font-size:32px;margin-bottom:8px}
+  .pdf-card h3{font-size:14px;font-weight:700;color:#1B2A4A;margin:0 0 6px}
+  .pdf-card p{font-size:12px;color:#6B7280;margin:0 0 10px;line-height:1.5}
+  .pdf-chip{background:#EFF6FF;color:#2563EB;font-family:monospace;font-size:11px;padding:5px 10px;border-radius:6px;font-weight:700;display:inline-block}
+  .pdf-chip.red{background:#FEF2F2;color:#DC2626}
+  .study-box{background:white;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:20px}
+  .study-row{display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid #F3F4F6}
+  .study-row:last-child{border-bottom:none}
+  .time-pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;min-width:50px;text-align:center}
+  .study-task{font-size:13px;color:#374151}
+
+  /* BUTTONS */
+  .btn-row{display:flex;gap:10px;justify-content:center;padding:12px 0 24px;flex-wrap:wrap}
+  .btn-primary{padding:11px 24px;background:#2563EB;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700}
+  .btn-primary:disabled{opacity:.55;cursor:not-allowed}
+  .btn-secondary{padding:11px 20px;background:white;color:#374151;border:1.5px solid #D1D5DB;border-radius:10px;font-size:13px;font-weight:600}
+
+  /* GRADER */
+  .grader-wrap{padding:16px 20px;max-width:740px;margin:0 auto}
+  .info-box{background:#EFF6FF;border-radius:10px;padding:14px;margin-bottom:14px;border:1px solid #BFDBFE}
+  .info-box h3{margin:0 0 8px;color:#1B2A4A;font-size:14px;font-weight:700}
+  .info-box ol{margin:0;padding-left:20px;color:#374151;font-size:13px;line-height:1.8}
+  .ex-box{background:#F8FAFC;border:1.5px dashed #CBD5E1;border-radius:10px;padding:12px;margin-bottom:14px}
+  .ex-box p{margin:0 0 6px;font-weight:700;font-size:12px;color:#374151}
+  .ex-box pre{font-size:11px;color:#374151;line-height:1.6}
+  .ans-label{display:block;font-weight:700;color:#1B2A4A;font-size:14px;margin-bottom:8px}
+  #answers-ta{width:100%;padding:12px;border-radius:10px;border:1.5px solid #D1D5DB;font-size:13px;line-height:1.6;resize:vertical;color:#1F2937;outline:none;background:white}
+  .loading-row{display:none;align-items:center;gap:12px;padding:14px;background:#EFF6FF;border-radius:10px;margin-top:14px}
+  .loading-row.show{display:flex}
+  .spinner{width:22px;height:22px;border:3px solid #BFDBFE;border-top:3px solid #2563EB;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* RESULTS */
+  .results-hero{padding:32px 20px 24px;text-align:center}
+  .results-body{padding:16px 20px;max-width:820px;margin:0 auto}
+  .score-big{font-size:52px;font-weight:800;color:white;line-height:1}
+  .grade-tag{color:rgba(255,255,255,.85);font-size:16px;font-weight:700;margin:6px 0 10px}
+  .results-msg{color:white;font-size:14px;max-width:480px;margin:0 auto 14px;line-height:1.6}
+  .pass-banner{display:inline-block;background:rgba(255,255,255,.2);color:white;padding:7px 18px;border-radius:20px;font-size:13px;font-weight:700}
+  .fail-banner{display:inline-block;background:rgba(0,0,0,.2);color:rgba(255,255,255,.9);padding:7px 18px;border-radius:20px;font-size:13px;font-weight:600}
+  .card{background:white;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
+  .card h3{font-size:13px;font-weight:700;color:#1B2A4A;margin:0 0 8px}
+  .card p{font-size:13px;color:#374151;margin:3px 0;line-height:1.6}
+  .corr-card{background:white;border-radius:10px;padding:12px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.05);border-left:4px solid #059669}
+  .corr-card.wrong{border-left-color:#DC2626}
+  .corr-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+  .corr-q{font-size:13px;font-weight:600;color:#1B2A4A}
+  .corr-detail{padding-left:26px;font-size:12px;color:#374151;line-height:1.7}
+  .corr-detail b{color:#1B2A4A}
+  .corr-detail .wrong-ans{color:#DC2626}
+  .corr-detail .right-ans{color:#059669;font-weight:700}
+  .tip-box{background:#FFFBEB;padding:5px 9px;border-radius:6px;color:#92400E;font-size:11px;margin-top:5px}
+  .perfect{color:#059669;font-size:13px;margin-top:4px}
+
+  /* HOW SECTION */
+  .how-section{background:#1B2A4A;padding:36px 20px}
+  .how-section h2{color:white;font-size:20px;font-weight:800;text-align:center;margin-bottom:20px}
+  .how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;max-width:820px;margin:0 auto}
+  .how-card{background:rgba(255,255,255,.07);border-radius:12px;padding:18px;text-align:center}
+  .how-card .step-num{font-size:28px;margin-bottom:8px}
+  .how-card h3{color:#FCD34D;font-size:14px;font-weight:700;margin:0 0 6px}
+  .how-card p{color:rgba(255,255,255,.7);font-size:12px;line-height:1.6;margin:0}
+  .how-footer{text-align:center;margin-top:24px;padding-bottom:8px;color:rgba(255,255,255,.4);font-size:12px}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════ LANGUAGE CHOOSER ═══════════════════ -->
+<div id="lang-screen">
+  <div class="lang-card">
+    <div style="font-size:44px">🇺🇸</div>
+    <h1>30-Day American English Marathon</h1>
+    <p>CEFR Level A1 — Self-Study Course</p>
+    <div class="lang-divider"></div>
+    <p class="lang-choose">Choose your translation language / Alegeți limba / Выберите язык:</p>
+    <div class="lang-btn-row">
+      <button class="lang-btn" onclick="chooseLang('ro')">
+        <span style="font-size:28px">🇷🇴</span>
+        <span class="lbl">Română</span>
+        <span class="sub">Romanian</span>
+      </button>
+      <button class="lang-btn ru" onclick="chooseLang('ru')">
+        <span style="font-size:28px">🇷🇺</span>
+        <span class="lbl">Русский</span>
+        <span class="sub">Russian</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ DASHBOARD PAGE ═══════════════════ -->
+<div id="page-dashboard" class="page">
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-flag-row">
+        <svg id="flag-hero" width="56" height="30" viewBox="0 0 190 100" style="border-radius:3px;flex-shrink:0"></svg>
+        <div>
+          <div class="hero-tag" id="h-tag"></div>
+          <h1>30-Day English Marathon</h1>
+        </div>
+      </div>
+      <p class="hero-para" id="h-para"></p>
+      <div class="lang-switch">
+        <span id="ls-label"></span>
+        <button class="ls-btn active" id="ls-ro" onclick="switchLang('ro')">🇷🇴 Română</button>
+        <button class="ls-btn" id="ls-ru" onclick="switchLang('ru')">🇷🇺 Русский</button>
+      </div>
+      <div class="stats-row">
+        <div class="stat-box"><div class="stat-num" id="stat-done">0</div><div class="stat-lbl" id="stat-done-lbl"></div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-left">30</div><div class="stat-lbl" id="stat-left-lbl"></div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-avg">—</div><div class="stat-lbl" id="stat-avg-lbl"></div></div>
+        <div class="stat-box"><div class="stat-num" id="stat-pct">0%</div><div class="stat-lbl" id="stat-pct-lbl"></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="filter-bar">
+    <button class="filter-btn active" id="fb-all" onclick="setFilter('all')"></button>
+    <button class="filter-btn" id="fb-done" onclick="setFilter('completed')"></button>
+    <button class="filter-btn" id="fb-pend" onclick="setFilter('pending')"></button>
+  </div>
+  <div class="grid" id="day-grid"></div>
+  <div class="how-section">
+    <h2 id="how-title"></h2>
+    <div class="how-grid" id="how-grid"></div>
+    <p class="how-footer" id="how-footer"></p>
+  </div>
+</div>
+
+<!-- ═══════════════════ LESSON PAGE ═══════════════════ -->
+<div id="page-lesson" class="page">
+  <div class="lesson-hero" id="lesson-hero-bg">
+    <button class="back-btn" onclick="goTo('dashboard')" id="lesson-back-btn"></button>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+      <svg id="flag-lesson" width="36" height="19" viewBox="0 0 190 100" style="border-radius:3px"></svg>
+      <span class="day-badge" id="lesson-day-badge"></span>
+    </div>
+    <h1 class="lesson-title" id="lesson-title"></h1>
+    <div id="lesson-score-pill" style="display:none" class="score-pill"></div>
+    <div id="lesson-locked-banner" style="display:none" class="locked-banner">🔒 <span id="lesson-locked-text"></span></div>
+  </div>
+  <div class="lesson-body" id="lesson-body"></div>
+</div>
+
+<!-- ═══════════════════ GRADER PAGE ═══════════════════ -->
+<div id="page-grader" class="page">
+  <div class="lesson-hero" id="grader-hero-bg">
+    <button class="back-btn" onclick="goTo('lesson')" id="grader-back-btn"></button>
+    <div class="day-badge" id="grader-day-badge"></div>
+    <h1 class="lesson-title" id="grader-title"></h1>
+    <p style="color:rgba(255,255,255,.85);font-size:14px;margin-top:6px" id="grader-subtitle"></p>
+  </div>
+  <div class="grader-wrap">
+    <div class="info-box">
+      <h3 id="g-how-title"></h3>
+      <ol id="g-steps"></ol>
+    </div>
+    <div class="ex-box">
+      <p id="g-example-lbl"></p>
+      <pre>Exercise 1 (Grammar):
+Q1: She is a teacher.
+Q2: They are happy.
+
+Exercise 2 (Matching):
+Q1: A  Q2: C  Q3: B
+
+Exercise 3 (Multiple Choice):
+Q1: B  Q2: A  Q3: C</pre>
+    </div>
+    <label class="ans-label" id="g-ans-label"></label>
+    <textarea id="answers-ta" rows="14" placeholder="..."></textarea>
+    <div class="btn-row">
+      <button class="btn-secondary" onclick="goTo('lesson')" id="g-cancel-btn"></button>
+      <button class="btn-primary" id="g-submit-btn" onclick="submitForGrading()"></button>
+    </div>
+    <div class="loading-row" id="loading-row">
+      <div class="spinner"></div>
+      <p style="color:#2563EB;font-weight:600;font-size:14px" id="loading-text"></p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ RESULTS PAGE ═══════════════════ -->
+<div id="page-results" class="page">
+  <div class="results-hero" id="results-hero-bg">
+    <button class="back-btn" onclick="goTo('dashboard')" id="results-back-btn"></button>
+    <div id="results-emoji" style="font-size:44px;margin-bottom:8px"></div>
+    <div class="score-big" id="results-score"></div>
+    <div class="grade-tag" id="results-grade"></div>
+    <p class="results-msg" id="results-msg"></p>
+    <div id="results-pass-banner"></div>
+  </div>
+  <div class="results-body">
+    <div class="two-col" style="margin-bottom:18px">
+      <div class="card" style="border-top:3px solid #059669">
+        <h3 id="r-strengths-title"></h3>
+        <div id="r-strengths-list"></div>
+      </div>
+      <div class="card" style="border-top:3px solid #F59E0B">
+        <h3 id="r-improve-title"></h3>
+        <div id="r-improve-list"></div>
+      </div>
+    </div>
+    <h2 class="section-h" id="r-corrections-title" style="margin-bottom:12px"></h2>
+    <div id="r-corrections-list"></div>
+    <div class="two-col" style="margin-top:18px">
+      <div class="card" style="background:#EFF6FF;border-top:3px solid #2563EB">
+        <h3 id="r-review-title"></h3>
+        <p id="r-review-text"></p>
+      </div>
+      <div class="card" style="background:#FFFBEB;border-top:3px solid #F59E0B">
+        <h3 id="r-motivation-title"></h3>
+        <p id="r-motivation-text" style="font-style:italic"></p>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn-secondary" id="r-resubmit-btn" onclick="goTo('grader')"></button>
+      <button class="btn-primary" id="r-back-btn" onclick="goTo('dashboard')"></button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════════════════
+//  DATA
+// ══════════════════════════════════════════════════════════════════════════════
+const LABELS = {
+  ro:{
+    days:"Zile",daysLeft:"Zile rămase",avgScore:"Scor mediu",complete:"Finalizat",
+    backToCourse:"← Înapoi la curs",studyMaterials:"📥 Materialele tale de învățare",
+    theory:"PDF Teorie",theoryDesc:"Explicații gramaticale, vocabular, text de lectură și scenariu de ascultare",
+    exercises:"PDF Exerciții",exercisesDesc:"Completare spații, alegere multiplă, scriere și teme",
+    studyPlan:"⏱️ Plan de studiu",submitBtn:"✏️ Trimite exercițiile pentru corecție",
+    openLesson:"📚 Deschide",reviewLesson:"📖 Recenzie",submitExercises:"✏️ Trimite",
+    locked:"🔒 Blocat",
+    howWorks:"Cum funcționează corecția AI",
+    step1T:"Descarcă PDF-urile",step1D:"Obține PDF-ul de Teorie și Exerciții pentru fiecare zi.",
+    step2T:"Studiază și completează",step2D:"Citește teoria, studiază vocabularul și completează exercițiile.",
+    step3T:"Tastează răspunsurile",step3D:"Revino aici, deschide ziua și scrie răspunsurile tale.",
+    step4T:"Primește feedback AI",step4D:"Profesorul AI îți corectează instant munca și te încurajează!",
+    submitTitle:"Trimite exercițiile pentru corecție AI",
+    howToSubmit:"📋 Cum trimiți:",
+    howToSteps:["Completează PDF-ul de Exerciții pentru ziua selectată","Tastează răspunsurile în caseta de mai jos","Etichetează fiecare răspuns: Ex1-Q1: [răspunsul tău]","Apasă Trimite pentru corecție"],
+    exampleFormat:"📌 Format exemplu:",
+    yourAnswers:"✏️ Tastează răspunsurile tale aici",
+    cancel:"← Anulează",submitCorrection:"🚀 Trimite pentru corecție AI",grading:"🔄 Se corectează...",
+    teacherReviewing:"Profesorul tău de engleză îți revizuiește răspunsurile... ✨",
+    backToDashboard:"📅 Înapoi la curs",resubmit:"✏️ Retrimite răspunsurile",
+    strengths:"✅ Puncte forte",improve:"📌 Zone de îmbunătățit",corrections:"📝 Corecții detaliate",
+    reviewThis:"📚 Revizuiește asta",motivation:"🌟 Motivație",
+    yourAnswer:"Răspunsul tău:",correctAnswer:"Răspuns corect:",why:"De ce?",tip:"💡 Sfat:",perfect:"Perfect! ✨",
+    dayResults:"Rezultate Ziua",completedScore:"Finalizat — Scor:",
+    showAll:"Toate 30 de zile",showDone:"✅ Finalizate",showPending:"⏳ În așteptare",
+    errorMsg:"Nu s-a putut conecta. Vă rugăm să încercați din nou.",
+    reviewBadge:"⭐ Recapitulare",gradBadge:"🎓 Final!",
+    passRequired:"Trebuie să obții minim 80/100 la ziua anterioară pentru a debloca această lecție.",
+    unlockMsg:"Felicitări! Ai deblocat ziua următoare!",
+    retryMsg:"Mai studiază și încearcă din nou pentru 80+!",
+    backDayBtn:"← Înapoi la Ziua",
+    american:"Engleză americană 🇺🇸",chooseLanguage:"Alege limba:",
+    grammarTopic:"📘 Gramatică",vocabTopic:"📝 Vocabular",
+    lockNote:"Obține 80+ la Ziua",
+    howFooter:"🔒 Nivelurile se deblochează cu 80+ la ziua precedentă • 🇺🇸 American English",
+    heroPara:"Cursul tău complet de engleză americană pentru începători. Studiază zilnic, trimite exercițiile și primești feedback de la AI.",
+    studySteps:[["10 min","📖 Citește PDF Teorie — secțiunea de Gramatică"],["15 min","📝 Studiază Vocabularul — pronunță fiecare cuvânt cu voce tare"],["10 min","📖 Citește textul de Lectură — răspunde la întrebări"],["10 min","🎧 Citește scenariul de Ascultare — răspunde la întrebări"],["10 min","✏️ Completează PDF-ul de Exerciții"],["10 min","🎙️ Practică vorbitul și înregistrează-te"],["5 min","📚 Recapitulare + completează tema"]]
+  },
+  ru:{
+    days:"Дней",daysLeft:"Осталось",avgScore:"Средний балл",complete:"Завершено",
+    backToCourse:"← Назад к курсу",studyMaterials:"📥 Учебные материалы",
+    theory:"PDF Теория",theoryDesc:"Объяснение грамматики, словарный запас, текст для чтения и сценарий прослушивания",
+    exercises:"PDF Упражнения",exercisesDesc:"Заполнение пропусков, выбор ответа, письмо и домашние задания",
+    studyPlan:"⏱️ План занятий",submitBtn:"✏️ Отправить упражнения на проверку",
+    openLesson:"📚 Открыть",reviewLesson:"📖 Повторить",submitExercises:"✏️ Сдать",
+    locked:"🔒 Закрыто",
+    howWorks:"Как работает проверка ИИ",
+    step1T:"Скачай PDF",step1D:"Получи PDF теории и упражнений для каждого дня.",
+    step2T:"Изучай и выполняй",step2D:"Читай теорию, учи слова и выполняй упражнения.",
+    step3T:"Введи ответы",step3D:"Вернись сюда, открой день и введи свои ответы.",
+    step4T:"Получи обратную связь",step4D:"ИИ-учитель мгновенно проверит и поддержит тебя!",
+    submitTitle:"Отправить упражнения на проверку ИИ",
+    howToSubmit:"📋 Как отправить:",
+    howToSteps:["Выполни PDF упражнений для выбранного дня","Введи ответы в поле ниже","Обозначь каждый ответ: Ex1-Q1: [твой ответ]","Нажми Отправить на проверку"],
+    exampleFormat:"📌 Пример формата:",
+    yourAnswers:"✏️ Введи свои ответы здесь",
+    cancel:"← Отмена",submitCorrection:"🚀 Отправить на проверку ИИ",grading:"🔄 Проверяем...",
+    teacherReviewing:"Твой учитель английского проверяет ответы... ✨",
+    backToDashboard:"📅 Назад к курсу",resubmit:"✏️ Отправить снова",
+    strengths:"✅ Сильные стороны",improve:"📌 Что улучшить",corrections:"📝 Подробные исправления",
+    reviewThis:"📚 Повтори это",motivation:"🌟 Мотивация",
+    yourAnswer:"Твой ответ:",correctAnswer:"Правильный ответ:",why:"Почему?",tip:"💡 Подсказка:",perfect:"Отлично! ✨",
+    dayResults:"Результаты Дня",completedScore:"Завершено — Балл:",
+    showAll:"Все 30 дней",showDone:"✅ Завершённые",showPending:"⏳ В ожидании",
+    errorMsg:"Не удалось подключиться. Попробуй ещё раз.",
+    reviewBadge:"⭐ Повторение",gradBadge:"🎓 Финал!",
+    passRequired:"Нужно набрать минимум 80/100 в предыдущий день, чтобы открыть этот урок.",
+    unlockMsg:"Поздравляем! Следующий день разблокирован!",
+    retryMsg:"Ещё поучись и попробуй снова для 80+!",
+    backDayBtn:"← Назад к Дню",
+    american:"Американский английский 🇺🇸",chooseLanguage:"Язык перевода:",
+    grammarTopic:"📘 Грамматика",vocabTopic:"📝 Словарный запас",
+    lockNote:"Набери 80+ за День",
+    howFooter:"🔒 Уровни разблокируются при 80+ за предыдущий день • 🇺🇸 American English",
+    heroPara:"Твой полный курс американского английского для начинающих. Учись каждый день, сдавай упражнения и получай исправления от ИИ.",
+    studySteps:[["10 мин","📖 Читай PDF Теории — раздел Грамматики"],["15 мин","📝 Изучай словарный запас — произноси каждое слово вслух"],["10 мин","📖 Читай текст для Чтения — отвечай на вопросы"],["10 мин","🎧 Читай сценарий прослушивания — отвечай на вопросы"],["10 мин","✏️ Выполняй PDF упражнений"],["10 мин","🎙️ Практикуй разговор и записывай себя"],["5 мин","📚 Повторение + выполнение домашнего задания"]]
+  }
+};
+
+const CURRICULUM = [
+  {day:1,color:"#B91C1C",title:"Hello, American English! — The Verb 'To Be'",grammar:"Verb 'To Be' (am / is / are)",vocab:"Greetings & Introductions",ro:{title:"Bună, Engleză Americană! — Verbul 'To Be'",grammar:"Verbul 'To Be' (am / is / are)",vocab:"Salutări și Prezentări"},ru:{title:"Привет! — Глагол 'To Be'",grammar:"Глагол 'To Be' (am / is / are)",vocab:"Приветствия и Знакомства"}},
+  {day:2,color:"#1D4ED8",title:"Me, You, and Us — Subject Pronouns",grammar:"Subject Pronouns (I/you/he/she/it/we/they)",vocab:"Numbers 1–20 & Family Words",ro:{title:"Eu, Tu și Noi — Pronume Subiect",grammar:"Pronume subiect",vocab:"Numere 1–20 și Familie"},ru:{title:"Я, Ты и Мы — Личные местоимения",grammar:"Личные местоимения",vocab:"Числа 1–20 и Семья"}},
+  {day:3,color:"#047857",title:"A Cat or The Cat? — Articles: A / An / The",grammar:"Articles: A / An / The",vocab:"Animals & Common Objects",ro:{title:"Un pisică sau Pisica? — Articole",grammar:"Articole: A / An / The",vocab:"Animale și Obiecte"},ru:{title:"Кошка? — Артикли: A / An / The",grammar:"Артикли: A / An / The",vocab:"Животные и предметы"}},
+  {day:4,color:"#7C3AED",title:"One Cat, Two Cats — Singular & Plural Nouns",grammar:"Singular & Plural Nouns",vocab:"Food & Drinks",ro:{title:"Un pisică, Două pisici — Plural",grammar:"Substantive singular și plural",vocab:"Mâncare și Băuturi"},ru:{title:"Одна, Две — Ед. и мн. число",grammar:"Существительные ед. и мн. числа",vocab:"Еда и напитки"}},
+  {day:5,color:"#B45309",title:"My, Your, His, Her — Possessive Adjectives",grammar:"Possessive Adjectives",vocab:"Clothes & Accessories",ro:{title:"Al meu, Al tău — Adjective Posesive",grammar:"Adjective posesive",vocab:"Haine și Accesorii"},ru:{title:"Мой, Твой — Притяжательные",grammar:"Притяжательные прилагательные",vocab:"Одежда и Аксессуары"}},
+  {day:6,color:"#0891B2",title:"I Work Every Day — Present Simple",grammar:"Present Simple (positive)",vocab:"Daily Routine Verbs",ro:{title:"Lucrez zilnic — Prezent Simplu",grammar:"Prezentul simplu (afirmativ)",vocab:"Verbe de rutină"},ru:{title:"Я работаю — Простое настоящее",grammar:"Простое настоящее (утверждение)",vocab:"Глаголы повседневной жизни"}},
+  {day:7,color:"#6D28D9",title:"Do You Work? — Present Simple Questions",grammar:"Present Simple (negative & questions)",vocab:"Time & Clock",ro:{title:"Lucrezi? — Întrebări Prezent Simplu",grammar:"Prezentul simplu (negativ & interogativ)",vocab:"Timp și Ceas"},ru:{title:"Ты работаешь? — Вопросы",grammar:"Простое настоящее (отрицание и вопросы)",vocab:"Время и Часы"}},
+  {day:8,color:"#BE185D",title:"Always, Sometimes, Never — Adverbs of Frequency",grammar:"Adverbs of Frequency",vocab:"At Home Vocabulary",ro:{title:"Întotdeauna, Uneori, Niciodată",grammar:"Adverbe de frecvență",vocab:"Vocabular Acasă"},ru:{title:"Всегда, Иногда, Никогда",grammar:"Наречия частотности",vocab:"Дома"}},
+  {day:9,color:"#065F46",title:"There Is a Park! — There Is / There Are",grammar:"There is / There are",vocab:"Places in a City",ro:{title:"Există un parc! — There Is / There Are",grammar:"There is / There are",vocab:"Locuri dintr-un Oraș"},ru:{title:"Есть парк! — There Is / There Are",grammar:"There is / There are",vocab:"Места в городе"}},
+  {day:10,color:"#92400E",title:"I Can Swim! — Can / Can't",grammar:"Modal Verb: Can / Can't",vocab:"Sports & Activities",ro:{title:"Pot să înot! — Can / Can't",grammar:"Verb modal: Can / Can't",vocab:"Sporturi și Activități"},ru:{title:"Я умею плавать! — Can / Can't",grammar:"Модальный глагол: Can / Can't",vocab:"Спорт и занятия"}},
+  {day:11,color:"#1D4ED8",title:"I'm Eating Now! — Present Continuous",grammar:"Present Continuous (positive)",vocab:"Weather & Seasons",ro:{title:"Mănânc acum! — Prezent Continuu",grammar:"Prezentul continuu (afirmativ)",vocab:"Vreme și Anotimpuri"},ru:{title:"Я сейчас ем! — Настоящее продолженное",grammar:"Настоящее продолженное (утверждение)",vocab:"Погода и Времена года"}},
+  {day:12,color:"#6D28D9",title:"Is She Running? — Present Continuous Questions",grammar:"Present Continuous (questions & negative)",vocab:"Emotions & Feelings",ro:{title:"Aleargă ea? — Prezent Continuu Întrebări",grammar:"Prezentul continuu (interogativ & negativ)",vocab:"Emoții și Sentimente"},ru:{title:"Она бежит? — Вопросы",grammar:"Настоящее продолженное (вопросы и отрицание)",vocab:"Эмоции и Чувства"}},
+  {day:13,color:"#047857",title:"On, In, Under — Prepositions of Place",grammar:"Prepositions of Place",vocab:"The House & Rooms",ro:{title:"Pe, În, Sub — Prepoziții de Loc",grammar:"Prepoziții de loc",vocab:"Casa și Camerele"},ru:{title:"На, В, Под — Предлоги места",grammar:"Предлоги места",vocab:"Дом и Комнаты"}},
+  {day:14,color:"#B45309",title:"Some Milk, Any Bread — Countable & Uncountable",grammar:"Countable/Uncountable + Some/Any",vocab:"Shopping & Supermarket",ro:{title:"Ceva lapte, Vreo pâine",grammar:"Numărabile/Nenumărabile + some/any",vocab:"Cumpărături și Supermarket"},ru:{title:"Немного молока — Исчисляемые",grammar:"Исчисляемые/Неисчисляемые + some/any",vocab:"Магазин и Супермаркет"}},
+  {day:15,color:"#1F2937",isReview:true,title:"🏆 Review Day — Days 1–14 Practice",grammar:"Full Review: Days 1–14",vocab:"Mixed Review Vocabulary",ro:{title:"🏆 Zi de Recapitulare — Zilele 1–14",grammar:"Recapitulare completă: Zilele 1–14",vocab:"Vocabular mixt"},ru:{title:"🏆 День повторения — Дни 1–14",grammar:"Полное повторение: Дни 1–14",vocab:"Смешанный словарный запас"}},
+  {day:16,color:"#B91C1C",title:"Yesterday — Past Simple: Was / Were",grammar:"Past Simple: Was / Were",vocab:"Travel & Transportation",ro:{title:"Ieri — Trecut Simplu: Was / Were",grammar:"Trecutul simplu: Was / Were",vocab:"Călătorie și Transport"},ru:{title:"Вчера — Was / Were",grammar:"Простое прошедшее: Was / Were",vocab:"Путешествие и транспорт"}},
+  {day:17,color:"#1D4ED8",title:"I Worked Yesterday — Past Simple Regular",grammar:"Past Simple Regular Verbs (+ed)",vocab:"Holidays & Vacation",ro:{title:"Am lucrat ieri — Trecut Simplu Regular",grammar:"Trecutul simplu verbe regulate (+ed)",vocab:"Vacanțe și Concedii"},ru:{title:"Я работал вчера — Правильные глаголы",grammar:"Правильные глаголы прошедшего (+ed)",vocab:"Праздники и Отпуск"}},
+  {day:18,color:"#047857",title:"I Went to the Park — Past Simple Irregular",grammar:"Past Simple Irregular Verbs",vocab:"Weekend Activities",ro:{title:"Am mers în parc — Trecut Neregulat",grammar:"Trecutul simplu verbe neregulate",vocab:"Activități de Weekend"},ru:{title:"Я пошёл в парк — Неправильные глаголы",grammar:"Неправильные глаголы прошедшего",vocab:"Занятия на выходных"}},
+  {day:19,color:"#7C3AED",title:"Did You Go? — Past Simple Questions",grammar:"Past Simple: Negative & Questions",vocab:"At the Restaurant",ro:{title:"Te-ai dus? — Trecut Simplu Întrebări",grammar:"Trecutul simplu: negativ și interogativ",vocab:"La Restaurant"},ru:{title:"Ты ходил? — Вопросы в прошедшем",grammar:"Простое прошедшее: отрицание и вопросы",vocab:"В ресторане"}},
+  {day:20,color:"#B45309",title:"I'm Going to Study! — Future with 'Going To'",grammar:"Future: be going to",vocab:"Plans & Goals",ro:{title:"O să studiez! — Viitor cu Going To",grammar:"Viitorul cu be going to",vocab:"Planuri și Obiective"},ru:{title:"Я собираюсь учиться! — Going To",grammar:"Будущее время: be going to",vocab:"Планы и цели"}},
+  {day:21,color:"#0891B2",title:"Bigger, Smaller, Best! — Comparatives",grammar:"Comparatives & Superlatives",vocab:"Describing People & Things",ro:{title:"Mai mare, Cel mai bun! — Comparative",grammar:"Grade de comparație",vocab:"Descrierea Persoanelor"},ru:{title:"Больше, Лучший! — Сравнительные",grammar:"Степени сравнения прилагательных",vocab:"Описание людей и вещей"}},
+  {day:22,color:"#6D28D9",title:"Where? When? How? — WH- Questions",grammar:"WH- Question Words",vocab:"Directions & Getting Around",ro:{title:"Unde? Când? Cum? — Cuvinte Interogative",grammar:"Cuvinte interogative WH-",vocab:"Direcții și Orientare"},ru:{title:"Где? Когда? Как? — Вопросительные слова",grammar:"Вопросительные слова WH-",vocab:"Направления и ориентирование"}},
+  {day:23,color:"#BE185D",title:"Yes, I Do! — Short Answers",grammar:"Short Answers in English",vocab:"Jobs & Professions",ro:{title:"Da, fac! — Răspunsuri Scurte",grammar:"Răspunsuri scurte în engleză",vocab:"Locuri de Muncă și Profesii"},ru:{title:"Да! — Краткие ответы",grammar:"Краткие ответы в английском",vocab:"Работа и Профессии"}},
+  {day:24,color:"#065F46",title:"And, But, Because — Basic Conjunctions",grammar:"Basic Conjunctions",vocab:"Health & Body",ro:{title:"Și, Dar, Pentru că — Conjuncții",grammar:"Conjuncții de bază",vocab:"Sănătate și Corp"},ru:{title:"И, Но, Потому что — Союзы",grammar:"Основные союзы",vocab:"Здоровье и тело"}},
+  {day:25,color:"#92400E",title:"Stop! Sit Down! — Imperatives",grammar:"Imperative Form",vocab:"Classroom Language",ro:{title:"Stop! Stai jos! — Imperativul",grammar:"Forma imperativă",vocab:"Limbaj în Clasă"},ru:{title:"Стоп! Садись! — Повелительное",grammar:"Повелительное наклонение",vocab:"Язык классной комнаты"}},
+  {day:26,color:"#1D4ED8",title:"What Time Is It? — Time & Dates",grammar:"Time, Dates, Days of the Week",vocab:"A Typical American Day",ro:{title:"Cât e ceasul? — Ora și Data",grammar:"Ora, datele, zilele săptămânii",vocab:"O Zi Tipică Americană"},ru:{title:"Сколько время? — Время и Даты",grammar:"Время, даты, дни недели",vocab:"Типичный американский день"}},
+  {day:27,color:"#6D28D9",title:"How Much? How Many? — Quantifiers",grammar:"Much / Many / A lot of / A few / A little",vocab:"Money & Prices (USD)",ro:{title:"Cât de mult? Câți? — Cuantificatori",grammar:"Much / Many / A lot of / A few / A little",vocab:"Bani și Prețuri (USD)"},ru:{title:"Сколько? — Квантификаторы",grammar:"Much / Many / A lot of / A few / A little",vocab:"Деньги и Цены (USD)"}},
+  {day:28,color:"#1F2937",isReview:true,title:"🏆 Review Day — Days 16–27 Practice",grammar:"Full Review: Days 16–27",vocab:"Mixed Review 2",ro:{title:"🏆 Zi de Recapitulare — Zilele 16–27",grammar:"Recapitulare completă: Zilele 16–27",vocab:"Vocabular mixt 2"},ru:{title:"🏆 День повторения — Дни 16–27",grammar:"Полное повторение: Дни 16–27",vocab:"Смешанный словарный запас 2"}},
+  {day:29,color:"#047857",title:"Putting It All Together — Full Conversation",grammar:"Mixed Grammar Review (All A1 Topics)",vocab:"All Topics: Real American Conversations",ro:{title:"Totul laolaltă — Conversație Completă",grammar:"Recapitulare gramaticală mixtă",vocab:"Toate subiectele: Conversații americane"},ru:{title:"Всё вместе — Полноценный разговор",grammar:"Смешанное повторение грамматики",vocab:"Все темы: Реальные разговоры"}},
+  {day:30,color:"#B45309",isGrad:true,title:"🎓 Graduation Day! — You Made It!",grammar:"Complete A1 Review — Celebrate!",vocab:"All 30 Days Vocabulary Review",ro:{title:"🎓 Ziua Absolvirii! — Ai reușit!",grammar:"Recapitulare completă A1 — Felicitări!",vocab:"Recapitulare vocabular 30 de zile"},ru:{title:"🎓 День выпуска! — Ты сделал это!",grammar:"Полное повторение A1 — Поздравляем!",vocab:"Повторение словарного запаса 30 дней"}}
+];
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════════════════════════
+let lang = null;
+let currentView = 'lang';
+let selectedDay = null;
+let progress = {};
+let currentFilter = 'all';
+
+// Load progress from localStorage
+try { progress = JSON.parse(localStorage.getItem('em_progress_v3') || '{}'); } catch(e){}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  HELPERS
+// ══════════════════════════════════════════════════════════════════════════════
+function L(key){ return LABELS[lang][key] || key; }
+function getLang(day){ return lang ? (day[lang] || {}) : {}; }
+function getTitle(day){ return getLang(day).title || day.title; }
+function getGrammar(day){ return getLang(day).grammar || day.grammar; }
+function getVocab(day){ return getLang(day).vocab || day.vocab; }
+function isUnlocked(dayNum){ if(dayNum===1)return true; const s=progress[dayNum-1]; return s!==undefined && s>=80; }
+function saveProgress(day, score){ progress[day]=score; try{localStorage.setItem('em_progress_v3',JSON.stringify(progress));}catch(e){} }
+function scoreColor(s){ return s>=80?'#059669':s>=60?'#D97706':'#DC2626'; }
+
+// American flag SVG inner content
+function flagInner(){
+  let s='';
+  for(let i=0;i<13;i++) s+=`<rect x="0" y="${i*7.69}" width="190" height="7.69" fill="${i%2===0?'#B22234':'#FFFFFF'}"/>`;
+  s+='<rect x="0" y="0" width="76" height="53.84" fill="#3C3B6E"/>';
+  const positions=[];
+  for(let r=0;r<9;r++){
+    const cols=r%2===0?6:5;
+    const xOffset=r%2===0?6:13.6;
+    const xStep=r%2===0?12.4:14.5;
+    for(let c=0;c<cols;c++){
+      const x=xOffset+c*xStep, y=5.5+r*5.3;
+      if(y<52) positions.push({x,y});
+    }
+  }
+  positions.slice(0,50).forEach(p=>{ s+=`<text x="${p.x}" y="${p.y}" font-size="5" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">★</text>`; });
+  return s;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  ROUTING
+// ══════════════════════════════════════════════════════════════════════════════
+function chooseLang(l){
+  lang=l;
+  document.getElementById('lang-screen').style.display='none';
+  goTo('dashboard');
+}
+function switchLang(l){
+  lang=l;
+  document.getElementById('ls-ro').className='ls-btn'+(l==='ro'?' active':'');
+  document.getElementById('ls-ru').className='ls-btn'+(l==='ru'?' active':'');
+  renderDashboard();
+}
+function setFilter(f){
+  currentFilter=f;
+  ['all','done','pend'].forEach(k=>{ document.getElementById('fb-'+k).classList.remove('active'); });
+  document.getElementById('fb-'+(f==='all'?'all':f==='completed'?'done':'pend')).classList.add('active');
+  renderGrid();
+}
+function goTo(view, dayNum){
+  if(dayNum!==undefined) selectedDay=dayNum;
+  ['dashboard','lesson','grader','results'].forEach(v=>{
+    document.getElementById('page-'+v).classList.remove('active');
+  });
+  document.getElementById('page-'+view).classList.add('active');
+  window.scrollTo(0,0);
+  currentView=view;
+  if(view==='dashboard') renderDashboard();
+  else if(view==='lesson') renderLesson();
+  else if(view==='grader') renderGrader();
+  else if(view==='results') {} // already rendered
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  RENDER DASHBOARD
+// ══════════════════════════════════════════════════════════════════════════════
+function renderDashboard(){
+  const done=Object.keys(progress).length;
+  const scores=Object.values(progress);
+  const avg=done>0?Math.round(scores.reduce((a,b)=>a+b,0)/done):null;
+  const pct=Math.round((done/30)*100);
+
+  // Flag
+  ['flag-hero','flag-lesson','flag-grader'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.innerHTML=flagInner();
+  });
+  document.querySelectorAll('[id^="flag-"]').forEach(el=>el.innerHTML=flagInner());
+
+  document.getElementById('h-tag').textContent=L('american')+' • CEFR A1';
+  document.getElementById('h-para').textContent=L('heroPara');
+  document.getElementById('ls-label').textContent=L('chooseLanguage');
+  document.getElementById('ls-ro').className='ls-btn'+(lang==='ro'?' active':'');
+  document.getElementById('ls-ru').className='ls-btn'+(lang==='ru'?' active':'');
+
+  document.getElementById('stat-done').textContent=done;
+  document.getElementById('stat-done-lbl').textContent=L('days');
+  document.getElementById('stat-left').textContent=30-done;
+  document.getElementById('stat-left-lbl').textContent=L('daysLeft');
+  document.getElementById('stat-avg').textContent=avg||'—';
+  document.getElementById('stat-avg-lbl').textContent=L('avgScore');
+  document.getElementById('stat-pct').textContent=pct+'%';
+  document.getElementById('stat-pct-lbl').textContent=L('complete');
+  document.getElementById('prog-fill').style.width=pct+'%';
+
+  document.getElementById('fb-all').textContent=L('showAll');
+  document.getElementById('fb-done').textContent=L('showDone');
+  document.getElementById('fb-pend').textContent=L('showPending');
+
+  // How it works
+  document.getElementById('how-title').textContent=L('howWorks');
+  document.getElementById('how-footer').textContent=L('howFooter');
+  const howGrid=document.getElementById('how-grid');
+  const steps=[['step1T','step1D'],['step2T','step2D'],['step3T','step3D'],['step4T','step4D']];
+  const nums=['1️⃣','2️⃣','3️⃣','4️⃣'];
+  howGrid.innerHTML=steps.map((s,i)=>`
+    <div class="how-card">
+      <div class="step-num">${nums[i]}</div>
+      <h3>${L(s[0])}</h3>
+      <p>${L(s[1])}</p>
+    </div>`).join('');
+
+  renderGrid();
+}
+
+function renderGrid(){
+  const grid=document.getElementById('day-grid');
+  const days=CURRICULUM.filter(d=>{
+    if(currentFilter==='completed') return progress[d.day]!==undefined;
+    if(currentFilter==='pending') return progress[d.day]===undefined;
+    return true;
+  });
+  grid.innerHTML=days.map(d=>{
+    const unlocked=isUnlocked(d.day);
+    const myScore=progress[d.day];
+    const done=myScore!==undefined;
+    const sc=done?scoreColor(myScore):'';
+    const title=getTitle(d), grammar=getGrammar(d), vocab=getVocab(d);
+    return `
+    <div class="day-card ${unlocked?'unlocked':'locked'}" style="border-top-color:${unlocked?d.color:'#9CA3AF'}"
+      ${unlocked?`onclick="goTo('lesson',${d.day})"`:''}>
+      <div class="card-top">
+        <span class="day-num" style="color:${unlocked?d.color:'#9CA3AF'}">
+          ${!unlocked?'🔒 ':''}Day ${d.day}
+        </span>
+        ${done?`<span class="score-pill-sm" style="background:${sc}">${myScore}/100 ${myScore>=80?'✓':'↺'}</span>`
+               :(unlocked?`<span class="unlocked-dot"></span>`:'')}
+      </div>
+      <div class="card-title">${title}</div>
+      <div class="card-grammar">${grammar}</div>
+      <div class="card-vocab">📝 ${vocab}</div>
+      ${d.isReview?`<span class="review-badge">${L('reviewBadge')}</span>`:''}
+      ${d.isGrad?`<span class="grad-badge">${L('gradBadge')}</span>`:''}
+      ${!unlocked?`<div class="lock-hint">${L('lockNote')} ${d.day-1}</div>`:''}
+      <div class="card-btns">
+        ${unlocked?`
+          <button class="card-btn" style="background:${d.color}"
+            onclick="event.stopPropagation();goTo('lesson',${d.day})">
+            ${done?L('reviewLesson'):L('openLesson')}
+          </button>
+          <button class="card-btn" style="background:#374151"
+            onclick="event.stopPropagation();goTo('grader',${d.day})">
+            ${L('submitExercises')}
+          </button>
+        `:`<button class="card-btn grey" disabled>${L('locked')}</button>`}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  RENDER LESSON
+// ══════════════════════════════════════════════════════════════════════════════
+function renderLesson(){
+  const d=CURRICULUM[selectedDay-1];
+  const unlocked=isUnlocked(selectedDay);
+  const myScore=progress[selectedDay];
+  const title=getTitle(d), grammar=getGrammar(d), vocab=getVocab(d);
+
+  const hero=document.getElementById('lesson-hero-bg');
+  hero.style.background=unlocked?d.color:'#374151';
+  document.getElementById('flag-lesson').innerHTML=flagInner();
+  document.getElementById('lesson-back-btn').textContent=L('backToCourse');
+  document.getElementById('lesson-day-badge').textContent=`DAY ${d.day} / 30 • ${L('american')}`;
+  document.getElementById('lesson-title').textContent=title;
+
+  const sp=document.getElementById('lesson-score-pill');
+  if(myScore!==undefined){
+    sp.style.display='inline-block';
+    sp.textContent=`✅ ${L('completedScore')} ${myScore}/100 ${myScore>=80?'🎉':'💪'}`;
+  } else { sp.style.display='none'; }
+
+  const lb=document.getElementById('lesson-locked-banner');
+  if(!unlocked){ lb.style.display='flex'; document.getElementById('lesson-locked-text').textContent=L('passRequired'); }
+  else lb.style.display='none';
+
+  const body=document.getElementById('lesson-body');
+  if(!unlocked){
+    const prevDay=selectedDay>1?CURRICULUM[selectedDay-2]:null;
+    body.innerHTML=`
+      <div class="lock-msg">
+        <div class="lock-icon">🔒</div>
+        <h2>${L('locked')}</h2>
+        <p>${L('passRequired')}</p>
+        ${prevDay?`<button class="btn-primary" style="margin-top:16px;background:${prevDay.color}"
+          onclick="goTo('lesson',${prevDay.day})">${L('backDayBtn')} ${prevDay.day}</button>`:''}
+      </div>`;
+    return;
+  }
+
+  const steps=L('studySteps').map(([time,task])=>`
+    <div class="study-row">
+      <span class="time-pill" style="background:${d.color}22;color:${d.color}">${time}</span>
+      <span class="study-task">${task}</span>
+    </div>`).join('');
+
+  const prev=selectedDay>1?CURRICULUM[selectedDay-2]:null;
+  const next=selectedDay<30?CURRICULUM[selectedDay]:null;
+  const prevUnlocked=prev&&isUnlocked(prev.day);
+  const nextUnlocked=next&&isUnlocked(next.day);
+
+  body.innerHTML=`
+    <div class="two-col">
+      <div class="info-card" style="border-top-color:${d.color}">
+        <div class="info-label">${L('grammarTopic')}</div>
+        <div class="info-val">${grammar}</div>
+      </div>
+      <div class="info-card" style="border-top-color:#7C3AED">
+        <div class="info-label">${L('vocabTopic')}</div>
+        <div class="info-val">${vocab}</div>
+      </div>
+    </div>
+
+    <h2 class="section-h">${L('studyMaterials')}</h2>
+    <div class="two-col">
+      <div class="pdf-card">
+        <div class="icon">📖</div>
+        <h3>${L('theory')}</h3>
+        <p>${L('theoryDesc')}</p>
+        <span class="pdf-chip">Day${String(d.day).padStart(2,'0')}_Theory.pdf</span>
+      </div>
+      <div class="pdf-card">
+        <div class="icon">✏️</div>
+        <h3>${L('exercises')}</h3>
+        <p>${L('exercisesDesc')}</p>
+        <span class="pdf-chip red">Day${String(d.day).padStart(2,'0')}_Exercises.pdf</span>
+      </div>
+    </div>
+
+    <h2 class="section-h">${L('studyPlan')} Day ${d.day}</h2>
+    <div class="study-box">${steps}</div>
+
+    <div class="btn-row">
+      ${prevUnlocked?`<button class="btn-secondary" onclick="goTo('lesson',${prev.day})">← Day ${prev.day}</button>`:''}
+      <button class="btn-primary" style="background:${d.color}" onclick="goTo('grader',${d.day})">${L('submitBtn')}</button>
+      ${nextUnlocked?`<button class="btn-secondary" onclick="goTo('lesson',${next.day})">Day ${next.day} →</button>`:''}
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  RENDER GRADER
+// ══════════════════════════════════════════════════════════════════════════════
+function renderGrader(){
+  if(!isUnlocked(selectedDay)){ goTo('lesson'); return; }
+  const d=CURRICULUM[selectedDay-1];
+  const title=getTitle(d), grammar=getGrammar(d);
+
+  document.getElementById('grader-hero-bg').style.background=d.color;
+  document.getElementById('flag-grader') && (document.getElementById('flag-grader').innerHTML=flagInner());
+  document.getElementById('grader-back-btn').textContent=L('backToCourse');
+  document.getElementById('grader-day-badge').textContent=`DAY ${d.day}`;
+  document.getElementById('grader-title').textContent=title;
+  document.getElementById('grader-subtitle').textContent=L('submitTitle');
+  document.getElementById('g-how-title').textContent=L('howToSubmit');
+
+  const ol=document.getElementById('g-steps');
+  ol.innerHTML=L('howToSteps').map(s=>`<li>${s}</li>`).join('');
+  document.getElementById('g-example-lbl').textContent=L('exampleFormat');
+  document.getElementById('g-ans-label').textContent=`${L('yourAnswers')} — Day ${d.day} (${grammar}):`;
+  document.getElementById('answers-ta').value='';
+  document.getElementById('answers-ta').placeholder=lang==='ro'?'Tastează răspunsurile tale aici...':'Введи свои ответы здесь...';
+  document.getElementById('g-cancel-btn').textContent=L('cancel');
+  document.getElementById('g-submit-btn').textContent=L('submitCorrection');
+  document.getElementById('loading-text').textContent=L('teacherReviewing');
+  document.getElementById('loading-row').classList.remove('show');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  SUBMIT FOR GRADING
+// ══════════════════════════════════════════════════════════════════════════════
+async function submitForGrading(){
+  const answers=document.getElementById('answers-ta').value.trim();
+  if(!answers) return;
+  const d=CURRICULUM[selectedDay-1];
+  const title=getTitle(d), grammar=getGrammar(d);
+  const btn=document.getElementById('g-submit-btn');
+  btn.textContent=L('grading');
+  btn.disabled=true;
+  document.getElementById('loading-row').classList.add('show');
+
+  const langInstr=lang==='ro'
+    ?'Provide ALL feedback, explanations, tips, and messages in ROMANIAN (limba română). Use English only for example sentences.'
+    :'Provide ALL feedback, explanations, tips, and messages in RUSSIAN (русский язык). Use English only for example sentences.';
+
+  const prompt=`You are a warm, encouraging American English teacher for absolute beginners (CEFR A1).
+A student completed Day ${d.day} exercises: "${title}" — Grammar: ${grammar}.
+${langInstr}
+
+Student answers:
+${answers}
+
+Respond ONLY with valid JSON, no markdown, no extra text:
+{
+  "score": <0-100>,
+  "grade": "<A/B/C/D/F>",
+  "emoji": "<one emoji>",
+  "overall_message": "<2-3 warm sentences in ${lang==='ro'?'Romanian':'Russian'}>",
+  "corrections": [{"question":"<q>","student_answer":"<ans>","correct_answer":"<correct>","is_correct":<bool>,"explanation":"<in ${lang==='ro'?'Romanian':'Russian'}, max 2 sentences>","tip":"<short tip in ${lang==='ro'?'Romanian':'Russian'}>"}],
+  "grammar_weaknesses": ["<topic>"],
+  "strengths": ["<strength>"],
+  "review_suggestion": "<one thing to review in ${lang==='ro'?'Romanian':'Russian'}>",
+  "motivation": "<motivating message in ${lang==='ro'?'Romanian':'Russian'}>"
+}`;
+
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        system:'You are an expert English teacher. Respond with valid JSON only. No markdown, no backticks.',
+        messages:[{role:'user',content:prompt}]
+      })
+    });
+    const data=await res.json();
+    const text=data.content?.[0]?.text||'{}';
+    const result=JSON.parse(text.replace(/```json|```/g,'').trim());
+    saveProgress(selectedDay, result.score);
+    renderResults(result);
+    goTo('results');
+  }catch(e){
+    renderResults({error:true});
+    goTo('results');
+  }
+  btn.textContent=L('submitCorrection');
+  btn.disabled=false;
+  document.getElementById('loading-row').classList.remove('show');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  RENDER RESULTS
+// ══════════════════════════════════════════════════════════════════════════════
+function renderResults(r){
+  document.getElementById('results-back-btn').textContent=L('backToDashboard');
+  document.getElementById('r-resubmit-btn').textContent=L('resubmit');
+  document.getElementById('r-back-btn').textContent=L('backToDashboard');
+
+  if(r.error){
+    document.getElementById('results-hero-bg').style.background='linear-gradient(135deg,#7F1D1D,#DC2626)';
+    document.getElementById('results-emoji').textContent='⚠️';
+    document.getElementById('results-score').textContent='—';
+    document.getElementById('results-grade').textContent='Error';
+    document.getElementById('results-msg').textContent=L('errorMsg');
+    document.getElementById('results-pass-banner').innerHTML='';
+    document.getElementById('r-corrections-list').innerHTML='';
+    return;
+  }
+
+  const passed=r.score>=80;
+  const sc=scoreColor(r.score);
+  document.getElementById('results-hero-bg').style.background=
+    passed?'linear-gradient(135deg,#065F46,#059669)':'linear-gradient(135deg,#7F1D1D,#DC2626)';
+  document.getElementById('results-emoji').textContent=r.emoji||'📝';
+  document.getElementById('results-score').textContent=r.score+'/100';
+  document.getElementById('results-grade').textContent=`Grade ${r.grade} ${passed?'🎉':'💪'}`;
+  document.getElementById('results-msg').textContent=r.overall_message||'';
+  document.getElementById('results-pass-banner').innerHTML=passed
+    ?`<div class="pass-banner">✅ ${L('unlockMsg')}</div>`
+    :`<div class="fail-banner">📖 ${L('retryMsg')}</div>`;
+
+  document.getElementById('r-strengths-title').textContent=L('strengths');
+  document.getElementById('r-improve-title').textContent=L('improve');
+  document.getElementById('r-strengths-list').innerHTML=(r.strengths||[]).map(s=>`<p>• ${s}</p>`).join('');
+  document.getElementById('r-improve-list').innerHTML=(r.grammar_weaknesses||[]).map(w=>`<p>• ${w}</p>`).join('');
+
+  document.getElementById('r-corrections-title').textContent=L('corrections');
+  document.getElementById('r-corrections-list').innerHTML=(r.corrections||[]).map(c=>`
+    <div class="corr-card ${c.is_correct?'':'wrong'}">
+      <div class="corr-top">
+        <span>${c.is_correct?'✅':'❌'}</span>
+        <span class="corr-q">${c.question||''}</span>
+      </div>
+      ${c.is_correct
+        ?`<p class="perfect">${L('perfect')}</p>`
+        :`<div class="corr-detail">
+           <p><b>${L('yourAnswer')}</b> <span class="wrong-ans">${c.student_answer||''}</span></p>
+           <p><b>${L('correctAnswer')}</b> <span class="right-ans">${c.correct_answer||''}</span></p>
+           <p><b>${L('why')}</b> ${c.explanation||''}</p>
+           ${c.tip?`<div class="tip-box">${L('tip')} ${c.tip}</div>`:''}
+         </div>`
+      }
+    </div>`).join('');
+
+  document.getElementById('r-review-title').textContent=L('reviewThis');
+  document.getElementById('r-review-text').textContent=r.review_suggestion||'';
+  document.getElementById('r-motivation-title').textContent=L('motivation');
+  document.getElementById('r-motivation-text').textContent=r.motivation?`"${r.motivation}"` :'';
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+//  INIT — draw flag SVGs on load
+// ══════════════════════════════════════════════════════════════════════════════
+document.querySelectorAll('[id^="flag-"]').forEach(el=>el.innerHTML=flagInner());
+</script>
+</body>
+</html>
