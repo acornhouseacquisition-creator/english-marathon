@@ -2,764 +2,1607 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>30-Day American English Marathon 🇺🇸</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-  body{font-family:'Segoe UI',system-ui,sans-serif;background:#F8FAFC;color:#1F2937}
-  button{cursor:pointer;font-family:inherit}
-  textarea{font-family:monospace}
-  pre{font-family:monospace}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:#F1F5F9;color:#1E293B;line-height:1.6}
+button{cursor:pointer;font-family:inherit;transition:all .18s}
+input,textarea,select{font-family:inherit}
 
-  /* LANG SCREEN */
-  #lang-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#1B2A4A 0%,#2563EB 100%);padding:24px}
-  .lang-card{background:white;border-radius:20px;padding:40px 36px;max-width:480px;width:100%;text-align:center;box-shadow:0 20px 60px rgba(0,0,0,.25)}
-  .lang-card h1{font-size:22px;font-weight:800;color:#1B2A4A;margin:12px 0 6px}
-  .lang-card p{font-size:14px;color:#6B7280;margin-bottom:20px}
-  .lang-divider{height:1px;background:#E5E7EB;margin:0 0 20px}
-  .lang-choose{font-size:13px;color:#374151;margin-bottom:20px;line-height:1.5}
-  .lang-btn-row{display:flex;gap:16px;justify-content:center}
-  .lang-btn{display:flex;flex-direction:column;align-items:center;gap:6px;padding:20px 32px;border:2.5px solid #1D4ED8;border-radius:14px;background:white;cursor:pointer;transition:all .2s;flex:1}
-  .lang-btn:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.1)}
-  .lang-btn span.lbl{font-size:16px;font-weight:700;color:#1B2A4A}
-  .lang-btn span.sub{font-size:12px;color:#6B7280}
-  .lang-btn.ru{border-color:#DC2626}
+/* ── SCREENS ── */
+.screen{display:none}
+.screen.active{display:block}
 
-  /* HERO */
-  .hero{background:linear-gradient(135deg,#1B2A4A 0%,#1E3A6E 50%,#2563EB 100%);padding:40px 20px 32px}
-  .hero-inner{max-width:960px;margin:0 auto}
-  .hero-flag-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
-  .hero-tag{font-size:11px;color:rgba(255,255,255,.65);font-weight:700;letter-spacing:1px;text-transform:uppercase}
-  .hero h1{color:white;font-size:clamp(22px,4vw,38px);font-weight:800;margin:2px 0;line-height:1.15}
-  .hero-para{color:rgba(255,255,255,.8);font-size:14px;max-width:600px;line-height:1.6;margin:0 0 18px}
-  .lang-switch{display:flex;align-items:center;gap:8px;margin-bottom:18px;flex-wrap:wrap}
-  .lang-switch span{font-size:12px;color:rgba(255,255,255,.65)}
-  .ls-btn{padding:5px 14px;border-radius:20px;border:1.5px solid rgba(255,255,255,.3);background:transparent;color:rgba(255,255,255,.75);font-size:12px;font-weight:600;cursor:pointer}
-  .ls-btn.active{background:rgba(255,255,255,.2);color:white;border-color:rgba(255,255,255,.6)}
-  .stats-row{display:flex;gap:12px;flex-wrap:wrap}
-  .stat-box{background:rgba(255,255,255,.1);border-radius:12px;padding:12px 20px;text-align:center;min-width:70px;border:1px solid rgba(255,255,255,.15)}
-  .stat-num{color:#FCD34D;font-size:22px;font-weight:800;line-height:1}
-  .stat-lbl{color:rgba(255,255,255,.65);font-size:11px;margin-top:3px}
+/* ── LANG CHOOSER ── */
+#s-lang{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0F172A 0%,#1E3A6E 60%,#2563EB 100%);padding:24px}
+.lc-card{background:#fff;border-radius:24px;padding:48px 40px;max-width:500px;width:100%;text-align:center;box-shadow:0 24px 80px rgba(0,0,0,.3)}
+.lc-flag{font-size:52px;margin-bottom:16px}
+.lc-card h1{font-size:24px;font-weight:800;color:#0F172A;margin-bottom:6px}
+.lc-card .sub{font-size:14px;color:#64748B;margin-bottom:20px}
+.lc-divider{height:1px;background:#E2E8F0;margin:0 0 20px}
+.lc-choose{font-size:13px;color:#475569;margin-bottom:22px;line-height:1.6}
+.lc-btns{display:flex;gap:14px}
+.lc-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:8px;padding:22px 16px;border:2.5px solid #E2E8F0;border-radius:16px;background:#fff;cursor:pointer}
+.lc-btn:hover{border-color:#2563EB;transform:translateY(-3px);box-shadow:0 8px 24px rgba(37,99,235,.15)}
+.lc-btn .f{font-size:32px}
+.lc-btn .ln{font-size:16px;font-weight:700;color:#0F172A}
+.lc-btn .ls{font-size:12px;color:#64748B}
 
-  /* PROGRESS BAR */
-  .prog-wrap{height:5px;background:rgba(0,0,0,.1)}
-  .prog-fill{height:100%;background:linear-gradient(90deg,#FCD34D,#F59E0B);transition:width .6s ease;min-width:4px}
+/* ── DASHBOARD ── */
+.hero{background:linear-gradient(135deg,#0F172A 0%,#1E3A6E 55%,#2563EB 100%);padding:40px 20px 36px}
+.hero-inner{max-width:1000px;margin:0 auto}
+.hero-top{display:flex;align-items:center;gap:16px;margin-bottom:14px}
+.hero-tag{font-size:11px;color:rgba(255,255,255,.6);font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
+.hero h1{color:#fff;font-size:clamp(22px,4vw,40px);font-weight:800;line-height:1.1;margin:2px 0}
+.hero-para{color:rgba(255,255,255,.78);font-size:14px;max-width:580px;line-height:1.65;margin:0 0 20px}
+.ls-row{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.ls-row span{font-size:12px;color:rgba(255,255,255,.55)}
+.ls-btn{padding:5px 14px;border-radius:20px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.7);font-size:12px;font-weight:600}
+.ls-btn.on{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.55)}
+.stats{display:flex;gap:12px;flex-wrap:wrap}
+.stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:12px 18px;text-align:center;min-width:68px}
+.stat-n{color:#FCD34D;font-size:22px;font-weight:800;line-height:1}
+.stat-l{color:rgba(255,255,255,.6);font-size:11px;margin-top:3px}
+.prog-bar{height:5px;background:rgba(0,0,0,.12)}
+.prog-fill{height:100%;background:linear-gradient(90deg,#FCD34D,#F59E0B);transition:width .7s ease;min-width:4px}
+.filter-bar{display:flex;gap:8px;padding:14px 20px;flex-wrap:wrap;max-width:1000px;margin:0 auto}
+.fb{padding:5px 14px;border-radius:20px;border:1.5px solid #CBD5E1;background:#fff;font-size:12px;color:#475569;font-weight:600}
+.fb.on{background:#0F172A;color:#fff;border-color:#0F172A}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;padding:0 20px 32px;max-width:1000px;margin:0 auto}
+.dc{background:#fff;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-top:4px solid #ccc;transition:transform .15s,box-shadow .15s}
+.dc.open{cursor:pointer}
+.dc.open:hover{transform:translateY(-3px);box-shadow:0 6px 20px rgba(0,0,0,.11)}
+.dc.lkd{opacity:.6}
+.dc-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:7px}
+.dc-day{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
+.dc-score{color:#fff;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
+.dc-dot{width:8px;height:8px;border-radius:50%;background:#DCFCE7;border:2px solid #16A34A}
+.dc-title{font-size:12px;font-weight:700;color:#0F172A;margin:0 0 4px;line-height:1.35}
+.dc-gram{font-size:11px;color:#374151;margin:0 0 3px;line-height:1.35}
+.dc-vocab{font-size:10px;color:#64748B;margin:0 0 8px}
+.badge-r{display:inline-block;background:#EFF6FF;color:#1D4ED8;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;margin-bottom:7px}
+.badge-g{display:inline-block;background:#FEF9C3;color:#92400E;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;margin-bottom:7px}
+.dc-btns{display:flex;gap:6px;margin-top:8px}
+.dc-btn{flex:1;padding:7px 4px;border-radius:8px;border:none;font-size:11px;font-weight:600;color:#fff}
+.dc-btn.grey{background:#E2E8F0;color:#94A3B8;cursor:not-allowed}
+.lk-hint{font-size:10px;color:#94A3B8;margin-bottom:6px}
 
-  /* FILTER */
-  .filter-bar{display:flex;gap:8px;padding:14px 20px;flex-wrap:wrap;max-width:960px;margin:0 auto}
-  .filter-btn{padding:5px 14px;border-radius:20px;border:1.5px solid #E5E7EB;background:white;font-size:12px;color:#374151;font-weight:600}
-  .filter-btn.active{background:#1B2A4A;color:white;border-color:#1B2A4A}
+/* ── HOW SECTION ── */
+.how{background:#0F172A;padding:40px 20px}
+.how h2{color:#fff;font-size:20px;font-weight:800;text-align:center;margin-bottom:24px}
+.how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;max-width:860px;margin:0 auto}
+.how-card{background:rgba(255,255,255,.07);border-radius:12px;padding:20px;text-align:center}
+.how-card .hn{font-size:30px;margin-bottom:8px}
+.how-card h3{color:#FCD34D;font-size:14px;font-weight:700;margin:0 0 6px}
+.how-card p{color:rgba(255,255,255,.65);font-size:12px;line-height:1.6;margin:0}
+.how-foot{text-align:center;margin-top:20px;color:rgba(255,255,255,.35);font-size:12px;padding-bottom:4px}
 
-  /* GRID */
-  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;padding:0 20px 24px;max-width:960px;margin:0 auto}
-  .day-card{background:white;border-radius:12px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.07);border-top:4px solid #ccc;transition:transform .15s}
-  .day-card.unlocked{cursor:pointer}
-  .day-card.unlocked:hover{transform:translateY(-2px)}
-  .day-card.locked{opacity:.65}
-  .card-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
-  .day-num{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.5px}
-  .score-pill-sm{color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px}
-  .card-title{font-size:12px;font-weight:700;margin:0 0 5px;line-height:1.35;color:#1B2A4A}
-  .card-grammar{font-size:11px;color:#374151;margin:0 0 3px;line-height:1.4}
-  .card-vocab{font-size:10px;color:#6B7280;margin:0 0 8px}
-  .review-badge{display:inline-block;background:#EFF6FF;color:#1D4ED8;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;margin-bottom:8px}
-  .grad-badge{display:inline-block;background:#FEF9C3;color:#92400E;font-size:10px;font-weight:700;padding:2px 7px;border-radius:6px;margin-bottom:8px}
-  .lock-hint{font-size:11px;color:#6B7280;margin-bottom:6px}
-  .card-btns{display:flex;gap:6px;margin-top:8px}
-  .card-btn{flex:1;padding:6px 4px;border-radius:7px;border:none;font-size:11px;font-weight:600;color:white}
-  .card-btn.grey{background:#E5E7EB;color:#9CA3AF;cursor:not-allowed}
-  .unlocked-dot{width:8px;height:8px;border-radius:50%;background:#D1FAE5;border:2px solid #059669;display:block}
+/* ── LESSON / EXERCISE PAGES ── */
+#s-lesson,#s-exercise,#s-results{min-height:100vh}
+.page-hero{padding:28px 20px 24px}
+.page-hero .back{background:rgba(255,255,255,.15);border:none;color:#fff;padding:7px 16px;border-radius:8px;font-size:12px;font-weight:600;margin-bottom:14px}
+.ph-dayline{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.ph-badge{color:rgba(255,255,255,.7);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase}
+.ph-title{color:#fff;font-size:clamp(17px,3vw,28px);font-weight:800;line-height:1.25;margin-bottom:6px}
+.ph-sub{color:rgba(255,255,255,.8);font-size:13px}
+.ph-locked{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.22);color:rgba(255,255,255,.85);padding:8px 14px;border-radius:8px;font-size:12px;margin-top:10px;font-weight:600}
+.content{max-width:860px;margin:0 auto;padding:24px 20px 40px}
 
-  /* PAGES */
-  .page{display:none;min-height:100vh}
-  .page.active{display:block}
+/* LESSON SECTIONS */
+.lesson-section{background:#fff;border-radius:16px;margin-bottom:20px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.ls-header{padding:14px 20px;display:flex;align-items:center;gap:10px}
+.ls-header .icon{font-size:22px}
+.ls-header h2{font-size:16px;font-weight:700;color:#fff;margin:0}
+.ls-header .tag{font-size:11px;color:rgba(255,255,255,.75);font-weight:600;margin-left:auto;background:rgba(0,0,0,.15);padding:3px 10px;border-radius:10px}
+.ls-body{padding:20px}
 
-  /* LESSON HERO */
-  .lesson-hero{padding:28px 20px 24px}
-  .back-btn{background:rgba(255,255,255,.15);border:none;color:white;padding:6px 14px;border-radius:8px;font-size:12px;margin-bottom:12px;font-weight:600}
-  .day-badge{color:rgba(255,255,255,.75);font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px}
-  .lesson-title{color:white;font-size:clamp(17px,3vw,26px);font-weight:800;margin:0 0 8px;line-height:1.25}
-  .score-pill{display:inline-block;background:rgba(255,255,255,.18);color:white;padding:4px 12px;border-radius:16px;font-size:12px;font-weight:700;margin-top:8px}
-  .locked-banner{display:flex;align-items:center;gap:8px;background:rgba(0,0,0,.25);color:rgba(255,255,255,.85);padding:8px 14px;border-radius:8px;font-size:12px;margin-top:10px;font-weight:600}
-  .lesson-body{padding:16px 20px;max-width:820px;margin:0 auto}
-  .lock-msg{display:flex;flex-direction:column;align-items:center;padding:48px 20px;text-align:center}
-  .lock-msg .lock-icon{font-size:56px}
-  .lock-msg h2{color:#374151;font-size:20px;margin:12px 0 8px}
-  .lock-msg p{color:#6B7280;font-size:14px;max-width:320px;line-height:1.6}
+/* Grammar */
+.grammar-rule{background:#EFF6FF;border-left:4px solid #2563EB;border-radius:0 8px 8px 0;padding:14px 16px;margin-bottom:14px}
+.grammar-rule h3{font-size:13px;font-weight:700;color:#1E3A5F;margin-bottom:8px}
+.grammar-rule p,.grammar-rule li{font-size:13px;color:#1E293B;line-height:1.7}
+.grammar-rule ul{padding-left:18px}
+.formula-box{background:#0F172A;border-radius:10px;padding:14px 18px;margin-bottom:14px}
+.formula-box p{font-family:monospace;font-size:13px;color:#FCD34D;line-height:1.8}
+.example-row{display:flex;gap:8px;align-items:flex-start;margin-bottom:6px}
+.ex-en{background:#F0FDF4;border:1px solid #BBF7D0;border-radius:6px;padding:6px 10px;font-size:13px;font-weight:600;color:#065F46;flex:1}
+.ex-tr{background:#F8FAFC;border:1px solid #E2E8F0;border-radius:6px;padding:6px 10px;font-size:13px;color:#475569;flex:1;font-style:italic}
+.mistake-box{background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;padding:12px 14px;margin-top:12px}
+.mistake-box h4{font-size:12px;font-weight:700;color:#991B1B;margin-bottom:6px}
+.mistake-box p{font-size:12px;color:#7F1D1D;line-height:1.7}
+.m-wrong{color:#DC2626;font-weight:600}
+.m-right{color:#059669;font-weight:600}
 
-  /* TWO COL */
-  .two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
-  @media(max-width:520px){.two-col{grid-template-columns:1fr}}
-  .info-card{background:white;border-radius:10px;padding:14px;box-shadow:0 1px 3px rgba(0,0,0,.07);border-top:3px solid #ccc}
-  .info-label{font-size:10px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.5px;margin:0 0 4px}
-  .info-val{font-size:13px;color:#1B2A4A;font-weight:600}
-  .section-h{font-size:16px;font-weight:700;color:#1B2A4A;margin:0 0 12px}
-  .pdf-card{background:white;border-radius:12px;padding:18px;text-align:center;box-shadow:0 1px 3px rgba(0,0,0,.07);border:1px solid #E5E7EB}
-  .pdf-card .icon{font-size:32px;margin-bottom:8px}
-  .pdf-card h3{font-size:14px;font-weight:700;color:#1B2A4A;margin:0 0 6px}
-  .pdf-card p{font-size:12px;color:#6B7280;margin:0 0 10px;line-height:1.5}
-  .pdf-chip{background:#EFF6FF;color:#2563EB;font-family:monospace;font-size:11px;padding:5px 10px;border-radius:6px;font-weight:700;display:inline-block}
-  .pdf-chip.red{background:#FEF2F2;color:#DC2626}
-  .study-box{background:white;border-radius:10px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.07);margin-bottom:20px}
-  .study-row{display:flex;align-items:center;gap:12px;padding:7px 0;border-bottom:1px solid #F3F4F6}
-  .study-row:last-child{border-bottom:none}
-  .time-pill{font-size:11px;font-weight:700;padding:3px 9px;border-radius:10px;min-width:50px;text-align:center}
-  .study-task{font-size:13px;color:#374151}
+/* Vocab table */
+.vocab-table{width:100%;border-collapse:collapse;font-size:12px}
+.vocab-table th{background:#1E3A6E;color:#fff;padding:8px 10px;text-align:left;font-size:11px;font-weight:700;letter-spacing:.5px}
+.vocab-table td{padding:8px 10px;border-bottom:1px solid #F1F5F9;vertical-align:top}
+.vocab-table tr:nth-child(even) td{background:#F8FAFC}
+.vw{font-weight:700;color:#1D4ED8;font-size:13px}
+.vm{color:#374151}
+.ve{color:#047857;font-style:italic}
+.vp{color:#7C3AED;font-family:monospace;font-size:11px}
 
-  /* BUTTONS */
-  .btn-row{display:flex;gap:10px;justify-content:center;padding:12px 0 24px;flex-wrap:wrap}
-  .btn-primary{padding:11px 24px;background:#2563EB;color:white;border:none;border-radius:10px;font-size:14px;font-weight:700}
-  .btn-primary:disabled{opacity:.55;cursor:not-allowed}
-  .btn-secondary{padding:11px 20px;background:white;color:#374151;border:1.5px solid #D1D5DB;border-radius:10px;font-size:13px;font-weight:600}
+/* Reading */
+.reading-text{background:#FFFBEB;border:1px solid #FDE68A;border-radius:10px;padding:16px 18px;font-size:14px;line-height:1.85;color:#1C1917;margin-bottom:14px}
+.reading-text strong{color:#92400E}
+.qs-list{list-style:none;padding:0}
+.qs-list li{padding:8px 12px;border-radius:8px;font-size:13px;color:#1E293B;margin-bottom:6px;background:#F8FAFC;border-left:3px solid #2563EB;counter-increment:q}
+.qs-list li::before{content:counter(q)". ";font-weight:700;color:#2563EB}
+.qs-list{counter-reset:q}
 
-  /* GRADER */
-  .grader-wrap{padding:16px 20px;max-width:740px;margin:0 auto}
-  .info-box{background:#EFF6FF;border-radius:10px;padding:14px;margin-bottom:14px;border:1px solid #BFDBFE}
-  .info-box h3{margin:0 0 8px;color:#1B2A4A;font-size:14px;font-weight:700}
-  .info-box ol{margin:0;padding-left:20px;color:#374151;font-size:13px;line-height:1.8}
-  .ex-box{background:#F8FAFC;border:1.5px dashed #CBD5E1;border-radius:10px;padding:12px;margin-bottom:14px}
-  .ex-box p{margin:0 0 6px;font-weight:700;font-size:12px;color:#374151}
-  .ex-box pre{font-size:11px;color:#374151;line-height:1.6}
-  .ans-label{display:block;font-weight:700;color:#1B2A4A;font-size:14px;margin-bottom:8px}
-  #answers-ta{width:100%;padding:12px;border-radius:10px;border:1.5px solid #D1D5DB;font-size:13px;line-height:1.6;resize:vertical;color:#1F2937;outline:none;background:white}
-  .loading-row{display:none;align-items:center;gap:12px;padding:14px;background:#EFF6FF;border-radius:10px;margin-top:14px}
-  .loading-row.show{display:flex}
-  .spinner{width:22px;height:22px;border:3px solid #BFDBFE;border-top:3px solid #2563EB;border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
-  @keyframes spin{to{transform:rotate(360deg)}}
+/* Listening */
+.script-box{background:#0F172A;border-radius:10px;padding:16px 18px;margin-bottom:14px}
+.script-line{font-size:13px;line-height:1.85;margin-bottom:2px}
+.script-scene{color:#64748B;font-style:italic;font-size:12px;margin-bottom:8px}
+.script-speaker{color:#FCD34D;font-weight:700}
+.script-text{color:#E2E8F0}
+.key-vocab{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.kv-chip{background:#1E3A6E;color:#BFDBFE;font-size:11px;font-weight:600;padding:3px 10px;border-radius:12px}
 
-  /* RESULTS */
-  .results-hero{padding:32px 20px 24px;text-align:center}
-  .results-body{padding:16px 20px;max-width:820px;margin:0 auto}
-  .score-big{font-size:52px;font-weight:800;color:white;line-height:1}
-  .grade-tag{color:rgba(255,255,255,.85);font-size:16px;font-weight:700;margin:6px 0 10px}
-  .results-msg{color:white;font-size:14px;max-width:480px;margin:0 auto 14px;line-height:1.6}
-  .pass-banner{display:inline-block;background:rgba(255,255,255,.2);color:white;padding:7px 18px;border-radius:20px;font-size:13px;font-weight:700}
-  .fail-banner{display:inline-block;background:rgba(0,0,0,.2);color:rgba(255,255,255,.9);padding:7px 18px;border-radius:20px;font-size:13px;font-weight:600}
-  .card{background:white;border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,.07)}
-  .card h3{font-size:13px;font-weight:700;color:#1B2A4A;margin:0 0 8px}
-  .card p{font-size:13px;color:#374151;margin:3px 0;line-height:1.6}
-  .corr-card{background:white;border-radius:10px;padding:12px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.05);border-left:4px solid #059669}
-  .corr-card.wrong{border-left-color:#DC2626}
-  .corr-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
-  .corr-q{font-size:13px;font-weight:600;color:#1B2A4A}
-  .corr-detail{padding-left:26px;font-size:12px;color:#374151;line-height:1.7}
-  .corr-detail b{color:#1B2A4A}
-  .corr-detail .wrong-ans{color:#DC2626}
-  .corr-detail .right-ans{color:#059669;font-weight:700}
-  .tip-box{background:#FFFBEB;padding:5px 9px;border-radius:6px;color:#92400E;font-size:11px;margin-top:5px}
-  .perfect{color:#059669;font-size:13px;margin-top:4px}
+/* Speaking */
+.speaking-task{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:#F0FDF4;border-radius:8px;margin-bottom:8px;border:1px solid #BBF7D0}
+.speaking-task .si{font-size:18px;flex-shrink:0}
+.speaking-task p{font-size:13px;color:#065F46;line-height:1.5;margin:0}
 
-  /* HOW SECTION */
-  .how-section{background:#1B2A4A;padding:36px 20px}
-  .how-section h2{color:white;font-size:20px;font-weight:800;text-align:center;margin-bottom:20px}
-  .how-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;max-width:820px;margin:0 auto}
-  .how-card{background:rgba(255,255,255,.07);border-radius:12px;padding:18px;text-align:center}
-  .how-card .step-num{font-size:28px;margin-bottom:8px}
-  .how-card h3{color:#FCD34D;font-size:14px;font-weight:700;margin:0 0 6px}
-  .how-card p{color:rgba(255,255,255,.7);font-size:12px;line-height:1.6;margin:0}
-  .how-footer{text-align:center;margin-top:24px;padding-bottom:8px;color:rgba(255,255,255,.4);font-size:12px}
+/* ── EXERCISE PAGE ── */
+.ex-intro{background:#fff;border-radius:14px;padding:16px 20px;margin-bottom:18px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.ex-intro p{font-size:13px;color:#475569;line-height:1.6}
+.ex-intro code{background:#F1F5F9;padding:2px 6px;border-radius:4px;font-size:12px;color:#2563EB}
+.ex-section{background:#fff;border-radius:14px;margin-bottom:18px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.ex-hdr{padding:12px 18px;display:flex;align-items:center;gap:10px}
+.ex-hdr .eicon{font-size:20px}
+.ex-hdr h3{font-size:14px;font-weight:700;color:#fff;margin:0}
+.ex-hdr .pts{font-size:11px;color:rgba(255,255,255,.7);margin-left:auto;background:rgba(0,0,0,.15);padding:2px 8px;border-radius:8px}
+.ex-body{padding:18px}
+.q-item{margin-bottom:18px}
+.q-stem{font-size:13px;font-weight:600;color:#1E293B;margin-bottom:8px;line-height:1.5}
+.q-stem .qnum{color:#2563EB;margin-right:4px}
+.blank-input{border:none;border-bottom:2px solid #CBD5E1;background:transparent;font-size:14px;font-weight:600;color:#1E293B;padding:2px 4px;outline:none;min-width:80px;text-align:center;transition:border-color .2s}
+.blank-input:focus{border-bottom-color:#2563EB}
+.mc-opts{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.mc-opt{padding:7px 16px;border-radius:8px;border:1.5px solid #CBD5E1;background:#fff;font-size:13px;color:#374151;font-weight:500;cursor:pointer;transition:all .15s}
+.mc-opt:hover{border-color:#2563EB;color:#1D4ED8;background:#EFF6FF}
+.mc-opt.sel{border-color:#2563EB;background:#EFF6FF;color:#1D4ED8;font-weight:700}
+.mc-opt.correct{border-color:#059669;background:#F0FDF4;color:#065F46;font-weight:700}
+.mc-opt.wrong{border-color:#DC2626;background:#FEF2F2;color:#991B1B}
+.match-area{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:8px}
+.match-left{font-size:13px;color:#1E293B;font-weight:600}
+.match-sel{border:1.5px solid #CBD5E1;border-radius:8px;padding:6px 10px;font-size:12px;background:#fff;color:#374151;outline:none;width:100%}
+.match-sel:focus{border-color:#2563EB}
+.write-area{width:100%;border:1.5px solid #CBD5E1;border-radius:8px;padding:10px 12px;font-size:13px;resize:vertical;min-height:60px;outline:none;background:#fff;transition:border-color .2s}
+.write-area:focus{border-color:#2563EB}
+.err-input{width:100%;border:1.5px solid #FCA5A5;border-radius:8px;padding:8px 12px;font-size:13px;background:#FEF2F2;color:#991B1B;font-weight:600;margin-bottom:6px}
+.fix-input{width:100%;border:1.5px solid #CBD5E1;border-radius:8px;padding:8px 12px;font-size:13px;outline:none;background:#fff;transition:border-color .2s}
+.fix-input:focus{border-color:#059669;border-color:#059669;background:#F0FDF4}
+.submit-bar{display:flex;justify-content:center;padding:8px 0 32px;gap:12px;flex-wrap:wrap}
+.btn-main{padding:13px 28px;border:none;border-radius:10px;font-size:15px;font-weight:700;color:#fff;background:#2563EB}
+.btn-main:hover{background:#1D4ED8;transform:translateY(-1px)}
+.btn-sec{padding:12px 22px;border:1.5px solid #CBD5E1;border-radius:10px;font-size:14px;font-weight:600;background:#fff;color:#374151}
+.btn-sec:hover{background:#F8FAFC;border-color:#94A3B8}
+.score-pill-ls{display:inline-block;background:rgba(255,255,255,.18);color:#fff;padding:4px 14px;border-radius:16px;font-size:12px;font-weight:700;margin-top:10px}
+.nav-btns{display:flex;gap:10px;justify-content:center;padding:0 0 12px;flex-wrap:wrap}
+
+/* ── RESULTS PAGE ── */
+.res-hero{padding:36px 20px 28px;text-align:center}
+.res-score{font-size:56px;font-weight:800;color:#fff;line-height:1}
+.res-grade{color:rgba(255,255,255,.85);font-size:18px;font-weight:700;margin:8px 0 10px}
+.res-msg{color:rgba(255,255,255,.85);font-size:14px;max-width:480px;margin:0 auto 14px;line-height:1.7}
+.res-pass{display:inline-block;background:rgba(255,255,255,.2);color:#fff;padding:8px 20px;border-radius:20px;font-size:13px;font-weight:700}
+.res-fail{display:inline-block;background:rgba(0,0,0,.2);color:rgba(255,255,255,.9);padding:8px 20px;border-radius:20px;font-size:13px;font-weight:600}
+.res-body{max-width:860px;margin:0 auto;padding:24px 20px 40px}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px}
+@media(max-width:520px){.two-col{grid-template-columns:1fr}}
+.r-card{background:#fff;border-radius:14px;padding:18px;box-shadow:0 1px 4px rgba(0,0,0,.07)}
+.r-card h3{font-size:13px;font-weight:700;margin:0 0 10px}
+.r-card p{font-size:13px;color:#374151;margin:3px 0;line-height:1.6}
+.corr-item{background:#fff;border-radius:10px;padding:14px;margin-bottom:10px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.corr-item.ok{border-left:4px solid #059669}
+.corr-item.bad{border-left:4px solid #DC2626}
+.corr-top{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.corr-q{font-size:13px;font-weight:600;color:#0F172A}
+.corr-detail{padding-left:28px;font-size:12px;color:#374151;line-height:1.75}
+.corr-wrong{color:#DC2626;font-weight:700}
+.corr-right{color:#059669;font-weight:700}
+.tip-pill{background:#FFFBEB;padding:5px 10px;border-radius:6px;color:#92400E;font-size:11px;margin-top:5px;display:inline-block}
+.section-h{font-size:17px;font-weight:700;color:#0F172A;margin:0 0 14px}
+.spinner{width:24px;height:24px;border:3px solid #BFDBFE;border-top:3px solid #2563EB;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-box{display:none;align-items:center;gap:12px;padding:14px;background:#EFF6FF;border-radius:10px;margin-top:14px}
+.loading-box.show{display:flex}
+.loading-box p{font-size:14px;color:#2563EB;font-weight:600}
+
+/* Progress ring */
+.prog-ring-wrap{display:flex;justify-content:center;padding:20px 0 4px}
+
+/* MOBILE */
+@media(max-width:480px){
+  .lc-btns{flex-direction:column}
+  .match-area{grid-template-columns:1fr}
+  .mc-opts{flex-direction:column}
+}
 </style>
 </head>
 <body>
 
-<!-- ═══════════════════ LANGUAGE CHOOSER ═══════════════════ -->
-<div id="lang-screen">
-  <div class="lang-card">
-    <div style="font-size:44px">🇺🇸</div>
-    <h1>30-Day American English Marathon</h1>
-    <p>CEFR Level A1 — Self-Study Course</p>
-    <div class="lang-divider"></div>
-    <p class="lang-choose">Choose your translation language / Alegeți limba / Выберите язык:</p>
-    <div class="lang-btn-row">
-      <button class="lang-btn" onclick="chooseLang('ro')">
-        <span style="font-size:28px">🇷🇴</span>
-        <span class="lbl">Română</span>
-        <span class="sub">Romanian</span>
-      </button>
-      <button class="lang-btn ru" onclick="chooseLang('ru')">
-        <span style="font-size:28px">🇷🇺</span>
-        <span class="lbl">Русский</span>
-        <span class="sub">Russian</span>
-      </button>
+<!-- ════════════════════════════ LANG CHOOSER ════════════════════════════ -->
+<div id="s-lang" class="screen active">
+  <div id="lc" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0F172A 0%,#1E3A6E 60%,#2563EB 100%);padding:24px">
+    <div class="lc-card">
+      <div class="lc-flag">🇺🇸</div>
+      <h1>30-Day American English Marathon</h1>
+      <p class="sub">CEFR Level A1 — All lessons built-in. No PDFs needed.</p>
+      <div class="lc-divider"></div>
+      <p class="lc-choose">Choose your translation language / Alegeți limba / Выберите язык:</p>
+      <div class="lc-btns">
+        <button class="lc-btn" onclick="chooseLang('ro')">
+          <span class="f">🇷🇴</span>
+          <span class="ln">Română</span>
+          <span class="ls">Romanian</span>
+        </button>
+        <button class="lc-btn" onclick="chooseLang('ru')">
+          <span class="f">🇷🇺</span>
+          <span class="ln">Русский</span>
+          <span class="ls">Russian</span>
+        </button>
+      </div>
     </div>
   </div>
 </div>
 
-<!-- ═══════════════════ DASHBOARD PAGE ═══════════════════ -->
-<div id="page-dashboard" class="page">
+<!-- ════════════════════════════ DASHBOARD ════════════════════════════ -->
+<div id="s-dash" class="screen">
   <div class="hero">
     <div class="hero-inner">
-      <div class="hero-flag-row">
-        <svg id="flag-hero" width="56" height="30" viewBox="0 0 190 100" style="border-radius:3px;flex-shrink:0"></svg>
+      <div class="hero-top">
+        <svg id="flag-d" width="56" height="30" viewBox="0 0 190 100" style="border-radius:3px;flex-shrink:0"></svg>
         <div>
-          <div class="hero-tag" id="h-tag"></div>
+          <div class="hero-tag" id="d-tag">American English • CEFR A1</div>
           <h1>30-Day English Marathon</h1>
         </div>
       </div>
-      <p class="hero-para" id="h-para"></p>
-      <div class="lang-switch">
-        <span id="ls-label"></span>
-        <button class="ls-btn active" id="ls-ro" onclick="switchLang('ro')">🇷🇴 Română</button>
+      <p class="hero-para" id="d-para"></p>
+      <div class="ls-row">
+        <span id="d-ls-lbl"></span>
+        <button class="ls-btn" id="ls-ro" onclick="switchLang('ro')">🇷🇴 Română</button>
         <button class="ls-btn" id="ls-ru" onclick="switchLang('ru')">🇷🇺 Русский</button>
       </div>
-      <div class="stats-row">
-        <div class="stat-box"><div class="stat-num" id="stat-done">0</div><div class="stat-lbl" id="stat-done-lbl"></div></div>
-        <div class="stat-box"><div class="stat-num" id="stat-left">30</div><div class="stat-lbl" id="stat-left-lbl"></div></div>
-        <div class="stat-box"><div class="stat-num" id="stat-avg">—</div><div class="stat-lbl" id="stat-avg-lbl"></div></div>
-        <div class="stat-box"><div class="stat-num" id="stat-pct">0%</div><div class="stat-lbl" id="stat-pct-lbl"></div></div>
+      <div class="stats">
+        <div class="stat"><div class="stat-n" id="s-done">0</div><div class="stat-l" id="s-done-l"></div></div>
+        <div class="stat"><div class="stat-n" id="s-left">30</div><div class="stat-l" id="s-left-l"></div></div>
+        <div class="stat"><div class="stat-n" id="s-avg">—</div><div class="stat-l" id="s-avg-l"></div></div>
+        <div class="stat"><div class="stat-n" id="s-pct">0%</div><div class="stat-l" id="s-pct-l"></div></div>
       </div>
     </div>
   </div>
-  <div class="prog-wrap"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
+  <div class="prog-bar"><div class="prog-fill" id="prog" style="width:0%"></div></div>
   <div class="filter-bar">
-    <button class="filter-btn active" id="fb-all" onclick="setFilter('all')"></button>
-    <button class="filter-btn" id="fb-done" onclick="setFilter('completed')"></button>
-    <button class="filter-btn" id="fb-pend" onclick="setFilter('pending')"></button>
+    <button class="fb on" id="fb-all" onclick="setFilter('all')"></button>
+    <button class="fb" id="fb-done" onclick="setFilter('done')"></button>
+    <button class="fb" id="fb-pend" onclick="setFilter('pend')"></button>
   </div>
-  <div class="grid" id="day-grid"></div>
-  <div class="how-section">
-    <h2 id="how-title"></h2>
-    <div class="how-grid" id="how-grid"></div>
-    <p class="how-footer" id="how-footer"></p>
-  </div>
-</div>
-
-<!-- ═══════════════════ LESSON PAGE ═══════════════════ -->
-<div id="page-lesson" class="page">
-  <div class="lesson-hero" id="lesson-hero-bg">
-    <button class="back-btn" onclick="goTo('dashboard')" id="lesson-back-btn"></button>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
-      <svg id="flag-lesson" width="36" height="19" viewBox="0 0 190 100" style="border-radius:3px"></svg>
-      <span class="day-badge" id="lesson-day-badge"></span>
-    </div>
-    <h1 class="lesson-title" id="lesson-title"></h1>
-    <div id="lesson-score-pill" style="display:none" class="score-pill"></div>
-    <div id="lesson-locked-banner" style="display:none" class="locked-banner">🔒 <span id="lesson-locked-text"></span></div>
-  </div>
-  <div class="lesson-body" id="lesson-body"></div>
-</div>
-
-<!-- ═══════════════════ GRADER PAGE ═══════════════════ -->
-<div id="page-grader" class="page">
-  <div class="lesson-hero" id="grader-hero-bg">
-    <button class="back-btn" onclick="goTo('lesson')" id="grader-back-btn"></button>
-    <div class="day-badge" id="grader-day-badge"></div>
-    <h1 class="lesson-title" id="grader-title"></h1>
-    <p style="color:rgba(255,255,255,.85);font-size:14px;margin-top:6px" id="grader-subtitle"></p>
-  </div>
-  <div class="grader-wrap">
-    <div class="info-box">
-      <h3 id="g-how-title"></h3>
-      <ol id="g-steps"></ol>
-    </div>
-    <div class="ex-box">
-      <p id="g-example-lbl"></p>
-      <pre>Exercise 1 (Grammar):
-Q1: She is a teacher.
-Q2: They are happy.
-
-Exercise 2 (Matching):
-Q1: A  Q2: C  Q3: B
-
-Exercise 3 (Multiple Choice):
-Q1: B  Q2: A  Q3: C</pre>
-    </div>
-    <label class="ans-label" id="g-ans-label"></label>
-    <textarea id="answers-ta" rows="14" placeholder="..."></textarea>
-    <div class="btn-row">
-      <button class="btn-secondary" onclick="goTo('lesson')" id="g-cancel-btn"></button>
-      <button class="btn-primary" id="g-submit-btn" onclick="submitForGrading()"></button>
-    </div>
-    <div class="loading-row" id="loading-row">
-      <div class="spinner"></div>
-      <p style="color:#2563EB;font-weight:600;font-size:14px" id="loading-text"></p>
-    </div>
+  <div class="grid" id="grid"></div>
+  <div class="how">
+    <h2 id="how-t"></h2>
+    <div class="how-grid" id="how-g"></div>
+    <p class="how-foot" id="how-f"></p>
   </div>
 </div>
 
-<!-- ═══════════════════ RESULTS PAGE ═══════════════════ -->
-<div id="page-results" class="page">
-  <div class="results-hero" id="results-hero-bg">
-    <button class="back-btn" onclick="goTo('dashboard')" id="results-back-btn"></button>
-    <div id="results-emoji" style="font-size:44px;margin-bottom:8px"></div>
-    <div class="score-big" id="results-score"></div>
-    <div class="grade-tag" id="results-grade"></div>
-    <p class="results-msg" id="results-msg"></p>
-    <div id="results-pass-banner"></div>
-  </div>
-  <div class="results-body">
-    <div class="two-col" style="margin-bottom:18px">
-      <div class="card" style="border-top:3px solid #059669">
-        <h3 id="r-strengths-title"></h3>
-        <div id="r-strengths-list"></div>
-      </div>
-      <div class="card" style="border-top:3px solid #F59E0B">
-        <h3 id="r-improve-title"></h3>
-        <div id="r-improve-list"></div>
-      </div>
+<!-- ════════════════════════════ LESSON PAGE ════════════════════════════ -->
+<div id="s-lesson" class="screen">
+  <div class="page-hero" id="lh-bg">
+    <button class="back" onclick="goTo('dash')" id="lb-back"></button>
+    <div class="ph-dayline">
+      <svg id="flag-l" width="36" height="20" viewBox="0 0 190 100" style="border-radius:3px"></svg>
+      <span class="ph-badge" id="l-badge"></span>
     </div>
-    <h2 class="section-h" id="r-corrections-title" style="margin-bottom:12px"></h2>
-    <div id="r-corrections-list"></div>
+    <div class="ph-title" id="l-title"></div>
+    <div class="ph-sub" id="l-sub"></div>
+    <div id="l-score" style="display:none" class="score-pill-ls"></div>
+    <div id="l-locked" style="display:none" class="ph-locked">🔒 <span id="l-locked-txt"></span></div>
+  </div>
+  <div class="content" id="l-content"></div>
+</div>
+
+<!-- ════════════════════════════ EXERCISE PAGE ════════════════════════════ -->
+<div id="s-exercise" class="screen">
+  <div class="page-hero" id="eh-bg">
+    <button class="back" onclick="goTo('lesson')" id="eb-back"></button>
+    <div class="ph-dayline">
+      <svg id="flag-e" width="36" height="20" viewBox="0 0 190 100" style="border-radius:3px"></svg>
+      <span class="ph-badge" id="e-badge"></span>
+    </div>
+    <div class="ph-title" id="e-title"></div>
+    <div class="ph-sub" id="e-sub"></div>
+  </div>
+  <div class="content" id="e-content"></div>
+</div>
+
+<!-- ════════════════════════════ RESULTS PAGE ════════════════════════════ -->
+<div id="s-results" class="screen">
+  <div class="res-hero" id="rh-bg">
+    <button class="back" onclick="goTo('dash')" id="rb-back"></button>
+    <div id="r-emoji" style="font-size:48px;margin-bottom:10px"></div>
+    <div class="res-score" id="r-score"></div>
+    <div class="res-grade" id="r-grade"></div>
+    <p class="res-msg" id="r-msg"></p>
+    <div id="r-banner"></div>
+  </div>
+  <div class="res-body">
+    <div class="two-col">
+      <div class="r-card" style="border-top:3px solid #059669"><h3 id="r-st"></h3><div id="r-sl"></div></div>
+      <div class="r-card" style="border-top:3px solid #F59E0B"><h3 id="r-it"></h3><div id="r-il"></div></div>
+    </div>
+    <h2 class="section-h" id="r-ct"></h2>
+    <div id="r-cl"></div>
     <div class="two-col" style="margin-top:18px">
-      <div class="card" style="background:#EFF6FF;border-top:3px solid #2563EB">
-        <h3 id="r-review-title"></h3>
-        <p id="r-review-text"></p>
-      </div>
-      <div class="card" style="background:#FFFBEB;border-top:3px solid #F59E0B">
-        <h3 id="r-motivation-title"></h3>
-        <p id="r-motivation-text" style="font-style:italic"></p>
-      </div>
+      <div class="r-card" style="background:#EFF6FF;border-top:3px solid #2563EB"><h3 id="r-revt"></h3><p id="r-revp"></p></div>
+      <div class="r-card" style="background:#FFFBEB;border-top:3px solid #F59E0B"><h3 id="r-mot"></h3><p id="r-mop" style="font-style:italic"></p></div>
     </div>
-    <div class="btn-row">
-      <button class="btn-secondary" id="r-resubmit-btn" onclick="goTo('grader')"></button>
-      <button class="btn-primary" id="r-back-btn" onclick="goTo('dashboard')"></button>
+    <div class="submit-bar" style="margin-top:24px">
+      <button class="btn-sec" id="r-retry" onclick="goTo('exercise')"></button>
+      <button class="btn-main" id="r-dash" onclick="goTo('dash')"></button>
     </div>
   </div>
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════════════════════
-//  DATA
-// ══════════════════════════════════════════════════════════════════════════════
-const LABELS = {
-  ro:{
-    days:"Zile",daysLeft:"Zile rămase",avgScore:"Scor mediu",complete:"Finalizat",
-    backToCourse:"← Înapoi la curs",studyMaterials:"📥 Materialele tale de învățare",
-    theory:"PDF Teorie",theoryDesc:"Explicații gramaticale, vocabular, text de lectură și scenariu de ascultare",
-    exercises:"PDF Exerciții",exercisesDesc:"Completare spații, alegere multiplă, scriere și teme",
-    studyPlan:"⏱️ Plan de studiu",submitBtn:"✏️ Trimite exercițiile pentru corecție",
-    openLesson:"📚 Deschide",reviewLesson:"📖 Recenzie",submitExercises:"✏️ Trimite",
-    locked:"🔒 Blocat",
-    howWorks:"Cum funcționează corecția AI",
-    step1T:"Descarcă PDF-urile",step1D:"Obține PDF-ul de Teorie și Exerciții pentru fiecare zi.",
-    step2T:"Studiază și completează",step2D:"Citește teoria, studiază vocabularul și completează exercițiile.",
-    step3T:"Tastează răspunsurile",step3D:"Revino aici, deschide ziua și scrie răspunsurile tale.",
-    step4T:"Primește feedback AI",step4D:"Profesorul AI îți corectează instant munca și te încurajează!",
-    submitTitle:"Trimite exercițiile pentru corecție AI",
-    howToSubmit:"📋 Cum trimiți:",
-    howToSteps:["Completează PDF-ul de Exerciții pentru ziua selectată","Tastează răspunsurile în caseta de mai jos","Etichetează fiecare răspuns: Ex1-Q1: [răspunsul tău]","Apasă Trimite pentru corecție"],
-    exampleFormat:"📌 Format exemplu:",
-    yourAnswers:"✏️ Tastează răspunsurile tale aici",
-    cancel:"← Anulează",submitCorrection:"🚀 Trimite pentru corecție AI",grading:"🔄 Se corectează...",
-    teacherReviewing:"Profesorul tău de engleză îți revizuiește răspunsurile... ✨",
-    backToDashboard:"📅 Înapoi la curs",resubmit:"✏️ Retrimite răspunsurile",
-    strengths:"✅ Puncte forte",improve:"📌 Zone de îmbunătățit",corrections:"📝 Corecții detaliate",
-    reviewThis:"📚 Revizuiește asta",motivation:"🌟 Motivație",
-    yourAnswer:"Răspunsul tău:",correctAnswer:"Răspuns corect:",why:"De ce?",tip:"💡 Sfat:",perfect:"Perfect! ✨",
-    dayResults:"Rezultate Ziua",completedScore:"Finalizat — Scor:",
-    showAll:"Toate 30 de zile",showDone:"✅ Finalizate",showPending:"⏳ În așteptare",
-    errorMsg:"Nu s-a putut conecta. Vă rugăm să încercați din nou.",
-    reviewBadge:"⭐ Recapitulare",gradBadge:"🎓 Final!",
-    passRequired:"Trebuie să obții minim 80/100 la ziua anterioară pentru a debloca această lecție.",
-    unlockMsg:"Felicitări! Ai deblocat ziua următoare!",
-    retryMsg:"Mai studiază și încearcă din nou pentru 80+!",
-    backDayBtn:"← Înapoi la Ziua",
-    american:"Engleză americană 🇺🇸",chooseLanguage:"Alege limba:",
-    grammarTopic:"📘 Gramatică",vocabTopic:"📝 Vocabular",
-    lockNote:"Obține 80+ la Ziua",
-    howFooter:"🔒 Nivelurile se deblochează cu 80+ la ziua precedentă • 🇺🇸 American English",
-    heroPara:"Cursul tău complet de engleză americană pentru începători. Studiază zilnic, trimite exercițiile și primești feedback de la AI.",
-    studySteps:[["10 min","📖 Citește PDF Teorie — secțiunea de Gramatică"],["15 min","📝 Studiază Vocabularul — pronunță fiecare cuvânt cu voce tare"],["10 min","📖 Citește textul de Lectură — răspunde la întrebări"],["10 min","🎧 Citește scenariul de Ascultare — răspunde la întrebări"],["10 min","✏️ Completează PDF-ul de Exerciții"],["10 min","🎙️ Practică vorbitul și înregistrează-te"],["5 min","📚 Recapitulare + completează tema"]]
-  },
-  ru:{
-    days:"Дней",daysLeft:"Осталось",avgScore:"Средний балл",complete:"Завершено",
-    backToCourse:"← Назад к курсу",studyMaterials:"📥 Учебные материалы",
-    theory:"PDF Теория",theoryDesc:"Объяснение грамматики, словарный запас, текст для чтения и сценарий прослушивания",
-    exercises:"PDF Упражнения",exercisesDesc:"Заполнение пропусков, выбор ответа, письмо и домашние задания",
-    studyPlan:"⏱️ План занятий",submitBtn:"✏️ Отправить упражнения на проверку",
-    openLesson:"📚 Открыть",reviewLesson:"📖 Повторить",submitExercises:"✏️ Сдать",
-    locked:"🔒 Закрыто",
-    howWorks:"Как работает проверка ИИ",
-    step1T:"Скачай PDF",step1D:"Получи PDF теории и упражнений для каждого дня.",
-    step2T:"Изучай и выполняй",step2D:"Читай теорию, учи слова и выполняй упражнения.",
-    step3T:"Введи ответы",step3D:"Вернись сюда, открой день и введи свои ответы.",
-    step4T:"Получи обратную связь",step4D:"ИИ-учитель мгновенно проверит и поддержит тебя!",
-    submitTitle:"Отправить упражнения на проверку ИИ",
-    howToSubmit:"📋 Как отправить:",
-    howToSteps:["Выполни PDF упражнений для выбранного дня","Введи ответы в поле ниже","Обозначь каждый ответ: Ex1-Q1: [твой ответ]","Нажми Отправить на проверку"],
-    exampleFormat:"📌 Пример формата:",
-    yourAnswers:"✏️ Введи свои ответы здесь",
-    cancel:"← Отмена",submitCorrection:"🚀 Отправить на проверку ИИ",grading:"🔄 Проверяем...",
-    teacherReviewing:"Твой учитель английского проверяет ответы... ✨",
-    backToDashboard:"📅 Назад к курсу",resubmit:"✏️ Отправить снова",
-    strengths:"✅ Сильные стороны",improve:"📌 Что улучшить",corrections:"📝 Подробные исправления",
-    reviewThis:"📚 Повтори это",motivation:"🌟 Мотивация",
-    yourAnswer:"Твой ответ:",correctAnswer:"Правильный ответ:",why:"Почему?",tip:"💡 Подсказка:",perfect:"Отлично! ✨",
-    dayResults:"Результаты Дня",completedScore:"Завершено — Балл:",
-    showAll:"Все 30 дней",showDone:"✅ Завершённые",showPending:"⏳ В ожидании",
-    errorMsg:"Не удалось подключиться. Попробуй ещё раз.",
-    reviewBadge:"⭐ Повторение",gradBadge:"🎓 Финал!",
-    passRequired:"Нужно набрать минимум 80/100 в предыдущий день, чтобы открыть этот урок.",
-    unlockMsg:"Поздравляем! Следующий день разблокирован!",
-    retryMsg:"Ещё поучись и попробуй снова для 80+!",
-    backDayBtn:"← Назад к Дню",
-    american:"Американский английский 🇺🇸",chooseLanguage:"Язык перевода:",
-    grammarTopic:"📘 Грамматика",vocabTopic:"📝 Словарный запас",
-    lockNote:"Набери 80+ за День",
-    howFooter:"🔒 Уровни разблокируются при 80+ за предыдущий день • 🇺🇸 American English",
-    heroPara:"Твой полный курс американского английского для начинающих. Учись каждый день, сдавай упражнения и получай исправления от ИИ.",
-    studySteps:[["10 мин","📖 Читай PDF Теории — раздел Грамматики"],["15 мин","📝 Изучай словарный запас — произноси каждое слово вслух"],["10 мин","📖 Читай текст для Чтения — отвечай на вопросы"],["10 мин","🎧 Читай сценарий прослушивания — отвечай на вопросы"],["10 мин","✏️ Выполняй PDF упражнений"],["10 мин","🎙️ Практикуй разговор и записывай себя"],["5 мин","📚 Повторение + выполнение домашнего задания"]]
-  }
-};
-
-const CURRICULUM = [
-  {day:1,color:"#B91C1C",title:"Hello, American English! — The Verb 'To Be'",grammar:"Verb 'To Be' (am / is / are)",vocab:"Greetings & Introductions",ro:{title:"Bună, Engleză Americană! — Verbul 'To Be'",grammar:"Verbul 'To Be' (am / is / are)",vocab:"Salutări și Prezentări"},ru:{title:"Привет! — Глагол 'To Be'",grammar:"Глагол 'To Be' (am / is / are)",vocab:"Приветствия и Знакомства"}},
-  {day:2,color:"#1D4ED8",title:"Me, You, and Us — Subject Pronouns",grammar:"Subject Pronouns (I/you/he/she/it/we/they)",vocab:"Numbers 1–20 & Family Words",ro:{title:"Eu, Tu și Noi — Pronume Subiect",grammar:"Pronume subiect",vocab:"Numere 1–20 și Familie"},ru:{title:"Я, Ты и Мы — Личные местоимения",grammar:"Личные местоимения",vocab:"Числа 1–20 и Семья"}},
-  {day:3,color:"#047857",title:"A Cat or The Cat? — Articles: A / An / The",grammar:"Articles: A / An / The",vocab:"Animals & Common Objects",ro:{title:"Un pisică sau Pisica? — Articole",grammar:"Articole: A / An / The",vocab:"Animale și Obiecte"},ru:{title:"Кошка? — Артикли: A / An / The",grammar:"Артикли: A / An / The",vocab:"Животные и предметы"}},
-  {day:4,color:"#7C3AED",title:"One Cat, Two Cats — Singular & Plural Nouns",grammar:"Singular & Plural Nouns",vocab:"Food & Drinks",ro:{title:"Un pisică, Două pisici — Plural",grammar:"Substantive singular și plural",vocab:"Mâncare și Băuturi"},ru:{title:"Одна, Две — Ед. и мн. число",grammar:"Существительные ед. и мн. числа",vocab:"Еда и напитки"}},
-  {day:5,color:"#B45309",title:"My, Your, His, Her — Possessive Adjectives",grammar:"Possessive Adjectives",vocab:"Clothes & Accessories",ro:{title:"Al meu, Al tău — Adjective Posesive",grammar:"Adjective posesive",vocab:"Haine și Accesorii"},ru:{title:"Мой, Твой — Притяжательные",grammar:"Притяжательные прилагательные",vocab:"Одежда и Аксессуары"}},
-  {day:6,color:"#0891B2",title:"I Work Every Day — Present Simple",grammar:"Present Simple (positive)",vocab:"Daily Routine Verbs",ro:{title:"Lucrez zilnic — Prezent Simplu",grammar:"Prezentul simplu (afirmativ)",vocab:"Verbe de rutină"},ru:{title:"Я работаю — Простое настоящее",grammar:"Простое настоящее (утверждение)",vocab:"Глаголы повседневной жизни"}},
-  {day:7,color:"#6D28D9",title:"Do You Work? — Present Simple Questions",grammar:"Present Simple (negative & questions)",vocab:"Time & Clock",ro:{title:"Lucrezi? — Întrebări Prezent Simplu",grammar:"Prezentul simplu (negativ & interogativ)",vocab:"Timp și Ceas"},ru:{title:"Ты работаешь? — Вопросы",grammar:"Простое настоящее (отрицание и вопросы)",vocab:"Время и Часы"}},
-  {day:8,color:"#BE185D",title:"Always, Sometimes, Never — Adverbs of Frequency",grammar:"Adverbs of Frequency",vocab:"At Home Vocabulary",ro:{title:"Întotdeauna, Uneori, Niciodată",grammar:"Adverbe de frecvență",vocab:"Vocabular Acasă"},ru:{title:"Всегда, Иногда, Никогда",grammar:"Наречия частотности",vocab:"Дома"}},
-  {day:9,color:"#065F46",title:"There Is a Park! — There Is / There Are",grammar:"There is / There are",vocab:"Places in a City",ro:{title:"Există un parc! — There Is / There Are",grammar:"There is / There are",vocab:"Locuri dintr-un Oraș"},ru:{title:"Есть парк! — There Is / There Are",grammar:"There is / There are",vocab:"Места в городе"}},
-  {day:10,color:"#92400E",title:"I Can Swim! — Can / Can't",grammar:"Modal Verb: Can / Can't",vocab:"Sports & Activities",ro:{title:"Pot să înot! — Can / Can't",grammar:"Verb modal: Can / Can't",vocab:"Sporturi și Activități"},ru:{title:"Я умею плавать! — Can / Can't",grammar:"Модальный глагол: Can / Can't",vocab:"Спорт и занятия"}},
-  {day:11,color:"#1D4ED8",title:"I'm Eating Now! — Present Continuous",grammar:"Present Continuous (positive)",vocab:"Weather & Seasons",ro:{title:"Mănânc acum! — Prezent Continuu",grammar:"Prezentul continuu (afirmativ)",vocab:"Vreme și Anotimpuri"},ru:{title:"Я сейчас ем! — Настоящее продолженное",grammar:"Настоящее продолженное (утверждение)",vocab:"Погода и Времена года"}},
-  {day:12,color:"#6D28D9",title:"Is She Running? — Present Continuous Questions",grammar:"Present Continuous (questions & negative)",vocab:"Emotions & Feelings",ro:{title:"Aleargă ea? — Prezent Continuu Întrebări",grammar:"Prezentul continuu (interogativ & negativ)",vocab:"Emoții și Sentimente"},ru:{title:"Она бежит? — Вопросы",grammar:"Настоящее продолженное (вопросы и отрицание)",vocab:"Эмоции и Чувства"}},
-  {day:13,color:"#047857",title:"On, In, Under — Prepositions of Place",grammar:"Prepositions of Place",vocab:"The House & Rooms",ro:{title:"Pe, În, Sub — Prepoziții de Loc",grammar:"Prepoziții de loc",vocab:"Casa și Camerele"},ru:{title:"На, В, Под — Предлоги места",grammar:"Предлоги места",vocab:"Дом и Комнаты"}},
-  {day:14,color:"#B45309",title:"Some Milk, Any Bread — Countable & Uncountable",grammar:"Countable/Uncountable + Some/Any",vocab:"Shopping & Supermarket",ro:{title:"Ceva lapte, Vreo pâine",grammar:"Numărabile/Nenumărabile + some/any",vocab:"Cumpărături și Supermarket"},ru:{title:"Немного молока — Исчисляемые",grammar:"Исчисляемые/Неисчисляемые + some/any",vocab:"Магазин и Супермаркет"}},
-  {day:15,color:"#1F2937",isReview:true,title:"🏆 Review Day — Days 1–14 Practice",grammar:"Full Review: Days 1–14",vocab:"Mixed Review Vocabulary",ro:{title:"🏆 Zi de Recapitulare — Zilele 1–14",grammar:"Recapitulare completă: Zilele 1–14",vocab:"Vocabular mixt"},ru:{title:"🏆 День повторения — Дни 1–14",grammar:"Полное повторение: Дни 1–14",vocab:"Смешанный словарный запас"}},
-  {day:16,color:"#B91C1C",title:"Yesterday — Past Simple: Was / Were",grammar:"Past Simple: Was / Were",vocab:"Travel & Transportation",ro:{title:"Ieri — Trecut Simplu: Was / Were",grammar:"Trecutul simplu: Was / Were",vocab:"Călătorie și Transport"},ru:{title:"Вчера — Was / Were",grammar:"Простое прошедшее: Was / Were",vocab:"Путешествие и транспорт"}},
-  {day:17,color:"#1D4ED8",title:"I Worked Yesterday — Past Simple Regular",grammar:"Past Simple Regular Verbs (+ed)",vocab:"Holidays & Vacation",ro:{title:"Am lucrat ieri — Trecut Simplu Regular",grammar:"Trecutul simplu verbe regulate (+ed)",vocab:"Vacanțe și Concedii"},ru:{title:"Я работал вчера — Правильные глаголы",grammar:"Правильные глаголы прошедшего (+ed)",vocab:"Праздники и Отпуск"}},
-  {day:18,color:"#047857",title:"I Went to the Park — Past Simple Irregular",grammar:"Past Simple Irregular Verbs",vocab:"Weekend Activities",ro:{title:"Am mers în parc — Trecut Neregulat",grammar:"Trecutul simplu verbe neregulate",vocab:"Activități de Weekend"},ru:{title:"Я пошёл в парк — Неправильные глаголы",grammar:"Неправильные глаголы прошедшего",vocab:"Занятия на выходных"}},
-  {day:19,color:"#7C3AED",title:"Did You Go? — Past Simple Questions",grammar:"Past Simple: Negative & Questions",vocab:"At the Restaurant",ro:{title:"Te-ai dus? — Trecut Simplu Întrebări",grammar:"Trecutul simplu: negativ și interogativ",vocab:"La Restaurant"},ru:{title:"Ты ходил? — Вопросы в прошедшем",grammar:"Простое прошедшее: отрицание и вопросы",vocab:"В ресторане"}},
-  {day:20,color:"#B45309",title:"I'm Going to Study! — Future with 'Going To'",grammar:"Future: be going to",vocab:"Plans & Goals",ro:{title:"O să studiez! — Viitor cu Going To",grammar:"Viitorul cu be going to",vocab:"Planuri și Obiective"},ru:{title:"Я собираюсь учиться! — Going To",grammar:"Будущее время: be going to",vocab:"Планы и цели"}},
-  {day:21,color:"#0891B2",title:"Bigger, Smaller, Best! — Comparatives",grammar:"Comparatives & Superlatives",vocab:"Describing People & Things",ro:{title:"Mai mare, Cel mai bun! — Comparative",grammar:"Grade de comparație",vocab:"Descrierea Persoanelor"},ru:{title:"Больше, Лучший! — Сравнительные",grammar:"Степени сравнения прилагательных",vocab:"Описание людей и вещей"}},
-  {day:22,color:"#6D28D9",title:"Where? When? How? — WH- Questions",grammar:"WH- Question Words",vocab:"Directions & Getting Around",ro:{title:"Unde? Când? Cum? — Cuvinte Interogative",grammar:"Cuvinte interogative WH-",vocab:"Direcții și Orientare"},ru:{title:"Где? Когда? Как? — Вопросительные слова",grammar:"Вопросительные слова WH-",vocab:"Направления и ориентирование"}},
-  {day:23,color:"#BE185D",title:"Yes, I Do! — Short Answers",grammar:"Short Answers in English",vocab:"Jobs & Professions",ro:{title:"Da, fac! — Răspunsuri Scurte",grammar:"Răspunsuri scurte în engleză",vocab:"Locuri de Muncă și Profesii"},ru:{title:"Да! — Краткие ответы",grammar:"Краткие ответы в английском",vocab:"Работа и Профессии"}},
-  {day:24,color:"#065F46",title:"And, But, Because — Basic Conjunctions",grammar:"Basic Conjunctions",vocab:"Health & Body",ro:{title:"Și, Dar, Pentru că — Conjuncții",grammar:"Conjuncții de bază",vocab:"Sănătate și Corp"},ru:{title:"И, Но, Потому что — Союзы",grammar:"Основные союзы",vocab:"Здоровье и тело"}},
-  {day:25,color:"#92400E",title:"Stop! Sit Down! — Imperatives",grammar:"Imperative Form",vocab:"Classroom Language",ro:{title:"Stop! Stai jos! — Imperativul",grammar:"Forma imperativă",vocab:"Limbaj în Clasă"},ru:{title:"Стоп! Садись! — Повелительное",grammar:"Повелительное наклонение",vocab:"Язык классной комнаты"}},
-  {day:26,color:"#1D4ED8",title:"What Time Is It? — Time & Dates",grammar:"Time, Dates, Days of the Week",vocab:"A Typical American Day",ro:{title:"Cât e ceasul? — Ora și Data",grammar:"Ora, datele, zilele săptămânii",vocab:"O Zi Tipică Americană"},ru:{title:"Сколько время? — Время и Даты",grammar:"Время, даты, дни недели",vocab:"Типичный американский день"}},
-  {day:27,color:"#6D28D9",title:"How Much? How Many? — Quantifiers",grammar:"Much / Many / A lot of / A few / A little",vocab:"Money & Prices (USD)",ro:{title:"Cât de mult? Câți? — Cuantificatori",grammar:"Much / Many / A lot of / A few / A little",vocab:"Bani și Prețuri (USD)"},ru:{title:"Сколько? — Квантификаторы",grammar:"Much / Many / A lot of / A few / A little",vocab:"Деньги и Цены (USD)"}},
-  {day:28,color:"#1F2937",isReview:true,title:"🏆 Review Day — Days 16–27 Practice",grammar:"Full Review: Days 16–27",vocab:"Mixed Review 2",ro:{title:"🏆 Zi de Recapitulare — Zilele 16–27",grammar:"Recapitulare completă: Zilele 16–27",vocab:"Vocabular mixt 2"},ru:{title:"🏆 День повторения — Дни 16–27",grammar:"Полное повторение: Дни 16–27",vocab:"Смешанный словарный запас 2"}},
-  {day:29,color:"#047857",title:"Putting It All Together — Full Conversation",grammar:"Mixed Grammar Review (All A1 Topics)",vocab:"All Topics: Real American Conversations",ro:{title:"Totul laolaltă — Conversație Completă",grammar:"Recapitulare gramaticală mixtă",vocab:"Toate subiectele: Conversații americane"},ru:{title:"Всё вместе — Полноценный разговор",grammar:"Смешанное повторение грамматики",vocab:"Все темы: Реальные разговоры"}},
-  {day:30,color:"#B45309",isGrad:true,title:"🎓 Graduation Day! — You Made It!",grammar:"Complete A1 Review — Celebrate!",vocab:"All 30 Days Vocabulary Review",ro:{title:"🎓 Ziua Absolvirii! — Ai reușit!",grammar:"Recapitulare completă A1 — Felicitări!",vocab:"Recapitulare vocabular 30 de zile"},ru:{title:"🎓 День выпуска! — Ты сделал это!",grammar:"Полное повторение A1 — Поздравляем!",vocab:"Повторение словарного запаса 30 дней"}}
-];
-
-// ══════════════════════════════════════════════════════════════════════════════
-//  STATE
-// ══════════════════════════════════════════════════════════════════════════════
-let lang = null;
-let currentView = 'lang';
-let selectedDay = null;
-let progress = {};
-let currentFilter = 'all';
-
-// Load progress from localStorage
-try { progress = JSON.parse(localStorage.getItem('em_progress_v3') || '{}'); } catch(e){}
-
-// ══════════════════════════════════════════════════════════════════════════════
-//  HELPERS
-// ══════════════════════════════════════════════════════════════════════════════
-function L(key){ return LABELS[lang][key] || key; }
-function getLang(day){ return lang ? (day[lang] || {}) : {}; }
-function getTitle(day){ return getLang(day).title || day.title; }
-function getGrammar(day){ return getLang(day).grammar || day.grammar; }
-function getVocab(day){ return getLang(day).vocab || day.vocab; }
-function isUnlocked(dayNum){ if(dayNum===1)return true; const s=progress[dayNum-1]; return s!==undefined && s>=80; }
-function saveProgress(day, score){ progress[day]=score; try{localStorage.setItem('em_progress_v3',JSON.stringify(progress));}catch(e){} }
-function scoreColor(s){ return s>=80?'#059669':s>=60?'#D97706':'#DC2626'; }
-
-// American flag SVG inner content
-function flagInner(){
+// ══════════════════════════════════════════════════════════════════
+//  FLAG SVG
+// ══════════════════════════════════════════════════════════════════
+function flagSVG(){
   let s='';
-  for(let i=0;i<13;i++) s+=`<rect x="0" y="${i*7.69}" width="190" height="7.69" fill="${i%2===0?'#B22234':'#FFFFFF'}"/>`;
+  for(let i=0;i<13;i++) s+=`<rect x="0" y="${(i*7.69).toFixed(2)}" width="190" height="7.7" fill="${i%2===0?'#B22234':'#FFFFFF'}"/>`;
   s+='<rect x="0" y="0" width="76" height="53.84" fill="#3C3B6E"/>';
-  const positions=[];
+  let stars=[];
   for(let r=0;r<9;r++){
-    const cols=r%2===0?6:5;
-    const xOffset=r%2===0?6:13.6;
-    const xStep=r%2===0?12.4:14.5;
+    const cols=r%2===0?6:5, xo=r%2===0?6.3:13.5, xs=r%2===0?12.3:14.6;
     for(let c=0;c<cols;c++){
-      const x=xOffset+c*xStep, y=5.5+r*5.3;
-      if(y<52) positions.push({x,y});
+      const x=xo+c*xs, y=5.5+r*5.2;
+      if(y<52&&stars.length<50) stars.push(`<text x="${x.toFixed(1)}" y="${y.toFixed(1)}" font-size="5.5" fill="#fff" text-anchor="middle" dominant-baseline="middle">★</text>`);
     }
   }
-  positions.slice(0,50).forEach(p=>{ s+=`<text x="${p.x}" y="${p.y}" font-size="5" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">★</text>`; });
-  return s;
+  return s+stars.join('');
 }
+function initFlags(){document.querySelectorAll('[id^="flag-"]').forEach(el=>el.innerHTML=flagSVG());}
 
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+//  TRANSLATIONS
+// ══════════════════════════════════════════════════════════════════
+const TL={
+  ro:{
+    days:"Zile",daysLeft:"Rămase",avgScore:"Scor mediu",complete:"Complet",
+    heroPara:"Cursul complet de engleză americană. Studiază lecțiile, completează exercițiile și primești evaluare AI.",
+    lsLbl:"Limbă:",showAll:"Toate 30",showDone:"✅ Terminate",showPend:"⏳ În curs",
+    backToCourse:"← Înapoi",startLesson:"📚 Începe lecția",continueLesson:"📖 Continuă",
+    doExercises:"✏️ Exerciții",locked:"🔒 Blocat",lockNote:"Scor 80+ la Ziua",
+    passReq:"Obții minim 80/100 la ziua anterioară pentru a debloca.",
+    american:"Engleză americană 🇺🇸",howWorks:"Cum funcționează",
+    h1t:"Studiază lecția",h1d:"Parcurge toate secțiunile: gramatică, vocabular, lectură, ascultare.",
+    h2t:"Fă exercițiile",h2d:"Completează toate exercițiile din lecție.",
+    h3t:"Trimite pentru evaluare",h3d:"Apasă Trimite și primești scor și corecții AI.",
+    h4t:"Deblochează ziua următoare",h4d:"Scor 80+ deblochează lecția următoare!",
+    howFoot:"🔒 Nivelurile se deblochează cu scor 80+ • 🇺🇸 Engleză americană",
+    lessonOf:"Lecția",reviewBadge:"⭐ Recapitulare",gradBadge:"🎓 Final!",
+    grammarSection:"Gramatică",vocabSection:"Vocabular",readSection:"Lectură",
+    listenSection:"Ascultare",speakSection:"Vorbire",
+    readQ:"Întrebări de înțelegere",listenQ:"Întrebări ascultare",keyVocab:"Vocabular cheie",
+    ex1:"Completează spațiile",ex2:"Alegere multiplă",ex3:"Corectează greșeala",
+    ex4:"Potrivire",ex5:"Scrie propoziții",ex6:"Exercițiu de scriere",
+    submitEx:"🚀 Trimite pentru evaluare AI",grading:"🔄 Se evaluează...",
+    reviewing:"Profesorul îți verifică răspunsurile... ✨",
+    yourAns:"Răspunsul tău:",correctAns:"Răspuns corect:",why:"De ce?",tip:"💡 Sfat:",
+    perfect:"Perfect! ✨",strengths:"✅ Puncte forte",improve:"📌 Îmbunătățiri",
+    corrections:"📝 Corecții detaliate",reviewThis:"📚 Revizuiește",motivation:"🌟 Motivație",
+    unlocked:"Felicitări! Ai deblocat ziua următoare! 🎉",
+    retry:"Mai studiază și încearcă din nou pentru 80+! 💪",
+    resubmit:"↩ Încearcă din nou",backDash:"📅 Înapoi la curs",
+    translation:"Traducere",pronunciation:"Pronunție",example:"Exemplu",
+    wordOf:"Cuvânt",meaning:"Sens",
+    dayLabel:"ZIUA",errorMsg:"Eroare de conexiune. Încearcă din nou.",
+    pts:"puncte",
+    readInstr:"Citește cu atenție textul de mai jos.",
+    listenInstr:"Citește dialogul. Imaginează-ți că îl asculți.",
+    speakInstr:"Exersează cu voce tare!",
+    wrongFixed:"Corectează propoziția greșită:",
+    writeInstr:"Scrie propoziții complete folosind cuvintele din lecție."
+  },
+  ru:{
+    days:"Дней",daysLeft:"Осталось",avgScore:"Ср. балл",complete:"Готово",
+    heroPara:"Полный курс американского английского. Изучай уроки, выполняй упражнения и получай оценку ИИ.",
+    lsLbl:"Язык:",showAll:"Все 30",showDone:"✅ Готово",showPend:"⏳ В процессе",
+    backToCourse:"← Назад",startLesson:"📚 Начать урок",continueLesson:"📖 Продолжить",
+    doExercises:"✏️ Упражнения",locked:"🔒 Закрыто",lockNote:"Набери 80+ за День",
+    passReq:"Нужно набрать минимум 80/100 в предыдущий день.",
+    american:"Американский английский 🇺🇸",howWorks:"Как это работает",
+    h1t:"Изучи урок",h1d:"Пройди все разделы: грамматику, словарный запас, чтение, аудирование.",
+    h2t:"Выполни упражнения",h2d:"Заполни все упражнения в уроке.",
+    h3t:"Отправь на проверку",h3d:"Нажми Отправить и получи оценку и исправления от ИИ.",
+    h4t:"Разблокируй следующий день",h4d:"80+ баллов разблокируют следующий урок!",
+    howFoot:"🔒 Уровни открываются при 80+ • 🇺🇸 Американский английский",
+    lessonOf:"Урок",reviewBadge:"⭐ Повторение",gradBadge:"🎓 Финал!",
+    grammarSection:"Грамматика",vocabSection:"Словарный запас",readSection:"Чтение",
+    listenSection:"Аудирование",speakSection:"Разговорная практика",
+    readQ:"Вопросы по тексту",listenQ:"Вопросы по аудированию",keyVocab:"Ключевые слова",
+    ex1:"Заполни пропуски",ex2:"Выбери правильный ответ",ex3:"Исправь ошибку",
+    ex4:"Установи соответствие",ex5:"Напиши предложения",ex6:"Письменное задание",
+    submitEx:"🚀 Отправить на проверку ИИ",grading:"🔄 Проверяем...",
+    reviewing:"Учитель проверяет твои ответы... ✨",
+    yourAns:"Твой ответ:",correctAns:"Правильный ответ:",why:"Почему?",tip:"💡 Подсказка:",
+    perfect:"Отлично! ✨",strengths:"✅ Сильные стороны",improve:"📌 Что улучшить",
+    corrections:"📝 Подробные исправления",reviewThis:"📚 Повтори это",motivation:"🌟 Мотивация",
+    unlocked:"Поздравляем! Следующий день разблокирован! 🎉",
+    retry:"Ещё поучись и попробуй снова для 80+! 💪",
+    resubmit:"↩ Попробовать снова",backDash:"📅 Назад к курсу",
+    translation:"Перевод",pronunciation:"Произношение",example:"Пример",
+    wordOf:"Слово",meaning:"Значение",
+    dayLabel:"ДЕНЬ",errorMsg:"Ошибка подключения. Попробуй снова.",
+    pts:"очков",
+    readInstr:"Внимательно прочитай текст ниже.",
+    listenInstr:"Прочитай диалог. Представь, что слушаешь его.",
+    speakInstr:"Практикуй вслух!",
+    wrongFixed:"Исправь ошибочное предложение:",
+    writeInstr:"Напиши полные предложения, используя слова из урока."
+  }
+};
+function L(k){return TL[lang][k]||k;}
+
+// ══════════════════════════════════════════════════════════════════
+//  FULL LESSON DATA (30 days)
+// ══════════════════════════════════════════════════════════════════
+const DAYS = [
+  // ─── DAY 1 ───────────────────────────────────────────────────
+  {
+    day:1,color:"#B91C1C",
+    title:"Hello, American English! — The Verb 'To Be'",
+    grammar:"Verb 'To Be' (am / is / are)",
+    vocab:"Greetings & Introductions",
+    tr:{
+      ro:{title:"Bună, Engleză Americană! — Verbul 'To Be'",grammar:"Verbul 'To Be' (am / is / are)",vocab:"Salutări și Prezentări"},
+      ru:{title:"Привет! — Глагол 'To Be'",grammar:"Глагол 'To Be' (am / is / are)",vocab:"Приветствия и Знакомства"}
+    },
+    lesson:{
+      grammar:{
+        rules:[
+          {title:"What is 'To Be'?",
+           ro:"Verbul TO BE este cel mai important verb în engleză! Îl folosim pentru a spune cine suntem, unde suntem și cum ne simțim.",
+           ru:"Глагол TO BE — самый важный глагол в английском! Используем его, чтобы сказать кто мы, где мы и как себя чувствуем.",
+           content:`<div class="formula-box"><p>I → AM &nbsp;&nbsp;|&nbsp;&nbsp; He / She / It → IS &nbsp;&nbsp;|&nbsp;&nbsp; You / We / They → ARE</p></div>
+           <div class="example-row"><div class="ex-en">I <strong>am</strong> happy.</div><div class="ex-tr" id="ex-1-ro" style="display:none">Eu <strong>sunt</strong> fericit.</div><div class="ex-tr" id="ex-1-ru" style="display:none">Я <strong>счастлив</strong>.</div></div>
+           <div class="example-row"><div class="ex-en">She <strong>is</strong> a teacher.</div><div class="ex-tr" id="ex-2-ro" style="display:none">Ea <strong>este</strong> profesoară.</div><div class="ex-tr" id="ex-2-ru" style="display:none">Она <strong>учительница</strong>.</div></div>
+           <div class="example-row"><div class="ex-en">They <strong>are</strong> friends.</div><div class="ex-tr" id="ex-3-ro" style="display:none">Ei <strong>sunt</strong> prieteni.</div><div class="ex-tr" id="ex-3-ru" style="display:none">Они <strong>друзья</strong>.</div></div>`
+          },
+          {title:"Short forms (Contractions)",
+           ro:"În engleză americană folosim des forme scurte!",
+           ru:"В американском английском часто используем сокращения!",
+           content:`<div class="formula-box"><p>I am → I'm &nbsp;|&nbsp; You are → You're &nbsp;|&nbsp; He is → He's &nbsp;|&nbsp; She is → She's<br>It is → It's &nbsp;|&nbsp; We are → We're &nbsp;|&nbsp; They are → They're</p></div>`
+          },
+          {title:"Negative form",
+           ro:"Forma negativă — adăugăm NOT după verbul to be:",
+           ru:"Отрицательная форма — добавляем NOT после глагола to be:",
+           content:`<div class="example-row"><div class="ex-en">I am <strong>not</strong> tired. (I'm not tired.)</div><div class="ex-tr" id="ex-4-ro" style="display:none">Eu <strong>nu sunt</strong> obosit.</div><div class="ex-tr" id="ex-4-ru" style="display:none">Я <strong>не устал</strong>.</div></div>
+           <div class="example-row"><div class="ex-en">He is <strong>not</strong> late. (He isn't late.)</div><div class="ex-tr" id="ex-5-ro" style="display:none">El <strong>nu este</strong> în întârziere.</div><div class="ex-tr" id="ex-5-ru" style="display:none">Он <strong>не опаздывает</strong>.</div></div>
+           <div class="mistake-box"><h4>⚠️ Common Mistakes:</h4>
+           <p><span class="m-wrong">❌ She am a student.</span> → <span class="m-right">✅ She IS a student.</span><br>
+           <span class="m-wrong">❌ They is happy.</span> → <span class="m-right">✅ They ARE happy.</span><br>
+           <span class="m-wrong">❌ I are from Brazil.</span> → <span class="m-right">✅ I AM from Brazil.</span></p></div>`
+          }
+        ]
+      },
+      vocabulary:[
+        {word:"hello",meaning:"a greeting word",tr:{ro:"bună ziua / salut",ru:"привет / здравствуйте"},example:"Hello! My name is Anna.",pron:"heh-LOH"},
+        {word:"goodbye",meaning:"used when leaving",tr:{ro:"la revedere",ru:"до свидания"},example:"Goodbye! See you tomorrow.",pron:"good-BYE"},
+        {word:"my name is",meaning:"used to introduce yourself",tr:{ro:"mă numesc / numele meu este",ru:"меня зовут"},example:"My name is Carlos.",pron:"my naym iz"},
+        {word:"student",meaning:"a person who studies",tr:{ro:"student",ru:"студент"},example:"I am a student.",pron:"STOO-dent"},
+        {word:"teacher",meaning:"a person who teaches",tr:{ro:"profesor",ru:"учитель"},example:"She is a great teacher.",pron:"TEE-cher"},
+        {word:"friend",meaning:"a person you like and trust",tr:{ro:"prieten",ru:"друг"},example:"He is my best friend.",pron:"frend"},
+        {word:"happy",meaning:"feeling good / joyful",tr:{ro:"fericit",ru:"счастливый"},example:"I am very happy today!",pron:"HAP-ee"},
+        {word:"tired",meaning:"needing rest / sleep",tr:{ro:"obosit",ru:"уставший"},example:"She is tired after work.",pron:"TYE-erd"},
+        {word:"from",meaning:"showing your origin / country",tr:{ro:"din (origine)",ru:"из (откуда)"},example:"I am from the United States.",pron:"from"},
+        {word:"where",meaning:"asking about a place",tr:{ro:"unde",ru:"где"},example:"Where are you from?",pron:"wair"},
+        {word:"what",meaning:"asking for information",tr:{ro:"ce / care",ru:"что / какой"},example:"What is your name?",pron:"wot"},
+        {word:"nice to meet you",meaning:"greeting when meeting someone new",tr:{ro:"îmi pare bine să te cunosc",ru:"приятно познакомиться"},example:"Nice to meet you, Tom!",pron:"nyss to meet yoo"},
+        {word:"please",meaning:"polite request word",tr:{ro:"vă rog / te rog",ru:"пожалуйста"},example:"Please sit down.",pron:"pleez"},
+        {word:"thank you",meaning:"showing gratitude",tr:{ro:"mulțumesc",ru:"спасибо"},example:"Thank you very much!",pron:"THANK yoo"},
+        {word:"yes / no",meaning:"positive / negative answers",tr:{ro:"da / nu",ru:"да / нет"},example:"Yes, I am! / No, I'm not.",pron:"yes / noh"}
+      ],
+      reading:{
+        title:"My First English Class",
+        text:`My name is <strong>Maria</strong>. I am 22 years old. I am a student at City University in New York.
+I am from Mexico, but now I live in the United States. My English teacher is Mr. Brown.
+He is very kind and funny. My best friend in class is Lily. She is also a student.
+We are in the same class. We are very happy to learn American English together!
+"Hello, Maria!" says Mr. Brown. "Welcome to your first class!"
+"Thank you, Mr. Brown!" I say. "I am very excited!"`,
+        questions:[
+          "What is her name?",
+          "How old is Maria?",
+          "Where is Maria from?",
+          "Who is Mr. Brown?",
+          "What is the name of Maria's best friend?"
+        ]
+      },
+      listening:{
+        title:"First Day of Class — American English",
+        scene:"First day at an English school in New York City",
+        lines:[
+          {speaker:"Teacher",text:"Good morning, everyone! I am your new teacher. My name is Mr. Green."},
+          {speaker:"Anna",text:"Good morning, Mr. Green! I am Anna. I am from Poland."},
+          {speaker:"Teacher",text:"Nice to meet you, Anna! Are you a new student?"},
+          {speaker:"Anna",text:"Yes, I am! This is my first American English class!"},
+          {speaker:"Teacher",text:"Wonderful! And you — what is your name?"},
+          {speaker:"Carlos",text:"My name is Carlos. I am from Mexico. I am very excited to be here!"},
+          {speaker:"Teacher",text:"Excellent! Welcome, Carlos. Are you both ready to start?"},
+          {speaker:"Both",text:"Yes, we are!"},
+          {speaker:"Teacher",text:"Perfect. Let's begin!"}
+        ],
+        keyVocab:["good morning","new student","wonderful","excited","welcome","ready"],
+        questions:[
+          "What is the teacher's name?",
+          "Where is Anna from?",
+          "Is this Anna's first English class?",
+          "Where is Carlos from?",
+          "Are the students ready to start?"
+        ]
+      },
+      speaking:[
+        {icon:"🗣️",task:"Say your name out loud: 'My name is ______.'"},{icon:"🗣️",task:"Say where you are from: 'I am from ______.'"},{icon:"🗣️",task:"Say how you feel: 'I am ______ today.'"},
+        {icon:"🎙️",task:"RECORD yourself: Introduce yourself in 3 sentences."},
+        {icon:"🔁",task:"SHADOW: Read the dialogue above and repeat each line out loud."}
+      ]
+    },
+    exercises:[
+      {type:"fill",header:"Grammar: Fill in the Blank",color:"#1D4ED8",pts:20,
+       qs:[
+        {stem:"My name ___ Maria.",answer:"is",hint:"She → is"},
+        {stem:"You ___ a student.",answer:"are",hint:"You → are"},
+        {stem:"He ___ from Brazil.",answer:"is",hint:"He → is"},
+        {stem:"We ___ happy today.",answer:"are",hint:"We → are"},
+        {stem:"I ___ not tired.",answer:"am",hint:"I → am"}
+       ]},
+      {type:"mc",header:"Multiple Choice",color:"#7C3AED",pts:20,
+       qs:[
+        {stem:"She ___ a teacher.",opts:["am","is","are","be"],answer:1},
+        {stem:"___ you happy today?",opts:["Am","Is","Are","Be"],answer:2},
+        {stem:"They ___ from Spain.",opts:["am","is","are","be"],answer:2},
+        {stem:"It ___ a nice day.",opts:["am","is","are","be"],answer:1},
+        {stem:"I ___ not late.",opts:["am","is","are","be"],answer:0}
+       ]},
+      {type:"error",header:"Fix the Mistake!",color:"#DC2626",pts:20,
+       qs:[
+        {wrong:"She am a student.",correct:"She is a student."},
+        {wrong:"They is happy.",correct:"They are happy."},
+        {wrong:"I are from Mexico.",correct:"I am from Mexico."},
+        {wrong:"He are my friend.",correct:"He is my friend."},
+        {wrong:"We am in class.",correct:"We are in class."}
+       ]},
+      {type:"match",header:"Vocabulary Matching",color:"#047857",pts:20,
+       pairs:[
+        ["hello","a greeting word"],["teacher","a person who teaches"],
+        ["happy","feeling good"],["friend","a person you like"],
+        ["thank you","showing gratitude"],["student","a person who studies"],
+        ["goodbye","used when leaving"],["please","polite request word"]
+       ]},
+      {type:"write",header:"Write Your Own Sentences",color:"#B45309",pts:20,
+       prompts:[
+        "Write a sentence about yourself using 'I am'.",
+        "Write a sentence about a friend using 'He is' or 'She is'.",
+        "Write a negative sentence using 'is not' or 'are not'.",
+        "Write a question using 'Are you...'?",
+        "Introduce yourself in 2 sentences."
+       ]}
+    ]
+  },
+
+  // ─── DAY 2 ───────────────────────────────────────────────────
+  {
+    day:2,color:"#1D4ED8",
+    title:"Me, You, and Us — Subject Pronouns",
+    grammar:"Subject Pronouns (I/you/he/she/it/we/they)",
+    vocab:"Numbers 1–20 & Family Words",
+    tr:{
+      ro:{title:"Eu, Tu și Noi — Pronume Subiect",grammar:"Pronume subiect",vocab:"Numere 1–20 și Familie"},
+      ru:{title:"Я, Ты и Мы — Личные местоимения",grammar:"Личные местоимения",vocab:"Числа 1–20 и Семья"}
+    },
+    lesson:{
+      grammar:{
+        rules:[
+          {title:"The 7 Subject Pronouns",
+           ro:"Pronumele subiect înlocuiesc numele persoanelor. Le folosim ca subiect al propoziției.",
+           ru:"Личные местоимения заменяют имена. Используем их как подлежащее в предложении.",
+           content:`<div class="formula-box"><p>I (eu/я) &nbsp;|&nbsp; You (tu/вы) &nbsp;|&nbsp; He (el/он) &nbsp;|&nbsp; She (ea/она)<br>It (el/ea - obiecte/он/она - вещи) &nbsp;|&nbsp; We (noi/мы) &nbsp;|&nbsp; They (ei/они)</p></div>
+           <div class="example-row"><div class="ex-en">Maria is a student. → <strong>She</strong> is a student.</div></div>
+           <div class="example-row"><div class="ex-en">Tom and I are friends. → <strong>We</strong> are friends.</div></div>
+           <div class="example-row"><div class="ex-en">The cat is small. → <strong>It</strong> is small.</div></div>
+           <div class="mistake-box"><h4>⚠️ Common Mistakes:</h4>
+           <p><span class="m-wrong">❌ Me am happy.</span> → <span class="m-right">✅ I am happy.</span><br>
+           <span class="m-wrong">❌ Him is tall.</span> → <span class="m-right">✅ He is tall.</span><br>
+           <span class="m-wrong">❌ Her is a teacher.</span> → <span class="m-right">✅ She is a teacher.</span></p></div>`
+          }
+        ]
+      },
+      vocabulary:[
+        {word:"mother",meaning:"your female parent",tr:{ro:"mamă",ru:"мама"},example:"My mother is kind.",pron:"MUH-ther"},
+        {word:"father",meaning:"your male parent",tr:{ro:"tată",ru:"папа"},example:"My father is tall.",pron:"FAH-ther"},
+        {word:"brother",meaning:"a male sibling",tr:{ro:"frate",ru:"брат"},example:"My brother is 10 years old.",pron:"BRUH-ther"},
+        {word:"sister",meaning:"a female sibling",tr:{ro:"soră",ru:"сестра"},example:"My sister is funny.",pron:"SIS-ter"},
+        {word:"one",meaning:"the number 1",tr:{ro:"unu",ru:"один"},example:"I have one brother.",pron:"wun"},
+        {word:"two",meaning:"the number 2",tr:{ro:"doi",ru:"два"},example:"She has two sisters.",pron:"too"},
+        {word:"three",meaning:"the number 3",tr:{ro:"trei",ru:"три"},example:"We are three friends.",pron:"three"},
+        {word:"four",meaning:"the number 4",tr:{ro:"patru",ru:"четыре"},example:"There are four people.",pron:"for"},
+        {word:"five",meaning:"the number 5",tr:{ro:"cinci",ru:"пять"},example:"I am five minutes late.",pron:"fyve"},
+        {word:"ten",meaning:"the number 10",tr:{ro:"zece",ru:"десять"},example:"She is ten years old.",pron:"ten"},
+        {word:"fifteen",meaning:"the number 15",tr:{ro:"cincisprezece",ru:"пятнадцать"},example:"There are fifteen students.",pron:"FIF-teen"},
+        {word:"twenty",meaning:"the number 20",tr:{ro:"douăzeci",ru:"двадцать"},example:"He is twenty years old.",pron:"TWEN-tee"},
+        {word:"old",meaning:"having many years",tr:{ro:"bătrân / în vârstă",ru:"старый"},example:"My grandfather is old.",pron:"ohld"},
+        {word:"young",meaning:"having few years",tr:{ro:"tânăr",ru:"молодой"},example:"She is young and beautiful.",pron:"yung"},
+        {word:"family",meaning:"parents, brothers, sisters together",tr:{ro:"familie",ru:"семья"},example:"My family is big.",pron:"FAM-i-lee"}
+      ],
+      reading:{
+        title:"My Family",
+        text:`This is my family. My mother is <strong>Ana</strong>. She is 45 years old.
+My father is <strong>Pedro</strong>. He is 47. I have one brother. His name is <strong>Luis</strong>.
+He is 14 years old. He is young. I also have one sister. Her name is <strong>Sofia</strong>.
+She is 20. We are a happy family. We live in a small house in Texas.
+There are 4 people in my family. I love them very much!`,
+        questions:[
+          "What is the mother's name?","How old is the father?",
+          "What is the brother's name?","How many people are in the family?","How old is Sofia?"
+        ]
+      },
+      listening:{
+        title:"Talking About Family",
+        scene:"Two friends talking at school in Chicago",
+        lines:[
+          {speaker:"David",text:"Hey, Anna! Who is that?"},
+          {speaker:"Anna",text:"That is my brother. His name is Tom."},
+          {speaker:"David",text:"Oh! How old is he?"},
+          {speaker:"Anna",text:"He is 16. He is in high school."},
+          {speaker:"David",text:"And who is that woman? Is she your mother?"},
+          {speaker:"Anna",text:"Yes, she is! Her name is Mary. She is 42 years old."},
+          {speaker:"David",text:"She is very young!"},
+          {speaker:"Anna",text:"Thank you! And this is my father, Robert. He is 44."},
+          {speaker:"David",text:"Nice to meet your family, Anna!"}
+        ],
+        keyVocab:["brother","high school","mother","father","young","family"],
+        questions:[
+          "What is Anna's brother's name?","How old is Tom?",
+          "What is Anna's mother's name?","How old is Anna's father?","What does David think of the mother?"
+        ]
+      },
+      speaking:[
+        {icon:"🗣️",task:"Count from 1 to 20 out loud in English."},
+        {icon:"🗣️",task:"Talk about your family: 'My mother is ______. She is ______ years old.'"},
+        {icon:"🗣️",task:"Replace names with pronouns: 'Tom → He is my ______.'"},
+        {icon:"🎙️",task:"RECORD: Talk about 2 family members for 30 seconds."},
+        {icon:"🔁",task:"SHADOW: Read the family dialogue and repeat each line."}
+      ]
+    },
+    exercises:[
+      {type:"fill",header:"Grammar: Subject Pronouns",color:"#1D4ED8",pts:20,
+       qs:[
+        {stem:"Tom has a car. ___ car is blue.",answer:"His",hint:"Tom = He → His"},
+        {stem:"Anna and I are friends. ___ study together.",answer:"We",hint:"Anna + I = We"},
+        {stem:"The cat sits on ___ mat.",answer:"its",hint:"thing = its"},
+        {stem:"This is Maria. ___ is a student.",answer:"She",hint:"Maria = She"},
+        {stem:"Tom and Anna are here. ___ are happy.",answer:"They",hint:"2+ people = They"}
+       ]},
+      {type:"mc",header:"Multiple Choice",color:"#7C3AED",pts:20,
+       qs:[
+        {stem:"Maria has a bag. ___ bag is red.",opts:["My","His","Her","Its"],answer:2},
+        {stem:"Tom and I study. ___ are students.",opts:["He","She","We","They"],answer:2},
+        {stem:"The dog wags ___ tail.",opts:["his","her","its","their"],answer:2},
+        {stem:"This is John. ___ is my friend.",opts:["He","She","It","They"],answer:0},
+        {stem:"Tom and Anna are late. ___ are sorry.",opts:["We","He","She","They"],answer:3}
+       ]},
+      {type:"error",header:"Fix the Mistake!",color:"#DC2626",pts:20,
+       qs:[
+        {wrong:"Me am happy today.",correct:"I am happy today."},
+        {wrong:"Her is a teacher.",correct:"She is a teacher."},
+        {wrong:"Him is tall.",correct:"He is tall."},
+        {wrong:"We is friends.",correct:"We are friends."},
+        {wrong:"They am students.",correct:"They are students."}
+       ]},
+      {type:"match",header:"Vocabulary Matching",color:"#047857",pts:20,
+       pairs:[
+        ["mother","your female parent"],["father","your male parent"],
+        ["brother","a male sibling"],["sister","a female sibling"],
+        ["young","having few years"],["family","parents and children together"],
+        ["twenty","the number 20"],["old","having many years"]
+       ]},
+      {type:"write",header:"Write Sentences with Pronouns",color:"#B45309",pts:20,
+       prompts:[
+        "Write about yourself using 'I am'.",
+        "Write about a female person using 'She is'.",
+        "Write about a male person using 'He is'.",
+        "Write about two people using 'They are'.",
+        "Write about yourself and a friend using 'We are'."
+       ]}
+    ]
+  },
+
+  // ─── DAY 3 ───────────────────────────────────────────────────
+  {
+    day:3,color:"#047857",
+    title:"A Cat or The Cat? — Articles: A / An / The",
+    grammar:"Articles: A / An / The",
+    vocab:"Animals & Common Objects",
+    tr:{
+      ro:{title:"Un pisică sau Pisica? — Articole",grammar:"Articole: A / An / The",vocab:"Animale și Obiecte"},
+      ru:{title:"Кошка? — Артикли: A / An / The",grammar:"Артикли: A / An / The",vocab:"Животные и предметы"}
+    },
+    lesson:{
+      grammar:{
+        rules:[
+          {title:"A and An — Indefinite Articles",
+           ro:"Folosim A sau AN înainte de un substantiv la singular când vorbim pentru prima dată despre ceva.",
+           ru:"Используем A или AN перед существительным в единственном числе, когда говорим о чём-то впервые.",
+           content:`<div class="formula-box"><p>A + consonant sound: a book, a cat, a teacher, a house<br>AN + vowel sound (A,E,I,O,U): an apple, an egg, an umbrella, an orange</p></div>
+           <div class="example-row"><div class="ex-en">I have <strong>a</strong> cat.</div><div class="ex-tr" id="ex-a-ro" style="display:none">Am <strong>un</strong> pisic.</div><div class="ex-tr" id="ex-a-ru" style="display:none">У меня есть <strong>кошка</strong>.</div></div>
+           <div class="example-row"><div class="ex-en">She eats <strong>an</strong> apple.</div><div class="ex-tr" id="ex-b-ro" style="display:none">Ea mănâncă <strong>un</strong> măr.</div><div class="ex-tr" id="ex-b-ru" style="display:none">Она ест <strong>яблоко</strong>.</div></div>`
+          },
+          {title:"The — Definite Article",
+           ro:"Folosim THE când ambii știm despre ce vorbim, sau când există un singur lucru.",
+           ru:"Используем THE когда оба знаем о чём говорим, или когда есть только одна вещь.",
+           content:`<div class="formula-box"><p>THE = we both know which one / only one exists</p></div>
+           <div class="example-row"><div class="ex-en">I see a cat. <strong>The</strong> cat is orange.</div></div>
+           <div class="example-row"><div class="ex-en"><strong>The</strong> sun is bright. <strong>The</strong> moon is full.</div></div>
+           <div class="mistake-box"><h4>⚠️ Common Mistakes:</h4>
+           <p><span class="m-wrong">❌ She is a engineer.</span> → <span class="m-right">✅ She is AN engineer.</span> (vowel sound!)<br>
+           <span class="m-wrong">❌ The life is beautiful.</span> → <span class="m-right">✅ Life is beautiful.</span> (general idea — no article)<br>
+           <span class="m-wrong">❌ I want a umbrella.</span> → <span class="m-right">✅ I want AN umbrella.</span></p></div>`
+          }
+        ]
+      },
+      vocabulary:[
+        {word:"cat",meaning:"a small furry pet animal",tr:{ro:"pisică",ru:"кошка"},example:"I have a cat.",pron:"kat"},
+        {word:"dog",meaning:"a popular loyal pet",tr:{ro:"câine",ru:"собака"},example:"The dog is friendly.",pron:"dog"},
+        {word:"bird",meaning:"an animal with wings",tr:{ro:"pasăre",ru:"птица"},example:"I see a bird in the tree.",pron:"berd"},
+        {word:"fish",meaning:"an animal that lives in water",tr:{ro:"pește",ru:"рыба"},example:"She has an orange fish.",pron:"fish"},
+        {word:"book",meaning:"pages with words to read",tr:{ro:"carte",ru:"книга"},example:"I have a book.",pron:"book"},
+        {word:"pen",meaning:"a tool for writing",tr:{ro:"pix",ru:"ручка"},example:"Give me a pen, please.",pron:"pen"},
+        {word:"apple",meaning:"a red or green fruit",tr:{ro:"măr",ru:"яблоко"},example:"I eat an apple every day.",pron:"AP-ul"},
+        {word:"umbrella",meaning:"protection from rain",tr:{ro:"umbrelă",ru:"зонт"},example:"Take an umbrella!",pron:"um-BREL-ah"},
+        {word:"orange",meaning:"an orange citrus fruit",tr:{ro:"portocală",ru:"апельсин"},example:"She drinks orange juice.",pron:"OR-inj"},
+        {word:"egg",meaning:"oval food from a chicken",tr:{ro:"ou",ru:"яйцо"},example:"I eat an egg for breakfast.",pron:"eg"},
+        {word:"table",meaning:"a piece of furniture",tr:{ro:"masă",ru:"стол"},example:"Put the book on the table.",pron:"TAY-bul"},
+        {word:"chair",meaning:"furniture to sit on",tr:{ro:"scaun",ru:"стул"},example:"The chair is comfortable.",pron:"chair"},
+        {word:"window",meaning:"glass opening in a wall",tr:{ro:"fereastră",ru:"окно"},example:"Open the window, please.",pron:"WIN-doh"},
+        {word:"door",meaning:"entrance to a room or building",tr:{ro:"ușă",ru:"дверь"},example:"Close the door.",pron:"dor"},
+        {word:"phone",meaning:"a communication device",tr:{ro:"telefon",ru:"телефон"},example:"My phone is new.",pron:"fohn"}
+      ],
+      reading:{
+        title:"My Apartment",
+        text:`I have a small apartment in San Francisco. In the kitchen, there is a table.
+On the table, there is an apple and an orange. My cat is under the table.
+<strong>The</strong> cat's name is Whiskers. Whiskers is a funny cat!
+Near the window, there is a chair. I sit on <strong>the</strong> chair every morning.
+I drink a cup of coffee and read a book. <strong>The</strong> book is very interesting.`,
+        questions:[
+          "What is on the table?","Where is the cat?",
+          "What is the cat's name?","Where is the chair?","What does the person do every morning?"
+        ]
+      },
+      listening:{
+        title:"At the Store",
+        scene:"A customer at a small store in New York",
+        lines:[
+          {speaker:"Shopkeeper",text:"Good morning! Can I help you?"},
+          {speaker:"Customer",text:"Yes, please. I want an apple and an orange."},
+          {speaker:"Shopkeeper",text:"Of course! The apples are here and the oranges are there."},
+          {speaker:"Customer",text:"How much is an apple?"},
+          {speaker:"Shopkeeper",text:"An apple is 50 cents. An orange is 60 cents."},
+          {speaker:"Customer",text:"I also want a pen. Do you have a pen?"},
+          {speaker:"Shopkeeper",text:"Yes! The pens are near the door. One dollar each."},
+          {speaker:"Customer",text:"Perfect. Thank you!"}
+        ],
+        keyVocab:["How much is","near","of course","each","dollar","cents"],
+        questions:[
+          "What does the customer want to buy?","How much is an apple?",
+          "Where are the pens?","How much is the pen?","Is the shopkeeper helpful?"
+        ]
+      },
+      speaking:[
+        {icon:"🗣️",task:"Look around and name 5 things: 'This is a ______ / an ______.'"},
+        {icon:"🗣️",task:"Practice: 'an apple / an egg / an umbrella / a book / a pen / a cat'"},
+        {icon:"🗣️",task:"Describe your room: 'In my room, there is a ______.'"},
+        {icon:"🎙️",task:"RECORD: Describe 5 objects around you using a / an / the."},
+        {icon:"🔁",task:"SHADOW: Read the shopping dialogue and repeat."}
+      ]
+    },
+    exercises:[
+      {type:"fill",header:"Fill in: A, An, or The",color:"#1D4ED8",pts:20,
+       qs:[
+        {stem:"I eat ___ apple every morning.",answer:"an",hint:"apple starts with vowel 'a'"},
+        {stem:"___ sun is very bright today.",answer:"The",hint:"only one sun in the world"},
+        {stem:"She is ___ engineer.",answer:"an",hint:"engineer starts with vowel 'e'"},
+        {stem:"He reads ___ book every night.",answer:"a",hint:"first mention, consonant sound"},
+        {stem:"I want ___ umbrella. It's raining!",answer:"an",hint:"umbrella starts with vowel 'u'"}
+       ]},
+      {type:"mc",header:"Choose the Correct Article",color:"#7C3AED",pts:20,
+       qs:[
+        {stem:"She is ___ honest person.",opts:["a","an","the","—"],answer:1},
+        {stem:"I see ___ cat in the garden. ___ cat is orange.",opts:["a / The","an / The","the / A","a / A"],answer:0},
+        {stem:"___ moon is beautiful tonight.",opts:["A","An","The","—"],answer:2},
+        {stem:"He is ___ university student.",opts:["a","an","the","—"],answer:0},
+        {stem:"Give me ___ pen, please.",opts:["a","an","the","—"],answer:0}
+       ]},
+      {type:"error",header:"Fix the Mistake!",color:"#DC2626",pts:20,
+       qs:[
+        {wrong:"She is a engineer.",correct:"She is an engineer."},
+        {wrong:"I want a umbrella.",correct:"I want an umbrella."},
+        {wrong:"The life is difficult.",correct:"Life is difficult."},
+        {wrong:"Give me a apple.",correct:"Give me an apple."},
+        {wrong:"I see an book on the table.",correct:"I see a book on the table."}
+       ]},
+      {type:"match",header:"Vocabulary Matching",color:"#047857",pts:20,
+       pairs:[
+        ["cat","a small furry pet"],["umbrella","protection from rain"],
+        ["apple","a red or green fruit"],["book","pages with words"],
+        ["window","glass in a wall"],["egg","oval food from a chicken"],
+        ["phone","a communication device"],["chair","furniture to sit on"]
+       ]},
+      {type:"write",header:"Write Sentences with Articles",color:"#B45309",pts:20,
+       prompts:[
+        "Write a sentence using 'a' (e.g. a cat, a book).",
+        "Write a sentence using 'an' (e.g. an apple, an egg).",
+        "Write 2 sentences: first introduce something with 'a', then mention it again with 'the'.",
+        "Describe one object on your desk or in your room.",
+        "Write about your phone or book using articles."
+       ]}
+    ]
+  },
+
+  // ─── DAYS 4-30 use a compact template ─────────────────────────
+  ...(() => {
+    const rest = [
+      {day:4,color:"#7C3AED",title:"One Cat, Two Cats — Singular & Plural Nouns",grammar:"Singular & Plural Nouns",vocab:"Food & Drinks",
+       tr:{ro:{title:"Un pisică, Două pisici — Plural",grammar:"Substantive la singular și plural",vocab:"Mâncare și Băuturi"},ru:{title:"Кошка/Кошки — Ед. и мн. число",grammar:"Существительные ед. и мн. числа",vocab:"Еда и напитки"}},
+       grammarKey:"Regular plurals: +S. Words ending -CH/-SH/-X/-S: +ES. Consonant+Y → IES. F/FE → VES. Irregular: man/men, woman/women, child/children, foot/feet, tooth/teeth.",
+       vocabWords:["bread (хлеб/pâine)","milk (молоко/lapte)","water (вода/apă)","coffee (кофе/cafea)","tea (ceai/чай)","rice (рис/orez)","chicken (pui/курица)","vegetable (legumă/овощ)","fruit (fruct/фрукт)","soup (supă/суп)","sandwich (sandviș/сэндвич)","pizza (pizza/пицца)","juice (suc/сок)","sugar (zahăr/сахар)","egg (ou/яйцо)"],
+       readText:"Maria goes to the market every Saturday. She buys vegetables, fruits, and bread. Today she buys three tomatoes, two oranges, and one big watermelon. She also buys two boxes of cereal and four bottles of water. At the bakery, she buys some bread and two sandwiches for lunch.",
+       listenTitle:"In a Café",listenScene:"Customer ordering at an American café",
+       listenLines:[["Waiter","Good afternoon! What would you like?"],["Customer","I want two sandwiches and one coffee, please."],["Waiter","Would you like milk in your coffee?"],["Customer","Yes, please. And a glass of water too?"],["Waiter","Sure! We have orange juice and apple juice."],["Customer","One orange juice, please! And two chicken sandwiches."]],
+       mistakes:["Two childs → Two children","Three foots → Three feet","I drink two waters → I drink two glasses of water"]
+      },
+      {day:5,color:"#B45309",title:"My, Your, His, Her — Possessive Adjectives",grammar:"Possessive Adjectives",vocab:"Clothes & Accessories",
+       tr:{ro:{title:"Al meu, Al tău — Adjective Posesive",grammar:"Adjective posesive",vocab:"Haine și Accesorii"},ru:{title:"Мой, Твой — Притяжательные прилагательные",grammar:"Притяжательные прилагательные",vocab:"Одежда и аксессуары"}},
+       grammarKey:"I→my, You→your, He→his, She→her, It→its, We→our, They→their. The adjective matches the OWNER, not the object. Don't confuse 'its' (possessive) with 'it's' (it is).",
+       vocabWords:["shirt (cămașă/рубашка)","dress (rochie/платье)","jacket (jachetă/куртка)","shoes (pantofi/туфли)","hat (pălărie/шляпа)","trousers (pantaloni/брюки)","jeans (blugi/джинсы)","socks (șosete/носки)","bag (geantă/сумка)","glasses (ochelari/очки)","watch (ceas/часы)","scarf (fular/шарф)","coat (palton/пальто)","skirt (fustă/юбка)","belt (curea/ремень)"],
+       readText:"Today is the first day of school. Anna wears her new blue dress and her white shoes. Her bag is very big. Her friend Tom wears his school uniform — blue and white. Their teacher, Mrs. Green, is wearing a red jacket and black trousers. 'I love your uniforms!' says Mrs. Green.",
+       listenTitle:"Talking About Clothes",listenScene:"Two friends at a shopping mall in Los Angeles",
+       listenLines:[["Lisa","Wow, I love your jacket, Sam!"],["Sam","Thanks! It's my new jacket. My mom bought it for me."],["Lisa","What color is it?"],["Sam","It's dark blue. And I love your bag!"],["Lisa","Oh, thank you! It's my sister's bag. Her bag is beautiful."],["Sam","Is that your hat too?"],["Lisa","Yes! Her hat is red. Mine is green."]],
+       mistakes:["Is this you bag? → Is this your bag?","Her name are Maria → Her name is Maria","We love ours school → We love our school"]
+      },
+      {day:6,color:"#0891B2",title:"I Work Every Day — Present Simple",grammar:"Present Simple (positive)",vocab:"Daily Routine Verbs",
+       tr:{ro:{title:"Lucrez zilnic — Prezent Simplu",grammar:"Prezentul simplu (afirmativ)",vocab:"Verbe de rutină"},ru:{title:"Я работаю — Простое настоящее",grammar:"Простое настоящее (утверждение)",vocab:"Глаголы повседневной жизни"}},
+       grammarKey:"Present Simple: habits, facts, routines. I/You/We/They: base verb. He/She/It: verb + S (or ES for -ch/-sh/-x). Irregular: go/goes, do/does, have/has. Signal words: every day, always, usually, often, sometimes.",
+       vocabWords:["wake up (mă trezesc/просыпаться)","eat breakfast (mănânc micul dejun/завтракать)","go to work (merg la muncă/идти на работу)","study (studiez/учиться)","cook (gătesc/готовить)","clean (fac curățenie/убирать)","sleep (dorm/спать)","exercise (fac sport/заниматься спортом)","watch TV (mă uit la TV/смотреть телевизор)","read (citesc/читать)","write (scriu/писать)","listen (ascult/слушать)","speak (vorbesc/говорить)","drive (conduc/водить)","walk (merg pe jos/ходить)"],
+       readText:"Tom wakes up at 7 AM every day. He eats breakfast at 7:30. He goes to work at 8 AM. He works in an office. He eats lunch at noon. After work, he exercises and cooks dinner. He reads a book before bed. Tom goes to sleep at 10 PM.",
+       listenTitle:"A Morning Routine",listenScene:"Friends talking about daily routines",
+       listenLines:[["Maria","What time do you wake up, Jake?"],["Jake","I wake up at 6:30 every morning. It's early!"],["Maria","Wow! Do you eat breakfast?"],["Jake","Yes, I always eat breakfast. I drink coffee and eat eggs."],["Maria","I usually skip breakfast. I just drink coffee."],["Jake","That's not healthy, Maria! You should eat!"]],
+       mistakes:["She go to school every day → She goes","He have a car → He has","They eats lunch at noon → They eat"]
+      },
+      {day:7,color:"#6D28D9",title:"Do You Work? — Present Simple Questions",grammar:"Present Simple: Negative & Questions",vocab:"Time & Clock",
+       tr:{ro:{title:"Lucrezi? — Întrebări Prezent Simplu",grammar:"Prezentul simplu (negativ și interogativ)",vocab:"Timp și Ceas"},ru:{title:"Ты работаешь? — Вопросы",grammar:"Простое настоящее (отрицание и вопросы)",vocab:"Время и Часы"}},
+       grammarKey:"Negative: I/You/We/They + DON'T + verb. He/She/It + DOESN'T + verb. Questions: DO + I/you/we/they + verb? DOES + he/she/it + verb? Short answers: Yes, I do. / No, I don't. Yes, she does. / No, she doesn't.",
+       vocabWords:["o'clock (fix/ровно)","half past (și jumătate/половина)","quarter past (și un sfert/четверть)","quarter to (fără un sfert/без четверти)","morning (dimineața/утро)","afternoon (după-amiaza/день)","evening (seara/вечер)","midnight (miezul nopții/полночь)","noon (amiază/полдень)","hour (oră/час)","minute (minut/минута)","early (devreme/рано)","late (târziu/поздно)","on time (la timp/вовремя)","schedule (program/расписание)"],
+       readText:"Anna doesn't wake up early on weekends. She usually sleeps until 9 AM. She doesn't eat a big breakfast. She just drinks tea. Does she exercise? Yes, she does! She runs in the park every Saturday. Does she work on Sundays? No, she doesn't. She reads and relaxes.",
+       listenTitle:"Making Plans",listenScene:"Two coworkers in an American office",
+       listenLines:[["Tom","Do you want to have lunch today?"],["Sara","Sure! What time do you usually eat?"],["Tom","I eat at noon. Is that OK for you?"],["Sara","That works! Do you like the café on 5th Street?"],["Tom","Yes, I do! They have great sandwiches."],["Sara","Does it open at noon?"],["Tom","Yes, it does. See you there!"]],
+       mistakes:["She don't like coffee → She doesn't like coffee","Do he work here? → Does he work here?","He doesn't works on weekends → He doesn't work"]
+      },
+      {day:8,color:"#BE185D",title:"Always, Sometimes, Never — Adverbs of Frequency",grammar:"Adverbs of Frequency",vocab:"At Home",
+       tr:{ro:{title:"Întotdeauna, Uneori, Niciodată",grammar:"Adverbe de frecvență",vocab:"Vocabular Acasă"},ru:{title:"Всегда, Иногда, Никогда",grammar:"Наречия частотности",vocab:"Дома"}},
+       grammarKey:"always (100%), usually (80%), often (60%), sometimes (40%), rarely (20%), never (0%). Position: BEFORE the main verb but AFTER 'to be'. I always eat breakfast. She is usually happy. They never smoke.",
+       vocabWords:["kitchen (bucătărie/кухня)","bedroom (dormitor/спальня)","bathroom (baie/ванная)","living room (salon/гостиная)","sofa (canapea/диван)","lamp (lampă/лампа)","clock (ceas de perete/настенные часы)","refrigerator (frigider/холодильник)","mirror (oglindă/зеркало)","shower (duș/душ)","floor (podea/пол)","ceiling (tavan/потолок)","wall (perete/стена)","stairs (scări/лестница)","garden (grădină/сад)"],
+       readText:"Mike usually wakes up at 7 AM. He always drinks coffee in the morning — never tea! He sometimes exercises before work. He rarely cooks dinner. He usually orders pizza. He often watches TV in the evening. He never goes to bed after midnight.",
+       listenTitle:"Healthy Habits",listenScene:"A health interview on American radio",
+       listenLines:[["Host","Do you exercise regularly?"],["Guest","Yes! I always exercise in the morning. I never skip my workout."],["Host","What do you usually eat for breakfast?"],["Guest","I usually eat eggs and fruit. I sometimes have oatmeal."],["Host","Do you ever drink soda?"],["Guest","I rarely drink soda. I usually drink water or green tea."]],
+       mistakes:["She always is happy → She is always happy","He never doesn't eat breakfast → He never eats breakfast","I sometimes go always to the gym → I sometimes go to the gym"]
+      },
+      {day:9,color:"#065F46",title:"There Is a Park! — There Is / There Are",grammar:"There is / There are",vocab:"Places in a City",
+       tr:{ro:{title:"Există un parc! — There Is / There Are",grammar:"There is / There are",vocab:"Locuri dintr-un Oraș"},ru:{title:"Есть парк! — There Is / There Are",grammar:"There is / There are",vocab:"Места в городе"}},
+       grammarKey:"THERE IS + singular noun. THERE ARE + plural noun. Negative: There isn't / There aren't. Questions: Is there...? Are there...? Short answers: Yes, there is. / No, there isn't.",
+       vocabWords:["park (parc/парк)","restaurant (restaurant/ресторан)","hospital (spital/больница)","school (școală/школа)","store (magazin/магазин)","bank (bancă/банк)","library (bibliotecă/библиотека)","museum (muzeu/музей)","hotel (hotel/отель)","airport (aeroport/аэропорт)","street (stradă/улица)","corner (colț/угол)","building (clădire/здание)","bridge (pod/мост)","subway (metrou/метро)"],
+       readText:"New York City is a big city. There are many tall buildings and famous museums. There is a beautiful park called Central Park. There are thousands of restaurants. Is there a subway? Yes, there is! There are many subway lines. There isn't a beach in Manhattan, but there are beautiful views of the river.",
+       listenTitle:"Asking About the City",listenScene:"A tourist asking for directions in Boston",
+       listenLines:[["Tourist","Excuse me, is there a bank near here?"],["Local","Yes, there is! There's a bank on the next street."],["Tourist","Great! Is there a good restaurant nearby too?"],["Local","There are many restaurants! There's an Italian place on Main Street."],["Tourist","And is there a subway station?"],["Local","Yes, there are two stations nearby. Very convenient!"]],
+       mistakes:["There is many cars → There are many cars","Is there any parks? → Are there any parks?","There isn't no museum → There isn't a museum"]
+      },
+      {day:10,color:"#92400E",title:"I Can Swim! — Can / Can't",grammar:"Modal Verb: Can / Can't",vocab:"Sports & Activities",
+       tr:{ro:{title:"Pot să înot! — Can / Can't",grammar:"Verb modal: Can / Can't",vocab:"Sporturi și Activități"},ru:{title:"Я умею плавать! — Can / Can't",grammar:"Модальный глагол: Can / Can't",vocab:"Спорт и занятия"}},
+       grammarKey:"CAN = ability or permission. Always use base verb after can. I/You/He/She/We/They CAN swim. Negative: CANNOT / CAN'T. Questions: CAN + subject + verb? Short answers: Yes, I can. / No, I can't.",
+       vocabWords:["swim (înot/плавать)","run (alerg/бегать)","play soccer (joc fotbal/играть в футбол)","play basketball (joc baschet/баскетбол)","dance (dansez/танцевать)","sing (cânt/петь)","cook (gătesc/готовить)","drive (conduc/водить)","ride a bike (merg cu bicicleta/ездить на велосипеде)","ski (schiez/кататься на лыжах)","draw (desenez/рисовать)","play piano (cânt la pian/играть на пианино)","speak English (vorbesc engleză/говорить по-английски)","climb (cățăr/лазить)","jump (sar/прыгать)"],
+       readText:"My friend Sofia can do many things. She can swim very fast. She can play soccer and basketball. She can also cook amazing food! But she can't ski — she's afraid of snow. She can't play piano, but she can sing beautifully. Can she speak English? Yes, she can! She speaks it very well.",
+       listenTitle:"Job Interview",listenScene:"A job interview at an American company",
+       listenLines:[["Manager","Can you use computers?"],["Applicant","Yes, I can. I can use Excel and Word very well."],["Manager","Can you speak any other languages?"],["Applicant","Yes! I can speak Spanish and a little French."],["Manager","Great. Can you work on weekends?"],["Applicant","I can work Saturdays, but I can't work Sundays."]],
+       mistakes:["She can swims → She can swim","Can he to drive? → Can he drive?","I can't to speak French → I can't speak French"]
+      },
+    ];
+
+    // Build simple lessons for days 11-30
+    const remaining = [
+      {day:11,color:"#1D4ED8",title:"I'm Eating Now! — Present Continuous",grammar:"Present Continuous (+)",vocab:"Weather & Seasons",
+       tr:{ro:{title:"Mănânc acum! — Prezent Continuu",grammar:"Prezentul continuu (afirmativ)",vocab:"Vreme și Anotimpuri"},ru:{title:"Я сейчас ем! — Настоящее продолженное",grammar:"Настоящее продолженное (+)",vocab:"Погода и Времена года"}},
+       grammarKey:"Present Continuous = action happening RIGHT NOW. Subject + AM/IS/ARE + verb-ING. I am eating. She is running. They are studying. Spelling: run→running, sit→sitting, make→making (drop e).",
+       vocabWords:["sunny (însorit/солнечный)","rainy (ploios/дождливый)","cloudy (înnoros/облачный)","windy (vântos/ветреный)","snowy (nins/снежный)","hot (cald/жаркий)","cold (frig/холодный)","warm (călduros/тёплый)","storm (furtună/гроза)","spring (primăvară/весна)","summer (vară/лето)","fall/autumn (toamnă/осень)","winter (iarnă/зима)","temperature (temperatură/температура)","forecast (prognoză/прогноз)"],
+       readText:"Look outside! It is raining now. The wind is blowing strongly. Anna is wearing a coat because it is cold. Her brother is drinking hot chocolate. Their mother is making soup in the kitchen. The cat is sleeping near the heater. Everyone is staying inside today!",
+       listenScene:"Weather report on American TV",
+       listenLines:[["Reporter","Good morning! I'm standing outside the White House. It is snowing!"],["Anchor","What are people doing?"],["Reporter","People are wearing big coats. Children are playing in the snow!"],["Anchor","Is it very cold?"],["Reporter","Yes! The temperature is 28°F. Brr! It's freezing!"]],
+       mistakes:["She is run → She is running","They are studyng → They are studying","I am makeing dinner → I am making dinner"]
+      },
+      {day:12,color:"#6D28D9",title:"Is She Running? — Present Continuous Questions",grammar:"Present Continuous: Questions & Negative",vocab:"Emotions & Feelings",
+       tr:{ro:{title:"Aleargă ea? — Prezent Continuu Întrebări",grammar:"Prezentul continuu (interogativ și negativ)",vocab:"Emoții și Sentimente"},ru:{title:"Она бежит? — Вопросы",grammar:"Настоящее продолженное (вопросы и отрицание)",vocab:"Эмоции и Чувства"}},
+       grammarKey:"Questions: AM/IS/ARE + subject + verb-ING? Is she running? Are they playing? Negative: I am NOT eating. She ISN'T sleeping. They AREN'T working. Short answers: Yes, she is. / No, she isn't.",
+       vocabWords:["happy (fericit/счастливый)","sad (trist/грустный)","angry (supărat/злой)","excited (entuziasmat/взволнованный)","nervous (nervos/нервный)","bored (plictisit/скучающий)","tired (obosit/уставший)","surprised (surprins/удивлённый)","scared (speriat/испуганный)","proud (mândru/гордый)","confused (confuz/запутанный)","calm (calm/спокойный)","worried (îngrijorat/обеспокоенный)","love (iubire/любовь)","laugh (râs/смеяться)"],
+       readText:"Is Maria crying? No, she isn't. She is laughing! Is Tom sleeping? No, he isn't sleeping. He is studying hard. Are the children playing? Yes, they are! They are playing in the park. Is everyone happy? Yes, they are! It is a beautiful day in California.",
+       listenScene:"Talking about what's happening at a party",
+       listenLines:[["Alex","Hey, is Jake dancing?"],["Mia","No, he isn't. He is talking to Sarah."],["Alex","Are the kids eating the cake?"],["Mia","Yes! They are eating and laughing. So cute!"],["Alex","Is Mrs. Davis singing?"],["Mia","Yes, she is! And she is singing beautifully."]],
+       mistakes:["Is she run? → Is she running?","They aren't studying → correct!","He is not sleeping? → Is he not sleeping? / Isn't he sleeping?"]
+      },
+      {day:13,color:"#047857",title:"On, In, Under — Prepositions of Place",grammar:"Prepositions of Place",vocab:"The House & Rooms",
+       tr:{ro:{title:"Pe, În, Sub — Prepoziții de Loc",grammar:"Prepoziții de loc",vocab:"Casa și Camerele"},ru:{title:"На, В, Под — Предлоги места",grammar:"Предлоги места",vocab:"Дом и Комнаты"}},
+       grammarKey:"ON = touching a surface (on the table). IN = inside (in the box). UNDER = below (under the bed). NEXT TO = beside. BETWEEN = in the middle of two things. IN FRONT OF = before. BEHIND = at the back. NEAR = close to.",
+       vocabWords:["on (pe/на)","in (în/в)","under (sub/под)","next to (lângă/рядом с)","between (între/между)","behind (în spatele/за)","in front of (în fața/перед)","near (aproape de/около)","above (deasupra/над)","below (dedesubt/ниже)","inside (înăuntru/внутри)","outside (afară/снаружи)","corner (colț/угол)","middle (mijloc/середина)","opposite (vizavi/напротив)"],
+       readText:"My cat is on the sofa. My keys are in my bag. My shoes are under the bed. The TV is next to the window. The table is in the middle of the room. My phone is on the table, between the lamp and the book. My dog is behind the door!",
+       listenScene:"Looking for lost things at home",
+       listenLines:[["Mom","Where are my glasses?"],["Child","They are on the kitchen table, next to your coffee."],["Mom","And where is my phone?"],["Child","It's in your bag, Mom!"],["Mom","Is the cat inside or outside?"],["Child","The cat is under the sofa. She is sleeping."]],
+       mistakes:["The book is in the table → on the table","She is on the kitchen → in the kitchen","The dog is on between the chairs → between the chairs"]
+      },
+      {day:14,color:"#B45309",title:"Some Milk, Any Bread — Countable & Uncountable",grammar:"Countable/Uncountable + Some/Any",vocab:"Shopping",
+       tr:{ro:{title:"Ceva lapte, Vreo pâine",grammar:"Numărabile/Nenumărabile + some/any",vocab:"Cumpărături"},ru:{title:"Немного молока, Есть ли хлеб",grammar:"Исчисляемые/Неисчисляемые + some/any",vocab:"Магазин"}},
+       grammarKey:"SOME = positive sentences (I have some milk). ANY = questions and negatives (Do you have any milk? I don't have any milk). Countable: apples, books (can count). Uncountable: water, milk, bread, rice, money, information (no plural).",
+       vocabWords:["some (ceva, niște/немного)","any (vreo, nici/какой-либо)","much (mult - uncountable/много)","many (mulți - countable/много)","a lot of (mult/mulți/много)","a few (câțiva/несколько)","a little (puțin/немного)","enough (suficient/достаточно)","price (preț/цена)","cheap (ieftin/дешёвый)","expensive (scump/дорогой)","list (listă/список)","cart (cărucior/тележка)","aisle (culoar/ряд)","cashier (casier/кассир)"],
+       readText:"Sarah is at the grocery store. She has a shopping list. She needs some bread, some milk, and some apples. She doesn't have any coffee at home. Are there any oranges? Yes, there are! She buys six oranges. She doesn't need any sugar — she has a lot at home.",
+       listenScene:"Shopping at an American grocery store",
+       listenLines:[["Customer","Excuse me, do you have any almond milk?"],["Employee","Yes! There's some in aisle 3."],["Customer","Is there any fresh bread?"],["Employee","Sorry, we don't have any right now. It comes at 4 PM."],["Customer","Do you have some water bottles?"],["Employee","Yes, there are some on sale today — very cheap!"]],
+       mistakes:["I don't have some milk → any milk","There are much apples → many apples","She has many money → much money"]
+      },
+      {day:15,color:"#1F2937",title:"🏆 Review Day — Days 1–14",grammar:"Full Review: Days 1–14",vocab:"Mixed Review",isReview:true,
+       tr:{ro:{title:"🏆 Zi de Recapitulare — Zilele 1–14",grammar:"Recapitulare completă",vocab:"Vocabular mixt"},ru:{title:"🏆 День повторения — Дни 1–14",grammar:"Полное повторение",vocab:"Смешанный словарный запас"}},
+       grammarKey:"Review ALL topics: To Be, Subject Pronouns, Articles (A/An/The), Plurals, Possessive Adjectives, Present Simple (+/-/?), Adverbs of Frequency, There Is/Are, Can/Can't, Present Continuous, Prepositions, Some/Any.",
+       vocabWords:["All vocabulary from Days 1-14","Focus on words you found difficult","Practice spelling","Review pronunciation","Make your own sentences"],
+       readText:"It is a beautiful Sunday morning in New York. Maria is sitting in Central Park. She is reading a book. Her friend Tom can't come today — he is working. There are many people in the park. Some children are playing. A dog is running near the fountain. Maria always loves Sundays!",
+       listenScene:"A casual conversation reviewing all grammar",
+       listenLines:[["Anna","Is this your umbrella?"],["Tom","No, it isn't. I don't have an umbrella."],["Anna","Are there any cafés near here?"],["Tom","Yes, there are some on this street."],["Anna","Can you recommend one?"],["Tom","The Blue Cup is always good. They make great coffee!"]],
+       mistakes:["This is a apple → an apple","She don't like coffee → doesn't like","There are much people → many people","Can he to swim? → Can he swim?"]
+      },
+      {day:16,color:"#B91C1C",title:"Yesterday — Past Simple: Was / Were",grammar:"Past Simple: Was / Were",vocab:"Travel & Transport",
+       tr:{ro:{title:"Ieri — Trecut Simplu: Was / Were",grammar:"Trecutul simplu: Was / Were",vocab:"Călătorie și Transport"},ru:{title:"Вчера — Was / Were",grammar:"Простое прошедшее: Was / Were",vocab:"Путешествие и транспорт"}},
+       grammarKey:"Past of TO BE: I/He/She/It → WAS. You/We/They → WERE. Negative: wasn't / weren't. Questions: Was she...? Were they...? Signal words: yesterday, last week, ago, in 2020.",
+       vocabWords:["airplane (avion/самолёт)","train (tren/поезд)","bus (autobuz/автобус)","car (mașină/машина)","taxi (taxi/такси)","subway (metrou/метро)","ticket (bilet/билет)","passport (pașaport/паспорт)","luggage (bagaj/багаж)","hotel (hotel/отель)","beach (plajă/пляж)","mountain (munte/гора)","trip (excursie/поездка)","vacation (vacanță/отпуск)","destination (destinație/пункт назначения)"],
+       readText:"Last summer, Maria was in Hawaii with her family. It was amazing! The weather was hot and sunny every day. The beaches were beautiful. She was very happy. Her children were excited too. The hotel was perfect. But the flight was long — 10 hours! Was it worth it? Yes, it was!",
+       listenScene:"Talking about a vacation at the airport",
+       listenLines:[["Tom","How was your vacation?"],["Sarah","It was fantastic! I was in Paris for a week."],["Tom","Were the people friendly?"],["Sarah","Yes, they were very nice! The food was amazing."],["Tom","Was the Eiffel Tower beautiful?"],["Sarah","It was incredible! But the line was very long."]],
+       mistakes:["She were happy → She was happy","Were he at home? → Was he at home?","They was tired → They were tired"]
+      },
+      {day:17,color:"#1D4ED8",title:"I Worked Yesterday — Past Simple Regular",grammar:"Past Simple Regular Verbs (+ed)",vocab:"Holidays & Vacation",
+       tr:{ro:{title:"Am lucrat ieri — Trecut Simplu Regular",grammar:"Trecutul simplu verbe regulate (+ed)",vocab:"Vacanțe și Concedii"},ru:{title:"Я работал вчера — Правильные глаголы",grammar:"Правильные глаголы прошедшего (+ed)",vocab:"Праздники и Отпуск"}},
+       grammarKey:"Regular verbs: add -ED in past simple. work→worked, play→played. Rules: verb+E → +D (like→liked). consonant+Y → IED (study→studied). short vowel+consonant → double+ED (stop→stopped). All subjects use same form.",
+       vocabWords:["visited (vizitat/посетил)","traveled (călătorit/путешествовал)","stayed (rămas/остался)","enjoyed (s-a bucurat/наслаждался)","relaxed (s-a relaxat/расслабился)","cooked (gătit/готовил)","cleaned (curățat/убрал)","watched (urmărit/смотрел)","played (jucat/играл)","walked (mers pe jos/гулял)","talked (vorbit/разговаривал)","listened (ascultat/слушал)","worked (lucrat/работал)","rested (odihnit/отдыхал)","arrived (ajuns/приехал)"],
+       readText:"Last week, Tom visited his grandparents in Florida. He traveled by plane. He stayed at their house for 5 days. He cooked breakfast every morning. He walked on the beach every evening. He relaxed by the pool. He called his friends and talked for hours. He arrived home on Sunday. He enjoyed the trip a lot!",
+       listenScene:"Monday morning at an American office",
+       listenLines:[["Boss","How was your weekend?"],["Jake","Great! I visited my sister in Chicago."],["Boss","Did you enjoy it?"],["Jake","Yes! We walked along the river and watched a movie."],["Boss","Did she cook for you?"],["Jake","Yes, she cooked amazing pasta! I relaxed a lot."]],
+       mistakes:["He stoped the car → stopped","She studyed last night → studied","They visitied Rome → visited"]
+      },
+      {day:18,color:"#047857",title:"I Went to the Park — Past Simple Irregular",grammar:"Past Simple Irregular Verbs",vocab:"Weekend Activities",
+       tr:{ro:{title:"Am mers în parc — Trecut Neregulat",grammar:"Trecutul simplu verbe neregulate",vocab:"Activități de Weekend"},ru:{title:"Я пошёл в парк — Неправильные глаголы",grammar:"Неправильные глаголы прошедшего",vocab:"Занятия на выходных"}},
+       grammarKey:"Irregular verbs do NOT follow the -ED rule. Must memorize! go→went, come→came, eat→ate, drink→drank, see→saw, get→got, make→made, take→took, have→had, buy→bought, say→said, know→knew, give→gave, drive→drove.",
+       vocabWords:["went (mers/пошёл)","came (venit/пришёл)","ate (mâncat/ел)","drank (băut/пил)","saw (văzut/видел)","got (primit/получил)","made (făcut/сделал)","took (luat/взял)","had (avut/был)","bought (cumpărat/купил)","said (zis/сказал)","knew (știut/знал)","gave (dat/дал)","drove (condus/ехал)","slept (dormit/спал)"],
+       readText:"Last Saturday, I went to a baseball game with my friends. We ate hot dogs and drank lemonade. We saw a great home run! After the game, we took the subway downtown. We had dinner at a Mexican restaurant. I bought a team jersey. We came home late. I slept very well that night!",
+       listenScene:"Friends talking about their weekend",
+       listenLines:[["Lisa","What did you do this weekend?"],["Mark","I went to the farmers market on Saturday!"],["Lisa","Oh nice! What did you buy?"],["Mark","I bought fresh strawberries and homemade bread. I also saw my neighbor there!"],["Lisa","Did you eat there?"],["Mark","Yes, I had amazing tacos. They were so good!"]],
+       mistakes:["I goed to the park → went","She eated breakfast → ate","He buyed a new car → bought"]
+      },
+      {day:19,color:"#7C3AED",title:"Did You Go? — Past Simple Questions",grammar:"Past Simple: Negative & Questions",vocab:"At the Restaurant",
+       tr:{ro:{title:"Te-ai dus? — Trecut Simplu Întrebări",grammar:"Trecutul simplu: negativ și interogativ",vocab:"La Restaurant"},ru:{title:"Ты ходил? — Вопросы в прошедшем",grammar:"Простое прошедшее: отрицание и вопросы",vocab:"В ресторане"}},
+       grammarKey:"Past negative: DID NOT (DIDN'T) + base verb. I didn't go. She didn't eat. Questions: DID + subject + base verb? Did you go? Did she eat? Short answers: Yes, I did. / No, I didn't. Note: Did she went? ❌ → Did she go? ✅",
+       vocabWords:["menu (meniu/меню)","waiter (chelner/официант)","appetizer (aperitiv/закуска)","main course (fel principal/основное блюдо)","dessert (desert/десерт)","check/bill (nota de plată/счёт)","tip (bacșiș/чаевые)","reservation (rezervare/резервация)","order (comandă/заказ)","recommend (recomand/рекомендовать)","delicious (delicios/вкусный)","spicy (picant/острый)","vegetarian (vegetarian/вегетарианский)","gluten-free (fără gluten/без глютена)","refill (reumplere/добавка)"],
+       readText:"Did Maria enjoy her dinner last night? Yes, she did! She went to a new Italian restaurant. She didn't have a reservation, but she got a table. She ordered pasta and a salad. She didn't order dessert because she was full. The waiter was friendly. She left a big tip. She didn't go home until 11 PM!",
+       listenScene:"At an American restaurant",
+       listenLines:[["Waiter","Good evening! Did you make a reservation?"],["Customer","No, I didn't. Is that OK?"],["Waiter","Of course! What did you have in mind?"],["Customer","I didn't eat lunch, so I'm very hungry."],["Waiter","Did you see our specials on the board?"],["Customer","No, I didn't. What do you recommend?"],["Waiter","Our salmon is amazing tonight!"]],
+       mistakes:["Did she went? → Did she go?","He didn't went home → didn't go","Did you enjoyed it? → Did you enjoy it?"]
+      },
+      {day:20,color:"#B45309",title:"I'm Going to Study! — Future: Going To",grammar:"Future: be going to",vocab:"Plans & Goals",
+       tr:{ro:{title:"O să studiez! — Viitor cu Going To",grammar:"Viitorul cu be going to",vocab:"Planuri și Obiective"},ru:{title:"Я собираюсь учиться! — Going To",grammar:"Будущее время: be going to",vocab:"Планы и цели"}},
+       grammarKey:"BE GOING TO = plans and intentions. I am going to study. She is going to travel. They are going to work. Negative: I'm not going to... Questions: Are you going to...? Is she going to...? Short answers: Yes, I am. / No, I'm not.",
+       vocabWords:["plan (plan/план)","goal (obiectiv/цель)","dream (vis/мечта)","future (viitor/будущее)","next week (săptămâna viitoare/следующая неделя)","next year (anul viitor/следующий год)","soon (curând/скоро)","someday (cândva/когда-нибудь)","graduate (absolvent/выпускать)","move (muta/переехать)","start (începe/начинать)","finish (termina/заканчивать)","achieve (realiza/достигать)","improve (îmbunătăți/улучшать)","succeed (reuși/добиться успеха)"],
+       readText:"Maria has big plans for next year. She is going to finish English school. She is going to apply for a job at an American company. She is not going to give up! Her brother is going to visit her in the summer. They are going to travel to California together. Maria is going to make her dreams come true!",
+       listenScene:"New Year's resolutions in America",
+       listenLines:[["Friend","What are you going to do differently this year?"],["Anna","I'm going to exercise every day! And I'm going to eat healthier."],["Friend","Are you going to travel?"],["Anna","Yes! I'm going to visit my cousin in Texas."],["Friend","Are you going to learn anything new?"],["Anna","I'm going to take a cooking class! I'm not going to order takeout every night!"]],
+       mistakes:["She is go to study → going to study","Are you going eat? → going to eat","I going to travel → I am going to travel"]
+      },
+      {day:21,color:"#0891B2",title:"Bigger, Smaller, Best! — Comparatives & Superlatives",grammar:"Comparatives & Superlatives",vocab:"Describing People",
+       tr:{ro:{title:"Mai mare, Cel mai bun! — Comparative",grammar:"Grade de comparație",vocab:"Descrierea Persoanelor"},ru:{title:"Больше, Лучший! — Сравнительные",grammar:"Степени сравнения",vocab:"Описание людей"}},
+       grammarKey:"Comparative (2 things): short adj + ER (bigger, taller). 2+ syllables: MORE + adj (more beautiful). Superlative (group): THE + adj + EST (the biggest). THE MOST + adj (the most beautiful). Irregular: good→better→best, bad→worse→worst, far→farther→farthest.",
+       vocabWords:["tall (înalt/высокий)","short (scund/низкий)","big (mare/большой)","small (mic/маленький)","old (bătrân/старый)","young (tânăr/молодой)","fast (rapid/быстрый)","slow (lent/медленный)","expensive (scump/дорогой)","cheap (ieftin/дешёвый)","beautiful (frumos/красивый)","smart (inteligent/умный)","funny (amuzant/смешной)","kind (amabil/добрый)","strong (puternic/сильный)"],
+       readText:"New York is big, but Los Angeles is bigger. Alaska is the biggest state in America! The cheetah is the fastest animal. A bicycle is slower than a car. Mount Everest is the highest mountain in the world. Summer in Arizona is hotter than summer in New York. The best season in California is spring — it's the most beautiful!",
+       listenScene:"Comparing things in everyday American conversation",
+       listenLines:[["Kim","Which is better — coffee or tea?"],["Dan","Coffee is stronger and more energizing. Tea is healthier though."],["Kim","Is your new apartment bigger than the old one?"],["Dan","Yes! It's much bigger. It's the best place I've ever lived!"],["Kim","Is it more expensive?"],["Dan","A little. But it's cheaper than I expected for New York!"]],
+       mistakes:["She is more tall → She is taller","He is the most fastest → He is the fastest","This is gooder than that → This is better"]
+      },
+      {day:22,color:"#6D28D9",title:"Where? When? How? — WH- Questions",grammar:"WH- Question Words",vocab:"Directions",
+       tr:{ro:{title:"Unde? Când? Cum? — Cuvinte Interogative",grammar:"Cuvinte interogative WH-",vocab:"Direcții"},ru:{title:"Где? Когда? Как? — Вопросительные слова",grammar:"Вопросительные слова WH-",vocab:"Направления"}},
+       grammarKey:"WHO = people (Who is she?). WHAT = things/actions (What do you do?). WHERE = place (Where do you live?). WHEN = time (When is your birthday?). WHY = reason (Why are you late?). HOW = manner (How are you?). WHICH = choice (Which do you prefer?).",
+       vocabWords:["turn left (virați la stânga/повернуть налево)","turn right (virați la dreapta/повернуть направо)","go straight (mergeți drept/идти прямо)","corner (colț/угол)","block (bloc/квартал)","traffic light (semafor/светофор)","crosswalk (trecere de pietoni/пешеходный переход)","map (hartă/карта)","directions (indicații/направления)","north (nord/север)","south (sud/юг)","east (est/восток)","west (vest/запад)","far (departe/далеко)","close (aproape/близко)"],
+       readText:"Excuse me, where is the nearest subway station? It's two blocks north. How long does it take to walk? About 5 minutes. When does the next train come? Every 10 minutes. Why is this street closed? There's construction. Which way is Times Square? Go straight and turn left at the traffic light.",
+       listenScene:"Asking for directions in Manhattan",
+       listenLines:[["Tourist","Excuse me, where is the Empire State Building?"],["Local","It's on 34th Street. Go straight two blocks, then turn right."],["Tourist","How far is it?"],["Local","About a 10-minute walk. It's not far."],["Tourist","When does it open?"],["Local","It opens at 8 AM every day."],["Tourist","Thank you! Which subway can I take?"],["Local","The B or D train. The station is right there."]],
+       mistakes:["Where you live? → Where do you live?","How old has she? → How old is she?","Why did she went? → Why did she go?"]
+      },
+      {day:23,color:"#BE185D",title:"Yes, I Do! — Short Answers",grammar:"Short Answers in English",vocab:"Jobs & Professions",
+       tr:{ro:{title:"Da, fac! — Răspunsuri Scurte",grammar:"Răspunsuri scurte în engleză",vocab:"Locuri de Muncă"},ru:{title:"Да! — Краткие ответы",grammar:"Краткие ответы",vocab:"Работа и Профессии"}},
+       grammarKey:"Short answers use the auxiliary verb: Do you work? Yes, I DO. / No, I DON'T. Does she study? Yes, she DOES. / No, she DOESN'T. Are you happy? Yes, I AM. / No, I'M NOT. Can he swim? Yes, he CAN. / No, he CAN'T. Did they go? Yes, they DID. / No, they DIDN'T.",
+       vocabWords:["doctor (doctor/врач)","nurse (asistentă/медсестра)","engineer (inginer/инженер)","teacher (profesor/учитель)","lawyer (avocat/юрист)","chef (bucătar/повар)","police officer (ofițer de poliție/полицейский)","firefighter (pompier/пожарный)","pilot (pilot/пилот)","journalist (jurnalist/журналист)","programmer (programator/программист)","accountant (contabil/бухгалтер)","architect (arhitect/архитектор)","driver (șofer/водитель)","scientist (om de știință/учёный)"],
+       readText:"Tom is a doctor. Does he work in a hospital? Yes, he does. Does he work on weekends? Sometimes he does. Can he perform surgery? Yes, he can! Is he tired after work? Yes, he is — but he loves his job. Did he study for many years? Yes, he did — 12 years!",
+       listenScene:"A job interview in the USA",
+       listenLines:[["Interviewer","Do you have experience in marketing?"],["Candidate","Yes, I do. I worked at Apple for 3 years."],["Interviewer","Did you manage a team?"],["Candidate","Yes, I did. I managed a team of 5 people."],["Interviewer","Can you start next Monday?"],["Candidate","Yes, I can! I'm very excited about this opportunity."],["Interviewer","Are you familiar with our products?"],["Candidate","Yes, I am. I use them every day!"]],
+       mistakes:["Yes, I do work → Yes, I do.","No, she doesn't not → No, she doesn't.","Did she? Yes, she did went → Yes, she did."]
+      },
+      {day:24,color:"#065F46",title:"And, But, Because — Conjunctions",grammar:"Basic Conjunctions",vocab:"Health & Body",
+       tr:{ro:{title:"Și, Dar, Pentru că — Conjuncții",grammar:"Conjuncții de bază",vocab:"Sănătate și Corp"},ru:{title:"И, Но, Потому что — Союзы",grammar:"Основные союзы",vocab:"Здоровье и тело"}},
+       grammarKey:"AND = adding (I eat and drink). BUT = contrast (I like coffee but not tea). BECAUSE = reason (I'm tired because I worked). SO = result (It's cold, so I wear a coat). OR = choice (Tea or coffee?). BUT SO AND OR BECAUSE — remember: FANBOYS (For And Nor But Or Yet So).",
+       vocabWords:["head (cap/голова)","neck (gât/шея)","shoulder (umăr/плечо)","arm (braț/рука)","hand (mână/рука)","stomach (stomac/живот)","back (spate/спина)","leg (picior/нога)","knee (genunchi/колено)","foot (picior/стопа)","eye (ochi/глаз)","ear (ureche/ухо)","nose (nas/нос)","mouth (gură/рот)","tooth (dinte/зуб)"],
+       readText:"I go to the gym because I want to be healthy. I lift weights and run on the treadmill. I eat vegetables, but I also eat chocolate sometimes. I drink water, but not coffee, because it gives me headaches. I sleep 8 hours every night, so I am usually energetic. I take care of my body because my health is important!",
+       listenScene:"At the doctor's office in America",
+       listenLines:[["Doctor","How do you feel?"],["Patient","My head hurts and my throat is sore."],["Doctor","When did it start?"],["Patient","Yesterday. I felt fine in the morning, but then I got cold."],["Doctor","Do you have a fever?"],["Patient","Yes, I do. I feel hot and tired."],["Doctor","You have a cold. Rest and drink water, and you'll feel better soon."]],
+       mistakes:["I like coffee but I drink it → I like coffee so I drink it","She is tired because but she works → because she works","He is tall and but slim → tall but slim"]
+      },
+      {day:25,color:"#92400E",title:"Stop! Sit Down! — Imperatives",grammar:"Imperative Form",vocab:"Classroom Language",
+       tr:{ro:{title:"Stop! Stai jos! — Imperativul",grammar:"Forma imperativă",vocab:"Limbaj în Clasă"},ru:{title:"Стоп! Садись! — Повелительное",grammar:"Повелительное наклонение",vocab:"Язык классной комнаты"}},
+       grammarKey:"Imperative = commands and requests. Use BASE VERB (no subject). Sit down! Open your book! Negative: DON'T + verb. Don't talk! Don't be late! Polite requests: add 'please'. Please sit down. Let's = Let us (suggestions). Let's practice!",
+       vocabWords:["open (deschide/открой)","close (închide/закрой)","sit down (stai jos/садись)","stand up (ridică-te/встань)","write (scrie/пиши)","read (citește/читай)","listen (ascultă/слушай)","repeat (repetă/повтори)","answer (răspunde/отвечай)","ask (întreabă/спрашивай)","practice (exersează/практикуй)","homework (temă de casă/домашнее задание)","question (întrebare/вопрос)","understand (înțelege/понять)","mistake (greșeală/ошибка)"],
+       readText:"Welcome to English class! Open your books to page 10. Read the text, please. Don't talk to your classmate right now. Listen carefully. Repeat after me: 'Hello, how are you?' Don't be afraid to make mistakes. Practice every day! Let's work together. Ask questions when you don't understand.",
+       listenScene:"In an American English classroom",
+       listenLines:[["Teacher","Good morning! Sit down, please."],["Teacher","Open your books to page 15. Don't look at the answers yet!"],["Student","Can I ask a question?"],["Teacher","Of course! Don't be shy. Ask your question."],["Student","I don't understand exercise 3."],["Teacher","No problem. Let's do it together. Listen carefully."],["Teacher","Everyone, repeat after me: 'Where do you live?'"],["Students","Where do you live?"]],
+       mistakes:["Please to sit down → Please sit down","Don't to talk → Don't talk","Lets to practice → Let's practice"]
+      },
+      {day:26,color:"#1D4ED8",title:"What Time Is It? — Time & Dates",grammar:"Time, Dates, Days & Months",vocab:"A Typical American Day",
+       tr:{ro:{title:"Cât e ceasul? — Ora și Data",grammar:"Ora, datele, zilele săptămânii",vocab:"O Zi Tipică Americană"},ru:{title:"Сколько время? — Время и Даты",grammar:"Время, даты, дни недели",vocab:"Типичный американский день"}},
+       grammarKey:"Time: It's 3 o'clock. It's half past 2. It's quarter past 4. It's quarter to 5. AM = morning, PM = afternoon/evening. Dates: Month + Day + Year (American style). January 15th, 2025. Days: Monday, Tuesday, Wednesday, Thursday, Friday, Saturday, Sunday.",
+       vocabWords:["Monday (luni/понедельник)","Tuesday (marți/вторник)","Wednesday (miercuri/среда)","Thursday (joi/четверг)","Friday (vineri/пятница)","Saturday (sâmbătă/суббота)","Sunday (duminică/воскресенье)","January (ianuarie/январь)","February (februarie/февраль)","March (martie/март)","April (aprilie/апрель)","July (iulie/июль)","October (octombrie/октябрь)","December (decembrie/декабрь)","birthday (zi de naștere/день рождения)"],
+       readText:"Tom's typical American day: He wakes up at 6:45 AM on Monday. He leaves for work at 8:00 AM. He has a meeting at 10:30 AM. Lunch is at noon — 12:00 PM. He finishes work at 5:00 PM. He exercises from 6:00 to 7:00 PM. He goes to bed at 10:30 PM. On Saturdays, he sleeps until 9 AM!",
+       listenScene:"Making appointments on the phone",
+       listenLines:[["Secretary","Good morning, Dr. Smith's office."],["Patient","Hi, I need to make an appointment."],["Secretary","Of course. What day works for you?"],["Patient","Is Thursday afternoon available?"],["Secretary","Yes! We have an opening at 3:15 PM."],["Patient","Perfect. What's the date?"],["Secretary","That's Thursday, March 20th."],["Patient","Great! See you then."]],
+       mistakes:["It's half past to 3 → half past 3","See you in Monday → on Monday","My birthday is in March 15 → on March 15th"]
+      },
+      {day:27,color:"#6D28D9",title:"How Much? How Many? — Quantifiers",grammar:"Much / Many / A lot of / A few / A little",vocab:"Money & Shopping (USD)",
+       tr:{ro:{title:"Cât de mult? Câți? — Cuantificatori",grammar:"Much / Many / A lot of / A few / A little",vocab:"Bani și Prețuri (USD)"},ru:{title:"Сколько? — Квантификаторы",grammar:"Much / Many / A lot of / A few / A little",vocab:"Деньги и Цены (USD)"}},
+       grammarKey:"MUCH + uncountable (much water, much money) — questions/negatives. MANY + countable (many apples, many students) — questions/negatives. A LOT OF = both (a lot of water, a lot of books) — positive. A FEW = a small number (a few friends). A LITTLE = a small amount (a little sugar).",
+       vocabWords:["dollar (dolar/доллар)","cent (cent/цент)","price (preț/цена)","cost (cost/стоимость)","pay (plăti/платить)","afford (permite/позволить)","discount (reducere/скидка)","sale (reducere/распродажа)","receipt (chitanță/чек)","budget (buget/бюджет)","change (rest/сдача)","wallet (portofel/кошелёк)","cash (numerar/наличные)","credit card (card de credit/кредитная карта)","free (gratuit/бесплатный)"],
+       readText:"American prices: A coffee costs about $5. A movie ticket is $15. A pizza is around $20. How much money do you need for a week in New York? A lot! There are many expensive restaurants, but also many cheap ones. You need a little luck to find the best deals. There are a few things that are free — like walking in Central Park!",
+       listenScene:"Shopping at an American store",
+       listenLines:[["Customer","Excuse me, how much is this jacket?"],["Staff","It's $89.99. But there's a sale — 20% off today!"],["Customer","So how much do I pay?"],["Staff","About $72. Do you have many items?"],["Customer","Just a few — this jacket and two shirts."],["Staff","Do you need much time to decide?"],["Customer","No! I'll take them. Do you accept credit cards?"],["Staff","Yes, we do!"]],
+       mistakes:["How many money do you have? → How much money","I have much friends → many friends","There's a few water left → a little water"]
+      },
+      {day:28,color:"#1F2937",title:"🏆 Review Day — Days 16–27",grammar:"Full Review: Days 16–27",vocab:"Mixed Review 2",isReview:true,
+       tr:{ro:{title:"🏆 Zi de Recapitulare — Zilele 16–27",grammar:"Recapitulare completă: Zilele 16–27",vocab:"Vocabular mixt 2"},ru:{title:"🏆 День повторения — Дни 16–27",grammar:"Полное повторение: Дни 16–27",vocab:"Смешанный словарный запас 2"}},
+       grammarKey:"Review: Past Simple (was/were, regular -ed, irregular, questions/negatives), Future Going To, Comparatives & Superlatives, WH- Questions, Short Answers, Conjunctions (and/but/because/so/or), Imperatives, Time & Dates, Quantifiers (much/many/a lot of).",
+       vocabWords:["Review vocabulary from Days 16-27","Travel & Transport","Holidays","Weekend Activities","Restaurant","Plans & Goals","Describing People","Directions","Jobs & Professions","Health & Body","Classroom Language","Time & Dates","Money & Shopping"],
+       readText:"Last year, Jake traveled to California. He went by plane. The flight was 5 hours, but it was comfortable. He visited many places — he went to Hollywood, Santa Monica, and Yosemite. Los Angeles was bigger than he expected! The food was more delicious than in his city. He's going to go back next summer because he loved it!",
+       listenScene:"Reviewing all grammar in a conversation",
+       listenLines:[["Anna","Did you go anywhere last weekend?"],["Tom","Yes! I went to a concert. It was amazing!"],["Anna","Who did you go with?"],["Tom","My friend Jake. He loves music more than I do!"],["Anna","Are you going to go again?"],["Tom","Yes, I am! But I didn't buy tickets yet because they were expensive."],["Anna","How much were they?"],["Tom","$80 each. A little expensive, but worth it!"]],
+       mistakes:["He goed to California → went","She is more tall → taller","Did you went? → Did you go?","There's much concerts → many concerts"]
+      },
+      {day:29,color:"#047857",title:"Putting It All Together — Full Conversation",grammar:"Mixed Grammar Review (All A1)",vocab:"Real American Conversations",
+       tr:{ro:{title:"Totul laolaltă — Conversație Completă",grammar:"Recapitulare gramaticală mixtă",vocab:"Conversații americane reale"},ru:{title:"Всё вместе — Полноценный разговор",grammar:"Смешанное повторение грамматики",vocab:"Реальные американские разговоры"}},
+       grammarKey:"A1 Complete Review: All grammar from Days 1-28. Focus on mixing tenses correctly. Present Simple for habits. Present Continuous for right now. Past Simple for finished actions. Going to for future plans. Use articles, pronouns, prepositions, quantifiers naturally.",
+       vocabWords:["Introduce yourself","Talk about family","Describe your home","Talk about your job","Order food","Ask for directions","Make plans","Talk about the past","Express feelings","Give opinions","Agree and disagree","Ask for help","Say goodbye","Thank someone","Apologize"],
+       readText:"Hi! My name is Sarah. I am from Texas, but I live in New York now. I am a graphic designer. I work for a tech company. I love my job! Yesterday, I went to a great restaurant with my friends. We ate sushi and drank green tea. I am going to visit my family next month because I miss them. My English is getting better every day!",
+       listenScene:"A complete real American conversation",
+       listenLines:[["Jake","Hey Sarah! How are you doing?"],["Sarah","I'm great, thanks! How about you?"],["Jake","Pretty good! Did you watch the game last night?"],["Sarah","No, I didn't. I was studying English!"],["Jake","Ha! Are you taking a class?"],["Sarah","Yes, I am. I'm going to take my English test next month."],["Jake","Wow, that's awesome! How long have you been studying?"],["Sarah","For 30 days now. I can already speak much better!"],["Jake","That's incredible! Keep it up!"],["Sarah","Thanks! See you tomorrow!"]],
+       mistakes:["I am work → I am working / I work","She go to school → She goes to school","He don't went → He didn't go","Are you going eat? → going to eat"]
+      },
+      {day:30,color:"#B45309",title:"🎓 Graduation Day! — You Made It!",grammar:"Complete A1 Review — Celebrate!",vocab:"All 30 Days Review",isGrad:true,
+       tr:{ro:{title:"🎓 Ziua Absolvirii! — Ai reușit!",grammar:"Recapitulare completă A1 — Felicitări!",vocab:"Recapitulare vocabular 30 de zile"},ru:{title:"🎓 День выпуска! — Ты сделал это!",grammar:"Полное повторение A1 — Поздравляем!",vocab:"Повторение словарного запаса 30 дней"}},
+       grammarKey:"You have completed the full A1 curriculum! You know: To Be, Subject Pronouns, Articles, Plural Nouns, Possessive Adjectives, Present Simple, Adverbs of Frequency, There Is/Are, Can/Can't, Present Continuous, Prepositions, Some/Any, Past Simple (all forms), Future Going To, Comparatives & Superlatives, WH- Questions, Short Answers, Conjunctions, Imperatives, Time & Dates, Quantifiers.",
+       vocabWords:["I know 450+ English words!","I can introduce myself","I can talk about my family","I can describe places","I can talk about habits","I can talk about the past","I can make plans","I can ask for directions","I can order food","I can have a basic conversation","I can write simple sentences","I can understand simple texts","I can describe feelings","I can talk about my job","Congratulations — I am A1 certified!"],
+       readText:"Congratulations! You have completed the 30-Day American English Marathon! You started on Day 1 with 'Hello!' and now you can have real conversations in English. You know grammar, vocabulary, reading, listening, and speaking. You can introduce yourself, talk about your family, describe your daily life, discuss the past, make future plans, and so much more. You are amazing! Your English journey is just beginning — keep going! 🇺🇸🎓",
+       listenScene:"Graduation celebration — a real conversation test",
+       listenLines:[["Teacher","Congratulations on completing the marathon!"],["Student","Thank you! I am so happy!"],["Teacher","What was the most difficult grammar for you?"],["Student","Past simple irregular verbs were hard, but I practiced a lot."],["Teacher","What are you going to do with your English now?"],["Student","I am going to watch American movies and talk to native speakers."],["Teacher","Excellent plan! You should be very proud of yourself."],["Student","Thank you, teacher! This course changed my life!"],["Teacher","Keep practicing every day. You can do it!"]],
+       mistakes:["celebrate — no more mistakes! You know English now! 🎉","Every correction you received made you stronger","You turned mistakes into learning","You are ready for the next level — A2!","Well done! 🇺🇸"]
+      }
+    ];
+
+    function makeSimpleDay(d){
+      const vocabWords = d.vocabWords||[];
+      const vocabulary = vocabWords.map((w,i)=>{
+        const parts=w.split('(');
+        const word=parts[0].trim();
+        let translations='', pron='';
+        if(parts[1]){
+          const inner=parts[1].replace(')','');
+          const tp=inner.split('/');
+          translations=inner;
+          pron=tp[0]?tp[0].trim():'';
+        }
+        return {word,meaning:word+' — see translations',tr:{ro:translations,ru:translations},example:`Use "${word}" in a sentence.`,pron};
+      });
+
+      const listenLines=(d.listenLines||[]).map(([sp,tx])=>({speaker:sp,text:tx}));
+      const mistakes=d.mistakes||[];
+
+      return {
+        ...d,
+        lesson:{
+          grammar:{
+            rules:[
+              {title:`Grammar Focus: ${d.grammar}`,
+               ro:lang==='ro'?d.grammarKey:d.grammarKey,
+               ru:lang==='ru'?d.grammarKey:d.grammarKey,
+               content:`<div class="formula-box"><p style="white-space:pre-line">${d.grammarKey}</p></div>
+               ${mistakes.map(m=>{const p=m.split('→');return p.length===2?`<div class="example-row"><div class="ex-en" style="background:#FEF2F2;border-color:#FCA5A5"><span style="color:#DC2626">❌</span> ${p[0].trim()}</div><div class="ex-en"><span style="color:#059669">✅</span> ${p[1].trim()}</div></div>`:''}).join('')}`
+              }
+            ]
+          },
+          vocabulary,
+          reading:{
+            title:`Day ${d.day} Reading`,
+            text:d.readText||'',
+            questions:["What is the main topic?","Name two things mentioned in the text.","What happens in the text?","Find one example of today's grammar.","Write one sentence about the text."]
+          },
+          listening:{
+            title:d.listenTitle||`Day ${d.day} Dialogue`,
+            scene:d.listenScene||'',
+            lines:listenLines,
+            keyVocab:(d.grammarKey||'').split(' ').filter(w=>w.length>5).slice(0,6),
+            questions:["What are they talking about?","Who are the people?","What is the main grammar used?","Give one example from the dialogue.","What is the conclusion?"]
+          },
+          speaking:[
+            {icon:"🗣️",task:`Practice today's grammar: ${d.grammar}`},
+            {icon:"🗣️",task:"Read the dialogue out loud 2 times."},
+            {icon:"🗣️",task:"Make 3 sentences using today's vocabulary."},
+            {icon:"🎙️",task:"RECORD: Speak for 1 minute about today's topic."},
+            {icon:"🔁",task:"SHADOW: Repeat the dialogue line by line."}
+          ]
+        },
+        exercises:[
+          {type:"fill",header:`Grammar: ${d.grammar}`,color:"#1D4ED8",pts:25,
+           qs:[
+            {stem:`Complete using ${d.grammar}: She ___ happy.`,answer:"is",hint:"Use today's grammar"},
+            {stem:"They ___ students.",answer:"are",hint:"Use today's grammar"},
+            {stem:"I ___ from the USA.",answer:"am",hint:"Use today's grammar"},
+            {stem:"He ___ not tired.",answer:"is",hint:"Use today's grammar"}
+           ]},
+          {type:"mc",header:"Multiple Choice",color:"#7C3AED",pts:25,
+           qs:[
+            {stem:`Which is correct for ${d.grammar}?`,opts:["Option A (correct)","Option B","Option C","Option D"],answer:0},
+            {stem:"Choose the right form:",opts:["Correct form","Wrong form","Also wrong","Also wrong"],answer:0},
+            {stem:"Which sentence is right?",opts:["Right sentence","Wrong 1","Wrong 2","Wrong 3"],answer:0},
+            {stem:"Best answer:",opts:["Best answer","Not this","Not this","Not this"],answer:0}
+           ]},
+          {type:"write",header:"Write Using Today's Grammar & Vocabulary",color:"#047857",pts:25,
+           prompts:[
+            `Write a sentence using today's grammar: ${d.grammar}.`,
+            "Write about yourself using vocabulary from this lesson.",
+            "Describe something from the reading text.",
+            "Write a question using today's grammar.",
+            "Write your favorite sentence from today's lesson."
+           ]},
+          {type:"error",header:"Fix the Mistakes",color:"#DC2626",pts:25,
+           qs:(mistakes.slice(0,4).map(m=>{const p=m.split('→');return p.length===2?{wrong:p[0].trim(),correct:p[1].trim()}:{wrong:m,correct:"(write the correction)"}})).concat([{wrong:"Me am a student.",correct:"I am a student."}]).slice(0,4)}
+        ]
+      };
+    }
+
+    return [...rest.map(d=>{
+      if(d.exercises) return d;
+      return makeSimpleDay(d);
+    }), ...remaining.map(makeSimpleDay)];
+  })()
+];
+
+// ══════════════════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════════════════
+let lang=null;
+let selDay=null;
+let progress={};
+let curFilter='all';
+let exAnswers={};
+
+try{progress=JSON.parse(localStorage.getItem('em_v4')||'{}');}catch(e){}
+function saveProgress(day,score){progress[day]=score;try{localStorage.setItem('em_v4',JSON.stringify(progress));}catch(e){}}
+function isUnlocked(d){if(d===1)return true;const s=progress[d-1];return s!==undefined&&s>=80;}
+function scColor(s){return s>=80?'#059669':s>=60?'#D97706':'#DC2626';}
+
+// ══════════════════════════════════════════════════════════════════
 //  ROUTING
-// ══════════════════════════════════════════════════════════════════════════════
-function chooseLang(l){
-  lang=l;
-  document.getElementById('lang-screen').style.display='none';
-  goTo('dashboard');
-}
-function switchLang(l){
-  lang=l;
-  document.getElementById('ls-ro').className='ls-btn'+(l==='ro'?' active':'');
-  document.getElementById('ls-ru').className='ls-btn'+(l==='ru'?' active':'');
-  renderDashboard();
-}
-function setFilter(f){
-  currentFilter=f;
-  ['all','done','pend'].forEach(k=>{ document.getElementById('fb-'+k).classList.remove('active'); });
-  document.getElementById('fb-'+(f==='all'?'all':f==='completed'?'done':'pend')).classList.add('active');
-  renderGrid();
-}
-function goTo(view, dayNum){
-  if(dayNum!==undefined) selectedDay=dayNum;
-  ['dashboard','lesson','grader','results'].forEach(v=>{
-    document.getElementById('page-'+v).classList.remove('active');
-  });
-  document.getElementById('page-'+view).classList.add('active');
+// ══════════════════════════════════════════════════════════════════
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s-'+id).classList.add('active');
   window.scrollTo(0,0);
-  currentView=view;
-  if(view==='dashboard') renderDashboard();
-  else if(view==='lesson') renderLesson();
-  else if(view==='grader') renderGrader();
-  else if(view==='results') {} // already rendered
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  RENDER DASHBOARD
-// ══════════════════════════════════════════════════════════════════════════════
-function renderDashboard(){
+function chooseLang(l){lang=l;showScreen('dash');renderDash();}
+function switchLang(l){lang=l;document.getElementById('ls-ro').className='ls-btn'+(l==='ro'?' on':'');document.getElementById('ls-ru').className='ls-btn'+(l==='ru'?' on':'');renderDash();}
+function setFilter(f){curFilter=f;document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));document.getElementById('fb-'+f).classList.add('on');renderGrid();}
+function goTo(view,day){if(day!==undefined)selDay=day;showScreen(view);if(view==='dash')renderDash();else if(view==='lesson')renderLesson();else if(view==='exercise')renderExercise();}
+
+// ══════════════════════════════════════════════════════════════════
+//  DASHBOARD
+// ══════════════════════════════════════════════════════════════════
+function renderDash(){
+  initFlags();
   const done=Object.keys(progress).length;
   const scores=Object.values(progress);
-  const avg=done>0?Math.round(scores.reduce((a,b)=>a+b,0)/done):null;
-  const pct=Math.round((done/30)*100);
+  const avg=done?Math.round(scores.reduce((a,b)=>a+b,0)/done):null;
+  const pct=Math.round(done/30*100);
 
-  // Flag
-  ['flag-hero','flag-lesson','flag-grader'].forEach(id=>{
-    const el=document.getElementById(id);
-    if(el) el.innerHTML=flagInner();
-  });
-  document.querySelectorAll('[id^="flag-"]').forEach(el=>el.innerHTML=flagInner());
-
-  document.getElementById('h-tag').textContent=L('american')+' • CEFR A1';
-  document.getElementById('h-para').textContent=L('heroPara');
-  document.getElementById('ls-label').textContent=L('chooseLanguage');
-  document.getElementById('ls-ro').className='ls-btn'+(lang==='ro'?' active':'');
-  document.getElementById('ls-ru').className='ls-btn'+(lang==='ru'?' active':'');
-
-  document.getElementById('stat-done').textContent=done;
-  document.getElementById('stat-done-lbl').textContent=L('days');
-  document.getElementById('stat-left').textContent=30-done;
-  document.getElementById('stat-left-lbl').textContent=L('daysLeft');
-  document.getElementById('stat-avg').textContent=avg||'—';
-  document.getElementById('stat-avg-lbl').textContent=L('avgScore');
-  document.getElementById('stat-pct').textContent=pct+'%';
-  document.getElementById('stat-pct-lbl').textContent=L('complete');
-  document.getElementById('prog-fill').style.width=pct+'%';
-
+  document.getElementById('d-tag').textContent=L('american')+' • CEFR A1';
+  document.getElementById('d-para').textContent=L('heroPara');
+  document.getElementById('d-ls-lbl').textContent=L('lsLbl');
+  document.getElementById('ls-ro').className='ls-btn'+(lang==='ro'?' on':'');
+  document.getElementById('ls-ru').className='ls-btn'+(lang==='ru'?' on':'');
+  document.getElementById('s-done').textContent=done;document.getElementById('s-done-l').textContent=L('days');
+  document.getElementById('s-left').textContent=30-done;document.getElementById('s-left-l').textContent=L('daysLeft');
+  document.getElementById('s-avg').textContent=avg||'—';document.getElementById('s-avg-l').textContent=L('avgScore');
+  document.getElementById('s-pct').textContent=pct+'%';document.getElementById('s-pct-l').textContent=L('complete');
+  document.getElementById('prog').style.width=pct+'%';
   document.getElementById('fb-all').textContent=L('showAll');
   document.getElementById('fb-done').textContent=L('showDone');
-  document.getElementById('fb-pend').textContent=L('showPending');
-
-  // How it works
-  document.getElementById('how-title').textContent=L('howWorks');
-  document.getElementById('how-footer').textContent=L('howFooter');
-  const howGrid=document.getElementById('how-grid');
-  const steps=[['step1T','step1D'],['step2T','step2D'],['step3T','step3D'],['step4T','step4D']];
-  const nums=['1️⃣','2️⃣','3️⃣','4️⃣'];
-  howGrid.innerHTML=steps.map((s,i)=>`
-    <div class="how-card">
-      <div class="step-num">${nums[i]}</div>
-      <h3>${L(s[0])}</h3>
-      <p>${L(s[1])}</p>
-    </div>`).join('');
-
+  document.getElementById('fb-pend').textContent=L('showPend');
+  document.getElementById('how-t').textContent=L('howWorks');
+  document.getElementById('how-f').textContent=L('howFoot');
+  document.getElementById('how-g').innerHTML=['h1','h2','h3','h4'].map((k,i)=>`
+    <div class="how-card"><div class="hn">${['1️⃣','2️⃣','3️⃣','4️⃣'][i]}</div><h3>${L(k+'t')}</h3><p>${L(k+'d')}</p></div>`).join('');
   renderGrid();
 }
 
 function renderGrid(){
-  const grid=document.getElementById('day-grid');
-  const days=CURRICULUM.filter(d=>{
-    if(currentFilter==='completed') return progress[d.day]!==undefined;
-    if(currentFilter==='pending') return progress[d.day]===undefined;
+  const days=DAYS.filter(d=>{
+    if(curFilter==='done')return progress[d.day]!==undefined;
+    if(curFilter==='pend')return progress[d.day]===undefined;
     return true;
   });
-  grid.innerHTML=days.map(d=>{
-    const unlocked=isUnlocked(d.day);
-    const myScore=progress[d.day];
-    const done=myScore!==undefined;
-    const sc=done?scoreColor(myScore):'';
-    const title=getTitle(d), grammar=getGrammar(d), vocab=getVocab(d);
-    return `
-    <div class="day-card ${unlocked?'unlocked':'locked'}" style="border-top-color:${unlocked?d.color:'#9CA3AF'}"
-      ${unlocked?`onclick="goTo('lesson',${d.day})"`:''}>
-      <div class="card-top">
-        <span class="day-num" style="color:${unlocked?d.color:'#9CA3AF'}">
-          ${!unlocked?'🔒 ':''}Day ${d.day}
-        </span>
-        ${done?`<span class="score-pill-sm" style="background:${sc}">${myScore}/100 ${myScore>=80?'✓':'↺'}</span>`
-               :(unlocked?`<span class="unlocked-dot"></span>`:'')}
+  document.getElementById('grid').innerHTML=days.map(d=>{
+    const ul=isUnlocked(d.day);
+    const sc=progress[d.day];
+    const done=sc!==undefined;
+    const t=d.tr[lang]?.title||d.title;
+    const g=d.tr[lang]?.grammar||d.grammar;
+    const v=d.tr[lang]?.vocab||d.vocab;
+    return `<div class="dc ${ul?'open':'lkd'}" style="border-top-color:${ul?d.color:'#94A3B8'}"
+      ${ul?`onclick="goTo('lesson',${d.day})"`:''}>
+      <div class="dc-top">
+        <span class="dc-day" style="color:${ul?d.color:'#94A3B8'}">${!ul?'🔒 ':''}Day ${d.day}</span>
+        ${done?`<span class="dc-score" style="background:${scColor(sc)}">${sc}/100 ${sc>=80?'✓':'↺'}</span>`
+               :ul?`<span class="dc-dot"></span>`:''}
       </div>
-      <div class="card-title">${title}</div>
-      <div class="card-grammar">${grammar}</div>
-      <div class="card-vocab">📝 ${vocab}</div>
-      ${d.isReview?`<span class="review-badge">${L('reviewBadge')}</span>`:''}
-      ${d.isGrad?`<span class="grad-badge">${L('gradBadge')}</span>`:''}
-      ${!unlocked?`<div class="lock-hint">${L('lockNote')} ${d.day-1}</div>`:''}
-      <div class="card-btns">
-        ${unlocked?`
-          <button class="card-btn" style="background:${d.color}"
-            onclick="event.stopPropagation();goTo('lesson',${d.day})">
-            ${done?L('reviewLesson'):L('openLesson')}
-          </button>
-          <button class="card-btn" style="background:#374151"
-            onclick="event.stopPropagation();goTo('grader',${d.day})">
-            ${L('submitExercises')}
-          </button>
-        `:`<button class="card-btn grey" disabled>${L('locked')}</button>`}
+      <div class="dc-title">${t}</div>
+      <div class="dc-gram">${g}</div>
+      <div class="dc-vocab">📝 ${v}</div>
+      ${d.isReview?`<span class="badge-r">${L('reviewBadge')}</span>`:''}
+      ${d.isGrad?`<span class="badge-g">${L('gradBadge')}</span>`:''}
+      ${!ul?`<div class="lk-hint">${L('lockNote')} ${d.day-1}</div>`:''}
+      <div class="dc-btns">
+        ${ul?`
+          <button class="dc-btn" style="background:${d.color}" onclick="event.stopPropagation();goTo('lesson',${d.day})">${done?L('continueLesson'):L('startLesson')}</button>
+          <button class="dc-btn" style="background:#334155" onclick="event.stopPropagation();goTo('exercise',${d.day})">${L('doExercises')}</button>
+        `:`<button class="dc-btn grey" disabled>${L('locked')}</button>`}
       </div>
     </div>`;
   }).join('');
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  RENDER LESSON
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+//  LESSON PAGE
+// ══════════════════════════════════════════════════════════════════
 function renderLesson(){
-  const d=CURRICULUM[selectedDay-1];
-  const unlocked=isUnlocked(selectedDay);
-  const myScore=progress[selectedDay];
-  const title=getTitle(d), grammar=getGrammar(d), vocab=getVocab(d);
+  initFlags();
+  const d=DAYS[selDay-1];
+  const ul=isUnlocked(selDay);
+  const sc=progress[selDay];
+  const t=d.tr[lang]?.title||d.title;
+  const g=d.tr[lang]?.grammar||d.grammar;
+  const v=d.tr[lang]?.vocab||d.vocab;
 
-  const hero=document.getElementById('lesson-hero-bg');
-  hero.style.background=unlocked?d.color:'#374151';
-  document.getElementById('flag-lesson').innerHTML=flagInner();
-  document.getElementById('lesson-back-btn').textContent=L('backToCourse');
-  document.getElementById('lesson-day-badge').textContent=`DAY ${d.day} / 30 • ${L('american')}`;
-  document.getElementById('lesson-title').textContent=title;
+  document.getElementById('lh-bg').style.background=ul?d.color:'#374151';
+  document.getElementById('lb-back').textContent=L('backToCourse');
+  document.getElementById('l-badge').textContent=`${L('dayLabel')} ${d.day} / 30 • ${L('american')}`;
+  document.getElementById('l-title').textContent=t;
+  document.getElementById('l-sub').textContent=g+' • '+v;
 
-  const sp=document.getElementById('lesson-score-pill');
-  if(myScore!==undefined){
-    sp.style.display='inline-block';
-    sp.textContent=`✅ ${L('completedScore')} ${myScore}/100 ${myScore>=80?'🎉':'💪'}`;
-  } else { sp.style.display='none'; }
+  const sp=document.getElementById('l-score');
+  if(sc!==undefined){sp.style.display='inline-block';sp.textContent=`✅ ${sc}/100 ${sc>=80?'🎉':'💪'}`;}
+  else sp.style.display='none';
 
-  const lb=document.getElementById('lesson-locked-banner');
-  if(!unlocked){ lb.style.display='flex'; document.getElementById('lesson-locked-text').textContent=L('passRequired'); }
+  const lb=document.getElementById('l-locked');
+  if(!ul){lb.style.display='flex';document.getElementById('l-locked-txt').textContent=L('passReq');}
   else lb.style.display='none';
 
-  const body=document.getElementById('lesson-body');
-  if(!unlocked){
-    const prevDay=selectedDay>1?CURRICULUM[selectedDay-2]:null;
-    body.innerHTML=`
-      <div class="lock-msg">
-        <div class="lock-icon">🔒</div>
-        <h2>${L('locked')}</h2>
-        <p>${L('passRequired')}</p>
-        ${prevDay?`<button class="btn-primary" style="margin-top:16px;background:${prevDay.color}"
-          onclick="goTo('lesson',${prevDay.day})">${L('backDayBtn')} ${prevDay.day}</button>`:''}
+  if(!ul){
+    const pd=selDay>1?DAYS[selDay-2]:null;
+    document.getElementById('l-content').innerHTML=`
+      <div style="text-align:center;padding:48px 0">
+        <div style="font-size:60px">🔒</div>
+        <h2 style="color:#374151;margin:14px 0 8px">${L('locked')}</h2>
+        <p style="color:#64748B;max-width:300px;margin:0 auto 20px;font-size:14px">${L('passReq')}</p>
+        ${pd?`<button class="btn-main" style="background:${pd.color}" onclick="goTo('lesson',${pd.day})">${L('backToCourse')} Day ${pd.day}</button>`:''}
       </div>`;
     return;
   }
 
-  const steps=L('studySteps').map(([time,task])=>`
-    <div class="study-row">
-      <span class="time-pill" style="background:${d.color}22;color:${d.color}">${time}</span>
-      <span class="study-task">${task}</span>
-    </div>`).join('');
+  const les=d.lesson;
+  let html='';
 
-  const prev=selectedDay>1?CURRICULUM[selectedDay-2]:null;
-  const next=selectedDay<30?CURRICULUM[selectedDay]:null;
-  const prevUnlocked=prev&&isUnlocked(prev.day);
-  const nextUnlocked=next&&isUnlocked(next.day);
-
-  body.innerHTML=`
-    <div class="two-col">
-      <div class="info-card" style="border-top-color:${d.color}">
-        <div class="info-label">${L('grammarTopic')}</div>
-        <div class="info-val">${grammar}</div>
-      </div>
-      <div class="info-card" style="border-top-color:#7C3AED">
-        <div class="info-label">${L('vocabTopic')}</div>
-        <div class="info-val">${vocab}</div>
-      </div>
+  // ── GRAMMAR ──
+  html+=`<div class="lesson-section">
+    <div class="ls-header" style="background:${d.color}">
+      <span class="icon">📘</span>
+      <h2>${L('grammarSection')}: ${g}</h2>
+      <span class="tag">GRAMMAR</span>
     </div>
+    <div class="ls-body">`;
 
-    <h2 class="section-h">${L('studyMaterials')}</h2>
-    <div class="two-col">
-      <div class="pdf-card">
-        <div class="icon">📖</div>
-        <h3>${L('theory')}</h3>
-        <p>${L('theoryDesc')}</p>
-        <span class="pdf-chip">Day${String(d.day).padStart(2,'0')}_Theory.pdf</span>
-      </div>
-      <div class="pdf-card">
-        <div class="icon">✏️</div>
-        <h3>${L('exercises')}</h3>
-        <p>${L('exercisesDesc')}</p>
-        <span class="pdf-chip red">Day${String(d.day).padStart(2,'0')}_Exercises.pdf</span>
-      </div>
+  les.grammar.rules.forEach(rule=>{
+    const desc=lang==='ro'?rule.ro:rule.ru;
+    html+=`<div class="grammar-rule"><h3>${rule.title}</h3><p style="margin-bottom:10px;font-size:13px;color:#475569">${desc||''}</p>${rule.content}</div>`;
+  });
+  html+=`</div></div>`;
+
+  // ── VOCABULARY ──
+  html+=`<div class="lesson-section">
+    <div class="ls-header" style="background:#7C3AED">
+      <span class="icon">📝</span>
+      <h2>${L('vocabSection')}: ${v}</h2>
+      <span class="tag">${les.vocabulary.length} ${L('wordOf')}s</span>
     </div>
+    <div class="ls-body">
+    <table class="vocab-table">
+      <tr><th>${L('wordOf')}</th><th>${L('meaning')}</th><th>${L('translation')}</th><th>${L('example')}</th><th>${L('pronunciation')}</th></tr>`;
+  les.vocabulary.forEach(w=>{
+    const tr=w.tr[lang]||w.tr.ro||'';
+    html+=`<tr><td class="vw">${w.word}</td><td class="vm">${w.meaning}</td><td class="ve">${tr}</td><td class="ve">${w.example}</td><td class="vp">/${w.pron}/</td></tr>`;
+  });
+  html+=`</table></div></div>`;
 
-    <h2 class="section-h">${L('studyPlan')} Day ${d.day}</h2>
-    <div class="study-box">${steps}</div>
+  // ── READING ──
+  html+=`<div class="lesson-section">
+    <div class="ls-header" style="background:#059669">
+      <span class="icon">📖</span><h2>${L('readSection')}: "${les.reading.title}"</h2><span class="tag">READING</span>
+    </div>
+    <div class="ls-body">
+      <p style="font-size:13px;color:#475569;margin-bottom:10px">${L('readInstr')}</p>
+      <div class="reading-text">${les.reading.text.replace(/\n/g,'<br>')}</div>
+      <p style="font-weight:700;color:#0F172A;margin-bottom:8px">📋 ${L('readQ')}:</p>
+      <ol class="qs-list">${les.reading.questions.map(q=>`<li>${q}</li>`).join('')}</ol>
+    </div></div>`;
 
-    <div class="btn-row">
-      ${prevUnlocked?`<button class="btn-secondary" onclick="goTo('lesson',${prev.day})">← Day ${prev.day}</button>`:''}
-      <button class="btn-primary" style="background:${d.color}" onclick="goTo('grader',${d.day})">${L('submitBtn')}</button>
-      ${nextUnlocked?`<button class="btn-secondary" onclick="goTo('lesson',${next.day})">Day ${next.day} →</button>`:''}
-    </div>`;
+  // ── LISTENING ──
+  html+=`<div class="lesson-section">
+    <div class="ls-header" style="background:#1D4ED8">
+      <span class="icon">🎧</span><h2>${L('listenSection')}: "${les.listening.title}"</h2><span class="tag">LISTENING</span>
+    </div>
+    <div class="ls-body">
+      <p style="font-size:13px;color:#475569;margin-bottom:10px">${L('listenInstr')}</p>
+      <p style="font-size:12px;font-style:italic;color:#64748B;margin-bottom:8px">📍 Scene: ${les.listening.scene}</p>
+      <div class="script-box">`;
+  les.listening.lines.forEach(line=>{
+    html+=`<div class="script-line"><span class="script-speaker">${line.speaker}:</span> <span class="script-text">${line.text}</span></div>`;
+  });
+  html+=`</div>`;
+  if(les.listening.keyVocab&&les.listening.keyVocab.length){
+    html+=`<p style="font-weight:700;color:#0F172A;margin:12px 0 6px">🔑 ${L('keyVocab')}:</p><div class="key-vocab">${les.listening.keyVocab.map(w=>`<span class="kv-chip">${w}</span>`).join('')}</div>`;
+  }
+  html+=`<p style="font-weight:700;color:#0F172A;margin:10px 0 8px">🎙️ ${L('listenQ')}:</p><ol class="qs-list">${les.listening.questions.map(q=>`<li>${q}</li>`).join('')}</ol>
+    </div></div>`;
+
+  // ── SPEAKING ──
+  html+=`<div class="lesson-section">
+    <div class="ls-header" style="background:#B45309">
+      <span class="icon">🗣️</span><h2>${L('speakSection')}</h2><span class="tag">SPEAKING</span>
+    </div>
+    <div class="ls-body">
+      <p style="font-size:13px;color:#475569;margin-bottom:12px">${L('speakInstr')}</p>
+      ${les.speaking.map(t=>`<div class="speaking-task"><span class="si">${t.icon}</span><p>${t.task}</p></div>`).join('')}
+    </div></div>`;
+
+  // ── NAV BUTTONS ──
+  const prev=selDay>1?DAYS[selDay-2]:null;
+  const next=selDay<30?DAYS[selDay]:null;
+  html+=`<div class="nav-btns">
+    ${prev&&isUnlocked(prev.day)?`<button class="btn-sec" onclick="goTo('lesson',${prev.day})">← Day ${prev.day}</button>`:''}
+    <button class="btn-main" style="background:${d.color}" onclick="goTo('exercise',${selDay})">${L('doExercises')} →</button>
+    ${next&&isUnlocked(next.day)?`<button class="btn-sec" onclick="goTo('lesson',${next.day})">Day ${next.day} →</button>`:''}
+  </div>`;
+
+  document.getElementById('l-content').innerHTML=html;
+  // Show translations
+  document.querySelectorAll(`[id$="-${lang}"]`).forEach(el=>el.style.display='');
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  RENDER GRADER
-// ══════════════════════════════════════════════════════════════════════════════
-function renderGrader(){
-  if(!isUnlocked(selectedDay)){ goTo('lesson'); return; }
-  const d=CURRICULUM[selectedDay-1];
-  const title=getTitle(d), grammar=getGrammar(d);
+// ══════════════════════════════════════════════════════════════════
+//  EXERCISE PAGE
+// ══════════════════════════════════════════════════════════════════
+function renderExercise(){
+  initFlags();
+  if(!isUnlocked(selDay)){goTo('lesson');return;}
+  const d=DAYS[selDay-1];
+  const t=d.tr[lang]?.title||d.title;
+  const g=d.tr[lang]?.grammar||d.grammar;
 
-  document.getElementById('grader-hero-bg').style.background=d.color;
-  document.getElementById('flag-grader') && (document.getElementById('flag-grader').innerHTML=flagInner());
-  document.getElementById('grader-back-btn').textContent=L('backToCourse');
-  document.getElementById('grader-day-badge').textContent=`DAY ${d.day}`;
-  document.getElementById('grader-title').textContent=title;
-  document.getElementById('grader-subtitle').textContent=L('submitTitle');
-  document.getElementById('g-how-title').textContent=L('howToSubmit');
+  document.getElementById('eh-bg').style.background=d.color;
+  document.getElementById('eb-back').textContent='← '+L('backToCourse');
+  document.getElementById('e-badge').textContent=`${L('dayLabel')} ${d.day}`;
+  document.getElementById('e-title').textContent=t;
+  document.getElementById('e-sub').textContent='✏️ '+L('doExercises')+' — '+g;
+  document.getElementById('flag-e').innerHTML=flagSVG();
 
-  const ol=document.getElementById('g-steps');
-  ol.innerHTML=L('howToSteps').map(s=>`<li>${s}</li>`).join('');
-  document.getElementById('g-example-lbl').textContent=L('exampleFormat');
-  document.getElementById('g-ans-label').textContent=`${L('yourAnswers')} — Day ${d.day} (${grammar}):`;
-  document.getElementById('answers-ta').value='';
-  document.getElementById('answers-ta').placeholder=lang==='ro'?'Tastează răspunsurile tale aici...':'Введи свои ответы здесь...';
-  document.getElementById('g-cancel-btn').textContent=L('cancel');
-  document.getElementById('g-submit-btn').textContent=L('submitCorrection');
-  document.getElementById('loading-text').textContent=L('teacherReviewing');
-  document.getElementById('loading-row').classList.remove('show');
+  exAnswers={mc:{},match:{}};
+  let html=`<div class="ex-intro"><p>${lang==='ro'?'Completează toate exercițiile. Apasă <strong>Trimite</strong> la final pentru evaluare AI.':'Выполни все упражнения. Нажми <strong>Отправить</strong> для оценки ИИ.'} Scor minim / Минимальный балл: <code>80/100</code></p></div>`;
+
+  d.exercises.forEach((ex,ei)=>{
+    const colors=['#1D4ED8','#7C3AED','#DC2626','#047857','#B45309'];
+    const bg=ex.color||colors[ei%5];
+    html+=`<div class="ex-section">
+      <div class="ex-hdr" style="background:${bg}">
+        <span class="eicon">${['✏️','🔘','🔴','🔗','✍️'][ei]||'📝'}</span>
+        <h3>${L('ex'+(ei+1))||ex.header}</h3>
+        <span class="pts">${ex.pts} ${L('pts')}</span>
+      </div>
+      <div class="ex-body">`;
+
+    if(ex.type==='fill'){
+      ex.qs.forEach((q,qi)=>{
+        html+=`<div class="q-item">
+          <div class="q-stem"><span class="qnum">${qi+1}.</span> ${q.stem.replace('___',`<input class="blank-input" id="fi-${ei}-${qi}" placeholder="?" size="8">`)}</div>
+          <div style="font-size:11px;color:#94A3B8;margin-top:3px">💡 ${q.hint}</div>
+        </div>`;
+      });
+    }
+    else if(ex.type==='mc'){
+      ex.qs.forEach((q,qi)=>{
+        html+=`<div class="q-item"><div class="q-stem"><span class="qnum">${qi+1}.</span> ${q.stem}</div>
+          <div class="mc-opts">${q.opts.map((o,oi)=>`<button class="mc-opt" id="mc-${ei}-${qi}-${oi}" onclick="selMC(${ei},${qi},${oi},${q.answer})">${String.fromCharCode(65+oi)}) ${o}</button>`).join('')}</div>
+        </div>`;
+      });
+    }
+    else if(ex.type==='error'){
+      ex.qs.forEach((q,qi)=>{
+        html+=`<div class="q-item">
+          <div class="q-stem"><span class="qnum">${qi+1}.</span> ${L('wrongFixed')}</div>
+          <div class="err-input">❌ ${q.wrong}</div>
+          <input class="fix-input" id="er-${ei}-${qi}" placeholder="✅ Write the correct sentence..." data-correct="${q.correct}">
+        </div>`;
+      });
+    }
+    else if(ex.type==='match'){
+      const shuffled=[...ex.pairs].map((p,i)=>({val:p[1],idx:i})).sort(()=>Math.random()-.5);
+      html+=`<div style="margin-bottom:8px;font-size:13px;color:#475569">${lang==='ro'?'Potrivește cuvântul cu definiția:':'Сопоставь слово с определением:'}</div>`;
+      ex.pairs.forEach((p,pi)=>{
+        html+=`<div class="match-area"><div class="match-left">${pi+1}. <strong>${p[0]}</strong></div>
+          <select class="match-sel" id="ma-${ei}-${pi}">
+            <option value="">— ${lang==='ro'?'alege':'выбери'} —</option>
+            ${shuffled.map((s,si)=>`<option value="${s.idx}">${s.val}</option>`).join('')}
+          </select></div>`;
+      });
+    }
+    else if(ex.type==='write'){
+      ex.prompts.forEach((p,pi)=>{
+        html+=`<div class="q-item"><div class="q-stem"><span class="qnum">${pi+1}.</span> ${p}</div>
+          <textarea class="write-area" id="wr-${ei}-${pi}" placeholder="${lang==='ro'?'Scrie răspunsul tău...':'Напиши свой ответ...'}" rows="2"></textarea>
+        </div>`;
+      });
+    }
+    html+=`</div></div>`;
+  });
+
+  html+=`<div class="submit-bar">
+    <button class="btn-sec" onclick="goTo('lesson')">${L('backToCourse')}</button>
+    <button class="btn-main" id="ex-submit" onclick="submitExercises()">${L('submitEx')}</button>
+  </div>
+  <div class="loading-box" id="ex-loading">
+    <div class="spinner"></div>
+    <p>${L('reviewing')}</p>
+  </div>`;
+
+  document.getElementById('e-content').innerHTML=html;
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  SUBMIT FOR GRADING
-// ══════════════════════════════════════════════════════════════════════════════
-async function submitForGrading(){
-  const answers=document.getElementById('answers-ta').value.trim();
-  if(!answers) return;
-  const d=CURRICULUM[selectedDay-1];
-  const title=getTitle(d), grammar=getGrammar(d);
-  const btn=document.getElementById('g-submit-btn');
-  btn.textContent=L('grading');
-  btn.disabled=true;
-  document.getElementById('loading-row').classList.add('show');
+function selMC(ei,qi,oi,correct){
+  document.querySelectorAll(`[id^="mc-${ei}-${qi}-"]`).forEach(b=>b.classList.remove('sel'));
+  document.getElementById(`mc-${ei}-${qi}-${oi}`).classList.add('sel');
+  if(!exAnswers.mc[ei]) exAnswers.mc[ei]={};
+  exAnswers.mc[ei][qi]=oi;
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  COLLECT & SUBMIT EXERCISES
+// ══════════════════════════════════════════════════════════════════
+function collectAnswers(){
+  const d=DAYS[selDay-1];
+  const lines=[];
+  let autoScore=0;
+  let totalAuto=0;
+
+  d.exercises.forEach((ex,ei)=>{
+    lines.push(`\n=== Exercise ${ei+1}: ${ex.header} (${ex.pts} pts) ===`);
+    if(ex.type==='fill'){
+      ex.qs.forEach((q,qi)=>{
+        const val=(document.getElementById(`fi-${ei}-${qi}`)?.value||'').trim();
+        const correct=val.toLowerCase()===q.answer.toLowerCase();
+        if(correct) autoScore+=ex.pts/ex.qs.length;
+        totalAuto+=ex.pts/ex.qs.length;
+        lines.push(`Q${qi+1}: "${q.stem}" → Student: "${val}" | Correct: "${q.answer}" | ${correct?'✓':'✗'}`);
+      });
+    }
+    else if(ex.type==='mc'){
+      ex.qs.forEach((q,qi)=>{
+        const sel=exAnswers.mc[ei]?.[qi];
+        const correct=sel===q.answer;
+        if(correct) autoScore+=ex.pts/ex.qs.length;
+        totalAuto+=ex.pts/ex.qs.length;
+        lines.push(`Q${qi+1}: "${q.stem}" → Student chose: ${sel!==undefined?q.opts[sel]:'(no answer)'} | Correct: ${q.opts[q.answer]} | ${correct?'✓':'✗'}`);
+      });
+    }
+    else if(ex.type==='error'){
+      ex.qs.forEach((q,qi)=>{
+        const val=(document.getElementById(`er-${ei}-${qi}`)?.value||'').trim();
+        lines.push(`Q${qi+1}: Wrong: "${q.wrong}" → Student fix: "${val}" | Expected: "${q.correct}"`);
+      });
+    }
+    else if(ex.type==='match'){
+      ex.pairs.forEach((p,pi)=>{
+        const sel=document.getElementById(`ma-${ei}-${pi}`)?.value;
+        const correct=sel==pi.toString();
+        if(correct) autoScore+=ex.pts/ex.pairs.length;
+        totalAuto+=ex.pts/ex.pairs.length;
+        lines.push(`Q${pi+1}: "${p[0]}" → Student: "${sel!==undefined&&sel!==''?ex.pairs[parseInt(sel)]?.[1]:'(no answer)'}" | Correct: "${p[1]}" | ${correct?'✓':'✗'}`);
+      });
+    }
+    else if(ex.type==='write'){
+      ex.prompts.forEach((p,pi)=>{
+        const val=(document.getElementById(`wr-${ei}-${pi}`)?.value||'').trim();
+        lines.push(`Q${pi+1}: "${p}" → Student: "${val}"`);
+      });
+    }
+  });
+
+  const baseScore=Math.round(autoScore/totalAuto*100)||0;
+  return {text:lines.join('\n'),baseScore};
+}
+
+async function submitExercises(){
+  const d=DAYS[selDay-1];
+  const t=d.tr[lang]?.title||d.title;
+  const g=d.tr[lang]?.grammar||d.grammar;
+  const {text,baseScore}=collectAnswers();
+  const btn=document.getElementById('ex-submit');
+  const load=document.getElementById('ex-loading');
+  btn.disabled=true;btn.textContent=L('grading');
+  load.classList.add('show');
 
   const langInstr=lang==='ro'
-    ?'Provide ALL feedback, explanations, tips, and messages in ROMANIAN (limba română). Use English only for example sentences.'
-    :'Provide ALL feedback, explanations, tips, and messages in RUSSIAN (русский язык). Use English only for example sentences.';
+    ?'Respond ENTIRELY in Romanian (limba română). All feedback, explanations, corrections and messages must be in Romanian.'
+    :'Respond ENTIRELY in Russian (русский язык). All feedback, explanations, corrections and messages must be in Russian.';
 
-  const prompt=`You are a warm, encouraging American English teacher for absolute beginners (CEFR A1).
-A student completed Day ${d.day} exercises: "${title}" — Grammar: ${grammar}.
+  const prompt=`You are a warm, encouraging American English teacher grading A1 student exercises.
+Day ${selDay}: "${t}" — Grammar focus: "${g}"
 ${langInstr}
 
-Student answers:
-${answers}
+The student's auto-score from objective questions is approximately ${baseScore}/100.
 
-Respond ONLY with valid JSON, no markdown, no extra text:
+Here are their answers:
+${text}
+
+Grade this student. The score should reflect their actual performance. A student needs 80+ to unlock the next lesson — so be accurate and fair.
+
+Respond ONLY with valid JSON (no markdown, no backticks):
 {
-  "score": <0-100>,
+  "score": <number 0-100, weighted average of all exercises>,
   "grade": "<A/B/C/D/F>",
-  "emoji": "<one emoji>",
+  "emoji": "<one encouraging emoji>",
   "overall_message": "<2-3 warm sentences in ${lang==='ro'?'Romanian':'Russian'}>",
-  "corrections": [{"question":"<q>","student_answer":"<ans>","correct_answer":"<correct>","is_correct":<bool>,"explanation":"<in ${lang==='ro'?'Romanian':'Russian'}, max 2 sentences>","tip":"<short tip in ${lang==='ro'?'Romanian':'Russian'}>"}],
-  "grammar_weaknesses": ["<topic>"],
-  "strengths": ["<strength>"],
-  "review_suggestion": "<one thing to review in ${lang==='ro'?'Romanian':'Russian'}>",
+  "corrections": [
+    {"question":"<q number and stem>","student_answer":"<what they wrote>","correct_answer":"<correct>","is_correct":<bool>,"explanation":"<simple explanation in ${lang==='ro'?'Romanian':'Russian'}>","tip":"<memory tip in ${lang==='ro'?'Romanian':'Russian'}>"}
+  ],
+  "grammar_weaknesses": ["<weakness in ${lang==='ro'?'Romanian':'Russian'}>"],
+  "strengths": ["<strength in ${lang==='ro'?'Romanian':'Russian'}>"],
+  "review_suggestion": "<what to review in ${lang==='ro'?'Romanian':'Russian'}>",
   "motivation": "<motivating message in ${lang==='ro'?'Romanian':'Russian'}>"
 }`;
 
@@ -767,92 +1610,82 @@ Respond ONLY with valid JSON, no markdown, no extra text:
     const res=await fetch('https://api.anthropic.com/v1/messages',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:'You are an expert English teacher. Respond with valid JSON only. No markdown, no backticks.',
-        messages:[{role:'user',content:prompt}]
-      })
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,
+        system:'You are an expert English teacher. Always respond with valid JSON only. No markdown.',
+        messages:[{role:'user',content:prompt}]})
     });
     const data=await res.json();
-    const text=data.content?.[0]?.text||'{}';
-    const result=JSON.parse(text.replace(/```json|```/g,'').trim());
-    saveProgress(selectedDay, result.score);
+    const raw=data.content?.[0]?.text||'{}';
+    const result=JSON.parse(raw.replace(/```json|```/g,'').trim());
+    saveProgress(selDay,result.score);
     renderResults(result);
-    goTo('results');
+    showScreen('results');
   }catch(e){
-    renderResults({error:true});
-    goTo('results');
+    renderResults({error:true});showScreen('results');
   }
-  btn.textContent=L('submitCorrection');
-  btn.disabled=false;
-  document.getElementById('loading-row').classList.remove('show');
+  btn.disabled=false;btn.textContent=L('submitEx');
+  load.classList.remove('show');
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  RENDER RESULTS
-// ══════════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+//  RESULTS PAGE
+// ══════════════════════════════════════════════════════════════════
 function renderResults(r){
-  document.getElementById('results-back-btn').textContent=L('backToDashboard');
-  document.getElementById('r-resubmit-btn').textContent=L('resubmit');
-  document.getElementById('r-back-btn').textContent=L('backToDashboard');
+  const d=DAYS[selDay-1];
+  document.getElementById('rb-back').textContent=L('backToCourse');
+  document.getElementById('r-retry').textContent=L('resubmit');
+  document.getElementById('r-dash').textContent=L('backDash');
 
   if(r.error){
-    document.getElementById('results-hero-bg').style.background='linear-gradient(135deg,#7F1D1D,#DC2626)';
-    document.getElementById('results-emoji').textContent='⚠️';
-    document.getElementById('results-score').textContent='—';
-    document.getElementById('results-grade').textContent='Error';
-    document.getElementById('results-msg').textContent=L('errorMsg');
-    document.getElementById('results-pass-banner').innerHTML='';
-    document.getElementById('r-corrections-list').innerHTML='';
+    document.getElementById('rh-bg').style.background='linear-gradient(135deg,#7F1D1D,#DC2626)';
+    document.getElementById('r-emoji').textContent='⚠️';
+    document.getElementById('r-score').textContent='—';
+    document.getElementById('r-grade').textContent='Error';
+    document.getElementById('r-msg').textContent=L('errorMsg');
+    document.getElementById('r-banner').innerHTML='';
+    document.getElementById('r-cl').innerHTML='';
     return;
   }
 
   const passed=r.score>=80;
-  const sc=scoreColor(r.score);
-  document.getElementById('results-hero-bg').style.background=
-    passed?'linear-gradient(135deg,#065F46,#059669)':'linear-gradient(135deg,#7F1D1D,#DC2626)';
-  document.getElementById('results-emoji').textContent=r.emoji||'📝';
-  document.getElementById('results-score').textContent=r.score+'/100';
-  document.getElementById('results-grade').textContent=`Grade ${r.grade} ${passed?'🎉':'💪'}`;
-  document.getElementById('results-msg').textContent=r.overall_message||'';
-  document.getElementById('results-pass-banner').innerHTML=passed
-    ?`<div class="pass-banner">✅ ${L('unlockMsg')}</div>`
-    :`<div class="fail-banner">📖 ${L('retryMsg')}</div>`;
+  document.getElementById('rh-bg').style.background=passed
+    ?'linear-gradient(135deg,#064E3B,#059669)':'linear-gradient(135deg,#7F1D1D,#DC2626)';
+  document.getElementById('r-emoji').textContent=r.emoji||'📝';
+  document.getElementById('r-score').textContent=r.score+'/100';
+  document.getElementById('r-grade').textContent=`Grade ${r.grade} ${passed?'🎉':'💪'}`;
+  document.getElementById('r-msg').textContent=r.overall_message||'';
+  document.getElementById('r-banner').innerHTML=passed
+    ?`<div class="res-pass">✅ ${L('unlocked')}</div>`
+    :`<div class="res-fail">📖 ${L('retry')}</div>`;
 
-  document.getElementById('r-strengths-title').textContent=L('strengths');
-  document.getElementById('r-improve-title').textContent=L('improve');
-  document.getElementById('r-strengths-list').innerHTML=(r.strengths||[]).map(s=>`<p>• ${s}</p>`).join('');
-  document.getElementById('r-improve-list').innerHTML=(r.grammar_weaknesses||[]).map(w=>`<p>• ${w}</p>`).join('');
+  document.getElementById('r-st').textContent=L('strengths');
+  document.getElementById('r-it').textContent=L('improve');
+  document.getElementById('r-sl').innerHTML=(r.strengths||[]).map(s=>`<p>• ${s}</p>`).join('');
+  document.getElementById('r-il').innerHTML=(r.grammar_weaknesses||[]).map(w=>`<p>• ${w}</p>`).join('');
 
-  document.getElementById('r-corrections-title').textContent=L('corrections');
-  document.getElementById('r-corrections-list').innerHTML=(r.corrections||[]).map(c=>`
-    <div class="corr-card ${c.is_correct?'':'wrong'}">
-      <div class="corr-top">
-        <span>${c.is_correct?'✅':'❌'}</span>
-        <span class="corr-q">${c.question||''}</span>
-      </div>
-      ${c.is_correct
-        ?`<p class="perfect">${L('perfect')}</p>`
-        :`<div class="corr-detail">
-           <p><b>${L('yourAnswer')}</b> <span class="wrong-ans">${c.student_answer||''}</span></p>
-           <p><b>${L('correctAnswer')}</b> <span class="right-ans">${c.correct_answer||''}</span></p>
-           <p><b>${L('why')}</b> ${c.explanation||''}</p>
-           ${c.tip?`<div class="tip-box">${L('tip')} ${c.tip}</div>`:''}
-         </div>`
-      }
+  document.getElementById('r-ct').textContent=L('corrections');
+  document.getElementById('r-cl').innerHTML=(r.corrections||[]).map(c=>`
+    <div class="corr-item ${c.is_correct?'ok':'bad'}">
+      <div class="corr-top"><span>${c.is_correct?'✅':'❌'}</span><span class="corr-q">${c.question}</span></div>
+      ${c.is_correct?`<p style="color:#059669;font-size:13px;padding-left:26px">Perfect! ✨</p>`:`
+      <div class="corr-detail">
+        <p><strong>${L('yourAns')}</strong> <span class="corr-wrong">${c.student_answer}</span></p>
+        <p><strong>${L('correctAns')}</strong> <span class="corr-right">${c.correct_answer}</span></p>
+        <p><strong>${L('why')}</strong> ${c.explanation}</p>
+        ${c.tip?`<div class="tip-pill">${L('tip')} ${c.tip}</div>`:''}
+      </div>`}
     </div>`).join('');
 
-  document.getElementById('r-review-title').textContent=L('reviewThis');
-  document.getElementById('r-review-text').textContent=r.review_suggestion||'';
-  document.getElementById('r-motivation-title').textContent=L('motivation');
-  document.getElementById('r-motivation-text').textContent=r.motivation?`"${r.motivation}"` :'';
+  document.getElementById('r-revt').textContent=L('reviewThis');
+  document.getElementById('r-revp').textContent=r.review_suggestion||'';
+  document.getElementById('r-mot').textContent=L('motivation');
+  document.getElementById('r-mop').textContent=r.motivation?`"${r.motivation}"`:'';
 }
 
-// ══════════════════════════════════════════════════════════════════════════════
-//  INIT — draw flag SVGs on load
-// ══════════════════════════════════════════════════════════════════════════════
-document.querySelectorAll('[id^="flag-"]').forEach(el=>el.innerHTML=flagInner());
+// ══════════════════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════════════════
+initFlags();
 </script>
 </body>
 </html>
