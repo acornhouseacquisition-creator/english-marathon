@@ -437,9 +437,14 @@ input,textarea,select{font-family:inherit}
             <div style="color:#fff;font-size:13px;font-weight:700" id="user-name-display">—</div>
           </div>
         </div>
-        <button onclick="doLogout()" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">
-          🚪 Ieșire
-        </button>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button onclick="refreshProgress()" title="Actualizează progresul din cloud" style="background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.65);padding:6px 10px;border-radius:8px;font-size:12px;cursor:pointer" id="refresh-btn">
+            🔄
+          </button>
+          <button onclick="doLogout()" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">
+            🚪 Ieșire
+          </button>
+        </div>
       </div>
       <div class="hero-top">
         <svg id="flag-d" width="56" height="30" viewBox="0 0 190 100" style="border-radius:3px;flex-shrink:0"></svg>
@@ -1388,6 +1393,10 @@ let exAnswers={};
 // ══════════════════════════════════════════════════════════════════
 //  SUPABASE CONFIG
 // ══════════════════════════════════════════════════════════════════
+// NOTE: Supabase table 'user_progress' needs columns:
+// id, user_id, day_number, score, completed_at
+// Run in SQL Editor if needed:
+// alter table user_progress add column if not exists completed_at timestamp default now();
 const SUPA_URL = 'https://pmlmjqrifecphqwmoxdv.supabase.co';
 const SUPA_KEY = 'sb_publishable_-vZttfsRkaN1fr7_yvSoXQ_tYJWvfnJ';
 
@@ -1499,6 +1508,23 @@ async function loginSuccess(data,nameOverride){
   };
   localStorage.setItem('em_session_v2',JSON.stringify(currentUser));
   await loadProgressFromDB();
+  // If DB has no progress but localStorage does, sync local to DB
+  if(Object.keys(progress).length===0){
+    const local=localStorage.getItem('em_prog_local');
+    if(local){
+      try{
+        const localProg=JSON.parse(local);
+        const entries=Object.entries(localProg);
+        if(entries.length>0){
+          console.log('Syncing',entries.length,'local days to DB...');
+          for(const [day,score] of entries){
+            await saveProgress(parseInt(day),parseInt(score));
+          }
+          await loadProgressFromDB(); // reload after sync
+        }
+      }catch(e){console.log('Local sync error:',e);}
+    }
+  }
   lang='ro';
   document.getElementById('s-lang').style.display='none';
 
@@ -1514,22 +1540,60 @@ async function loginSuccess(data,nameOverride){
 
 async function loadProgressFromDB(){
   progress={};
+  if(!currentUser||!currentUser.id) return;
   try{
-    const res=await supaFetch('/rest/v1/user_progress?select=day_number,score&order=day_number');
-    if(res.ok){const rows=await res.json();rows.forEach(r=>{progress[r.day_number]=r.score;});}
-  }catch(e){console.log('Load progress error:',e);}
+    // Filter explicitly by user_id AND use user's token
+    const res=await supaFetch(
+      '/rest/v1/user_progress?user_id=eq.'+currentUser.id+'&select=day_number,score&order=day_number.asc'
+    );
+    if(res.ok){
+      const rows=await res.json();
+      if(Array.isArray(rows)){
+        rows.forEach(r=>{
+          if(r.day_number && r.score!==undefined) progress[r.day_number]=r.score;
+        });
+        console.log('Progress loaded from DB:',Object.keys(progress).length,'days');
+      }
+    } else {
+      console.log('Progress load failed, status:',res.status);
+      // Fallback to localStorage
+      const local=localStorage.getItem('em_prog_local');
+      if(local) try{progress=JSON.parse(local);}catch(e){}
+    }
+  }catch(e){
+    console.log('Load progress error:',e);
+    // Fallback to localStorage
+    const local=localStorage.getItem('em_prog_local');
+    if(local) try{progress=JSON.parse(local);}catch(e2){}
+  }
 }
 
 async function saveProgress(day,score){
   progress[day]=score;
+  // Always save locally as backup
   localStorage.setItem('em_prog_local',JSON.stringify(progress));
-  if(!currentUser)return;
+  if(!currentUser||!currentUser.id)return;
   try{
-    await supaFetch('/rest/v1/user_progress',{
+    // Upsert: insert or update if (user_id, day_number) already exists
+    const res=await supaFetch('/rest/v1/user_progress',{
       method:'POST',
-      headers:{'Prefer':'resolution=merge-duplicates'},
-      body:JSON.stringify({user_id:currentUser.id,day_number:day,score:score})
+      headers:{
+        'Prefer':'resolution=merge-duplicates,return=minimal',
+        'Content-Type':'application/json'
+      },
+      body:JSON.stringify({
+        user_id: currentUser.id,
+        day_number: parseInt(day),
+        score: parseInt(score),
+        completed_at: new Date().toISOString()
+      })
     });
+    if(!res.ok){
+      const err=await res.text();
+      console.log('Save progress error response:',res.status,err);
+    } else {
+      console.log('Progress saved to DB: Day',day,'Score',score);
+    }
   }catch(e){console.log('Save progress error:',e);}
 }
 
@@ -1914,7 +1978,37 @@ document.addEventListener("DOMContentLoaded", async function() {
   await checkAuth();
 });
 
+</script>
+</body>
+</html>
 // ══════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════
+//  PROGRESS SYNC UTILITIES
+// ══════════════════════════════════════════════════════════════════
+
+async function refreshProgress(){
+  const btn=document.getElementById('refresh-btn');
+  if(btn){btn.textContent='⏳';btn.disabled=true;}
+  try{
+    await loadProgressFromDB();
+    renderDash();
+    if(btn){btn.textContent='✅';setTimeout(()=>{btn.textContent='🔄';btn.disabled=false;},1500);}
+    console.log('Progress refreshed from cloud');
+  }catch(e){
+    if(btn){btn.textContent='❌';setTimeout(()=>{btn.textContent='🔄';btn.disabled=false;},1500);}
+  }
+}
+
+// Auto-refresh when user returns to this tab (switching from another device's work)
+document.addEventListener('visibilitychange',async function(){
+  if(document.visibilityState==='visible'&&currentUser){
+    await loadProgressFromDB();
+    const dash=document.getElementById('s-dash');
+    if(dash&&dash.classList.contains('active'))renderGrid();
+  }
+});
+
+
 //  STRIPE PAYMENT SYSTEM
 // ══════════════════════════════════════════════════════════════════
 const STRIPE_LINK = 'https://buy.stripe.com/28E14oenWfTd6VW2hM28800';
@@ -2009,7 +2103,3 @@ function showPaymentWall(){
   }
   showScreen('payment');
 }
-
-</script>
-</body>
-</html>
