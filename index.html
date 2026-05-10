@@ -1550,70 +1550,251 @@ function collectAnswers(){
   return {text:lines.join('\n'),baseScore};
 }
 
-async function submitExercises(){
+function submitExercises(){
   const d=DAYS[selDay-1];
   const t=d.tr[lang]?.title||d.title;
   const g=d.tr[lang]?.grammar||d.grammar;
-  const {text,baseScore}=collectAnswers();
   const btn=document.getElementById('ex-submit');
   const load=document.getElementById('ex-loading');
-  btn.disabled=true;btn.textContent=L('grading');
+  btn.disabled=true;
+  btn.textContent=L('grading');
   load.classList.add('show');
 
-  const langInstr=lang==='ro'
-    ?'Respond ENTIRELY in Romanian (limba română). All feedback, explanations, corrections and messages must be in Romanian.'
-    :'Respond ENTIRELY in Russian (русский язык). All feedback, explanations, corrections and messages must be in Russian.';
-
-  const prompt=`You are a warm, encouraging American English teacher grading A1 student exercises.
-Day ${selDay}: "${t}" — Grammar focus: "${g}"
-${langInstr}
-
-The student's auto-score from objective questions is approximately ${baseScore}/100.
-
-Here are their answers:
-${text}
-
-Grade this student. The score should reflect their actual performance. A student needs 80+ to unlock the next lesson — so be accurate and fair.
-
-Respond ONLY with valid JSON (no markdown, no backticks):
-{
-  "score": <number 0-100, weighted average of all exercises>,
-  "grade": "<A/B/C/D/F>",
-  "emoji": "<one encouraging emoji>",
-  "overall_message": "<2-3 warm sentences in ${lang==='ro'?'Romanian':'Russian'}>",
-  "corrections": [
-    {"question":"<q number and stem>","student_answer":"<what they wrote>","correct_answer":"<correct>","is_correct":<bool>,"explanation":"<simple explanation in ${lang==='ro'?'Romanian':'Russian'}>","tip":"<memory tip in ${lang==='ro'?'Romanian':'Russian'}>"}
-  ],
-  "grammar_weaknesses": ["<weakness in ${lang==='ro'?'Romanian':'Russian'}>"],
-  "strengths": ["<strength in ${lang==='ro'?'Romanian':'Russian'}>"],
-  "review_suggestion": "<what to review in ${lang==='ro'?'Romanian':'Russian'}>",
-  "motivation": "<motivating message in ${lang==='ro'?'Romanian':'Russian'}>"
-}`;
-
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1500,
-        system:'You are an expert English teacher. Always respond with valid JSON only. No markdown.',
-        messages:[{role:'user',content:prompt}]})
-    });
-    const data=await res.json();
-    const raw=data.content?.[0]?.text||'{}';
-    const result=JSON.parse(raw.replace(/```json|```/g,'').trim());
-    saveProgress(selDay,result.score);
-    renderResults(result);
-    showScreen('results');
-  }catch(e){
-    renderResults({error:true});showScreen('results');
-  }
-  btn.disabled=false;btn.textContent=L('submitEx');
-  load.classList.remove('show');
+  // Small delay so the user sees the loading state
+  setTimeout(()=>{
+    try{
+      const result = gradeLocally(d);
+      saveProgress(selDay, result.score);
+      renderResults(result);
+      showScreen('results');
+    }catch(e){
+      renderResults({error:true});
+      showScreen('results');
+    }
+    btn.disabled=false;
+    btn.textContent=L('submitEx');
+    load.classList.remove('show');
+  }, 900);
 }
 
-// ══════════════════════════════════════════════════════════════════
-//  RESULTS PAGE
-// ══════════════════════════════════════════════════════════════════
+// ── LOCAL GRADER ─────────────────────────────────────────────────
+function gradeLocally(d){
+  const corrections=[];
+  let totalPoints=0;
+  let earnedPoints=0;
+
+  d.exercises.forEach((ex,ei)=>{
+    const pts=ex.pts||20;
+
+    if(ex.type==='fill'){
+      const perQ=pts/ex.qs.length;
+      ex.qs.forEach((q,qi)=>{
+        totalPoints+=perQ;
+        const val=(document.getElementById('fi-'+ei+'-'+qi)?.value||'').trim().toLowerCase();
+        const correct=val===q.answer.toLowerCase();
+        if(correct) earnedPoints+=perQ;
+        corrections.push({
+          question:'Q'+(qi+1)+': '+q.stem,
+          student_answer:val||'(blank)',
+          correct_answer:q.answer,
+          is_correct:correct,
+          explanation:correct?'':explainFill(q,lang),
+          tip:correct?'':q.hint||''
+        });
+      });
+    }
+
+    else if(ex.type==='mc'){
+      const perQ=pts/ex.qs.length;
+      ex.qs.forEach((q,qi)=>{
+        totalPoints+=perQ;
+        const sel=exAnswers.mc[ei]?.[qi];
+        const correct=sel===q.answer;
+        if(correct) earnedPoints+=perQ;
+        corrections.push({
+          question:'Q'+(qi+1)+': '+q.stem,
+          student_answer:sel!==undefined?q.opts[sel]:'(not answered)',
+          correct_answer:q.opts[q.answer],
+          is_correct:correct,
+          explanation:correct?'':explainMC(q,lang),
+          tip:''
+        });
+      });
+    }
+
+    else if(ex.type==='error'){
+      const perQ=pts/ex.qs.length;
+      ex.qs.forEach((q,qi)=>{
+        totalPoints+=perQ;
+        const val=(document.getElementById('er-'+ei+'-'+qi)?.value||'').trim().toLowerCase();
+        const expected=q.correct.toLowerCase();
+        // Flexible match: accept if >70% words correct
+        const correct=val===expected || similarity(val,expected)>=0.75;
+        if(correct) earnedPoints+=perQ;
+        corrections.push({
+          question:'Q'+(qi+1)+': Fix — '+q.wrong,
+          student_answer:val||'(blank)',
+          correct_answer:q.correct,
+          is_correct:correct,
+          explanation:correct?'':explainError(q,lang),
+          tip:''
+        });
+      });
+    }
+
+    else if(ex.type==='match'){
+      const perQ=pts/ex.pairs.length;
+      ex.pairs.forEach((p,pi)=>{
+        totalPoints+=perQ;
+        const sel=document.getElementById('ma-'+ei+'-'+pi)?.value;
+        const correct=sel!==undefined&&sel!==''&&parseInt(sel)===pi;
+        if(correct) earnedPoints+=perQ;
+        corrections.push({
+          question:'Match: '+p[0],
+          student_answer:sel!==undefined&&sel!==''?ex.pairs[parseInt(sel)]?.[1]||'?':'(not answered)',
+          correct_answer:p[1],
+          is_correct:correct,
+          explanation:correct?'':explainMatch(p,lang),
+          tip:''
+        });
+      });
+    }
+
+    else if(ex.type==='write'){
+      // Writing: give full points if student wrote something meaningful (>5 chars per answer)
+      const perQ=pts/ex.prompts.length;
+      ex.prompts.forEach((p,pi)=>{
+        totalPoints+=perQ;
+        const val=(document.getElementById('wr-'+ei+'-'+pi)?.value||'').trim();
+        const hasContent=val.length>=6;
+        // Basic quality check: contains at least one word from expected grammar
+        if(hasContent) earnedPoints+=perQ;
+        corrections.push({
+          question:'Write: '+p,
+          student_answer:val||'(blank)',
+          correct_answer:lang==='ro'?'Răspuns propriu (verificat manual)':'Собственный ответ (проверка вручную)',
+          is_correct:hasContent,
+          explanation:hasContent?'':
+            lang==='ro'?'Răspunsul este gol sau prea scurt. Scrie cel puțin o propoziție completă.':
+                         'Ответ пустой или слишком короткий. Напиши хотя бы одно полное предложение.',
+          tip:hasContent?'':
+            lang==='ro'?'Încearcă să scrii o propoziție completă cu subiect și verb.':
+                         'Попробуй написать полное предложение с подлежащим и сказуемым.'
+        });
+      });
+    }
+  });
+
+  const score=totalPoints>0?Math.round((earnedPoints/totalPoints)*100):0;
+  const passed=score>=80;
+
+  // Grade letter
+  const grade=score>=90?'A':score>=80?'B':score>=70?'C':score>=60?'D':'F';
+
+  // Emoji
+  const emoji=score>=90?'🌟':score>=80?'🎉':score>=60?'💪':'📚';
+
+  // Count correct vs wrong
+  const numCorrect=corrections.filter(c=>c.is_correct).length;
+  const numWrong=corrections.filter(c=>!c.is_correct).length;
+
+  // Messages in the right language
+  const msgs=buildMessages(score,numCorrect,numWrong,passed,lang,d);
+
+  return {
+    score,grade,emoji,
+    overall_message:msgs.overall,
+    corrections,
+    grammar_weaknesses:msgs.weaknesses,
+    strengths:msgs.strengths,
+    review_suggestion:msgs.review,
+    motivation:msgs.motivation
+  };
+}
+
+// ── SIMILARITY HELPER (for error correction flexible matching) ────
+function similarity(a,b){
+  const wa=a.split(' ').filter(Boolean);
+  const wb=b.split(' ').filter(Boolean);
+  if(!wb.length) return 0;
+  let matches=0;
+  wa.forEach(w=>{ if(wb.includes(w)) matches++; });
+  return matches/wb.length;
+}
+
+// ── EXPLANATION GENERATORS ────────────────────────────────────────
+function explainFill(q,lang){
+  if(lang==='ro') return 'Răspunsul corect este +q.answer+. '+( q.hint?'Indiciu: '+q.hint:'');
+  return 'Правильный ответ: +q.answer+. '+(q.hint?'Подсказка: '+q.hint:'');
+}
+function explainMC(q,lang){
+  if(lang==='ro') return 'Răspunsul corect este +q.opts[q.answer]+. Verifică regulile de gramatică din lecție.';
+  return 'Правильный ответ: +q.opts[q.answer]+. Проверь грамматические правила в уроке.';
+}
+function explainError(q,lang){
+  if(lang==='ro') return 'Propoziția corectă este: +q.correct+. Identifică greșeala și corectează forma verbului.';
+  return 'Правильное предложение: +q.correct+. Найди ошибку и исправь форму глагола.';
+}
+function explainMatch(p,lang){
+  if(lang==='ro') return '+p[0]+ înseamnă +p[1]+. Revizuiește lista de vocabular.';
+  return '+p[0]+ означает +p[1]+. Повтори список словарного запаса.';
+}
+
+// ── BUILD RESULT MESSAGES ─────────────────────────────────────────
+function buildMessages(score,correct,wrong,passed,lang,d){
+  const g=d.tr[lang]?.grammar||d.grammar;
+  if(lang==='ro'){
+    const overallArr=[
+      score>=90 ? 'Felicitări! Ai făcut o treabă excelentă azi! Răspunsurile tale arată că ai înțeles bine lecția.' :
+      score>=80 ? 'Bună treabă! Ai trecut testul și ai deblocat ziua următoare! Continuă tot așa.' :
+      score>=60 ? 'Ai depus efort bun! Ai câteva greșeli, dar ești pe drumul cel bun. Mai exersează și încearcă din nou.' :
+                  'Nu te descuraja! Recitește lecția cu atenție și încearcă din nou. Poți face asta!'
+    ];
+    return {
+      overall: overallArr[0],
+      strengths: correct>0 ? [
+        correct+' din '+( correct+wrong)+' răspunsuri corecte!',
+        passed?'Ai demonstrat că înțelegi '+g+'.':'Continuă să exersezi '+g+'.'
+      ] : ['Ai finalizat exercițiile — asta e primul pas!'],
+      weaknesses: wrong>0 ? [
+        'Mai exersează: '+g,
+        wrong+' răspunsuri necesită atenție.'
+      ] : ['Fără puncte slabe majore azi!'],
+      review: passed ?
+        'Ești pregătit pentru ziua următoare! Recapitulează rapid '+g+' dacă simți că mai ai nevoie.' :
+        'Recitește secțiunea de Gramatică din lecția de azi, în special regulile pentru '+g+'.',
+      motivation: passed ?
+        'Ziua '+(selDay+1)+' te așteaptă! Fiecare zi te face mai bun în engleză. 🇺🇸' :
+        'Fiecare greșeală este o lecție. Recitește, exersează și vei reuși! 💪'
+    };
+  } else {
+    const overallArr=[
+      score>=90 ? 'Поздравляем! Ты отлично справился сегодня! Твои ответы показывают, что ты хорошо понял урок.' :
+      score>=80 ? 'Молодец! Ты прошёл тест и разблокировал следующий день! Продолжай в том же духе.' :
+      score>=60 ? 'Хорошая попытка! Есть несколько ошибок, но ты на правильном пути. Попрактикуйся ещё.' :
+                  'Не расстраивайся! Перечитай урок внимательно и попробуй снова. У тебя получится!'
+    ];
+    return {
+      overall: overallArr[0],
+      strengths: correct>0 ? [
+        correct+' из '+(correct+wrong)+' ответов правильно!',
+        passed?'Ты показал, что понимаешь '+g+'.':'Продолжай практиковать '+g+'.'
+      ] : ['Ты выполнил упражнения — это первый шаг!'],
+      weaknesses: wrong>0 ? [
+        'Ещё попрактикуй: '+g,
+        wrong+' ответов требуют внимания.'
+      ] : ['Никаких серьёзных слабых мест сегодня!'],
+      review: passed ?
+        'Ты готов к следующему дню! Быстро повтори '+g+', если чувствуешь необходимость.' :
+        'Перечитай раздел Грамматики сегодняшнего урока, особенно правила для '+g+'.',
+      motivation: passed ?
+        'День '+(selDay+1)+' ждёт тебя! Каждый день делает твой английский лучше. 🇺🇸' :
+        'Каждая ошибка — это урок. Перечитай, попрактикуйся и у тебя получится! 💪'
+    };
+  }
+}
+
+
 function renderResults(r){
   const d=DAYS[selDay-1];
   document.getElementById('rb-back').textContent=L('backToCourse');
