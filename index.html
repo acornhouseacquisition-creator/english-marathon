@@ -355,6 +355,76 @@ input,textarea,select{font-family:inherit}
 </div>
 
 <!-- ════════════════════════════ DASHBOARD ════════════════════════════ -->
+<!-- ════════════════════════ PAYMENT WALL ════════════════════════ -->
+<div id="s-payment" class="screen">
+  <div style="min-height:100vh;background:linear-gradient(160deg,#0F172A 0%,#1E3A6E 50%,#1a1a2e 100%);display:flex;align-items:center;justify-content:center;padding:24px;position:relative;overflow:hidden">
+    <div style="position:absolute;top:-100px;right:-100px;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(37,99,235,0.15),transparent);pointer-events:none"></div>
+    <div style="position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;border-radius:50%;background:radial-gradient(circle,rgba(124,58,237,0.12),transparent);pointer-events:none"></div>
+    <div style="max-width:520px;width:100%;z-index:1">
+      <div style="background:rgba(255,255,255,0.97);border-radius:24px;padding:36px 32px;box-shadow:0 32px 80px rgba(0,0,0,0.4)">
+
+        <div style="text-align:center;margin-bottom:28px">
+          <div style="font-size:48px;margin-bottom:10px">&#x1F1FA;&#x1F1F8;&#x1F4DA;</div>
+          <h1 style="font-size:22px;font-weight:800;color:#0F172A;margin:0 0 6px">30-Day American English Marathon</h1>
+          <p style="font-size:14px;color:#64748B;margin:0">CEFR A1 — Curs complet cu 30 de lectii</p>
+        </div>
+
+        <div style="background:linear-gradient(135deg,#1D4ED8,#7C3AED);border-radius:16px;padding:20px;text-align:center;margin-bottom:24px">
+          <div style="color:rgba(255,255,255,0.7);font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:4px">Acces complet - o singura plata</div>
+          <div style="color:#FCD34D;font-size:42px;font-weight:800;line-height:1" id="pay-price">$29</div>
+          <div style="color:rgba(255,255,255,0.75);font-size:13px;margin-top:4px">plata unica · acces pe viata</div>
+        </div>
+
+        <div style="margin-bottom:24px">
+          <p style="font-size:12px;font-weight:700;color:#374151;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:12px">Ce primesti:</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#1E293B"><span>&#x1F4D8;</span>30 lectii complete</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#1E293B"><span>&#x1F4DD;</span>Vocabular in romana</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#1E293B"><span>&#x270F;&#xFE0F;</span>Exercitii interactive</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#1E293B"><span>&#x1F3AF;</span>Sistem de notare</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#1E293B"><span>&#x1F512;</span>Progres salvat cloud</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#1E293B"><span>&#x1F4F1;</span>Orice device</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#1E293B"><span>&#x1F504;</span>Acces pe viata</div>
+            <div style="display:flex;align-items:center;gap:7px;font-size:13px;color:#1E293B"><span>&#x1F1FA;&#x1F1F8;</span>Engleza americana A1</div>
+          </div>
+        </div>
+
+        <div style="height:1px;background:#E2E8F0;margin-bottom:20px"></div>
+
+        <a href="https://buy.stripe.com/28E14oenWfTd6VW2hM28800" id="stripe-pay-btn" target="_blank"
+          style="display:block;text-align:center;padding:16px;background:linear-gradient(135deg,#059669,#047857);color:#fff;border-radius:12px;font-size:17px;font-weight:800;text-decoration:none;margin-bottom:12px;box-shadow:0 4px 20px rgba(5,150,105,0.35)"
+          onclick="onStripeClick()">
+          Plateste acum - $29
+        </a>
+
+        <button onclick="checkPaymentManually()"
+          style="width:100%;padding:11px;background:transparent;border:1.5px solid #CBD5E1;border-radius:10px;font-size:13px;color:#64748B;cursor:pointer;font-weight:600;margin-bottom:8px">
+          Am platit deja - verifica accesul
+        </button>
+
+        <div id="payment-checking" style="display:none;text-align:center;padding:10px;color:#2563EB;font-size:13px;font-weight:600">
+          <span style="display:inline-block;width:14px;height:14px;border:2px solid #BFDBFE;border-top:2px solid #2563EB;border-radius:50%;animation:spin .7s linear infinite;margin-right:6px;vertical-align:middle"></span>
+          Se verifica plata...
+        </div>
+
+        <div id="payment-err" style="display:none;margin-top:8px;padding:10px 14px;background:#FEF2F2;border:1px solid #FECACA;border-radius:8px;color:#991B1B;font-size:12px;text-align:center"></div>
+
+        <div style="display:flex;align-items:center;justify-content:center;gap:6px;margin-top:16px">
+          <span>&#x1F512;</span>
+          <span style="font-size:11px;color:#94A3B8">Plata securizata prin Stripe · Datele tale sunt protejate</span>
+        </div>
+
+        <div style="text-align:center;margin-top:14px">
+          <button onclick="doLogout()" style="background:none;border:none;color:#94A3B8;font-size:12px;cursor:pointer">
+            Nu esti tu? Iesi din cont
+          </button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="s-dash" class="screen">
   <div class="hero">
     <div class="hero-inner">
@@ -1431,8 +1501,15 @@ async function loginSuccess(data,nameOverride){
   await loadProgressFromDB();
   lang='ro';
   document.getElementById('s-lang').style.display='none';
-  showScreen('dash');
-  renderDash();
+
+  // Check if user has paid
+  const paid = await checkPaymentStatus(currentUser.id);
+  if(paid){
+    showScreen('dash');
+    renderDash();
+  } else {
+    showPaymentWall();
+  }
 }
 
 async function loadProgressFromDB(){
@@ -1489,7 +1566,10 @@ async function checkAuth(){
       await loadProgressFromDB();
       lang='ro';
       document.getElementById('s-lang').style.display='none';
-      showScreen('dash');renderDash();
+      // Check payment
+      const paidStatus = await checkPaymentStatus(currentUser.id);
+      if(paidStatus){ showScreen('dash'); renderDash(); }
+      else { showPaymentWall(); }
     }else{
       if(session.refresh_token){
         const rr=await fetch(SUPA_URL+'/auth/v1/token?grant_type=refresh_token',{
@@ -1503,7 +1583,10 @@ async function checkAuth(){
           await loadProgressFromDB();
           lang='ro';
           document.getElementById('s-lang').style.display='none';
-          showScreen('dash');renderDash();return;
+          const paidR = await checkPaymentStatus(currentUser.id);
+          if(paidR){ showScreen('dash'); renderDash(); }
+          else { showPaymentWall(); }
+          return;
         }
       }
       localStorage.removeItem('em_session_v2');showTab('login');
@@ -1821,11 +1904,111 @@ function renderResults(r){
 // ══════════════════════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════════════════════
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", async function() {
   initFlags();
-  checkAuth();
+  // If Stripe redirected back with ?paid=1, mark as paid then auth
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('paid')==='1' && params.get('uid')){
+    // We'll handle this inside checkPaymentManually after auth
+  }
+  await checkAuth();
 });
 
 </script>
 </body>
 </html>
+// ══════════════════════════════════════════════════════════════════
+//  STRIPE PAYMENT SYSTEM
+// ══════════════════════════════════════════════════════════════════
+const STRIPE_LINK = 'https://buy.stripe.com/28E14oenWfTd6VW2hM28800';
+
+// Called when user clicks the Stripe pay button
+// Appends their email to the link so Stripe pre-fills it
+function onStripeClick(){
+  const btn = document.getElementById('stripe-pay-btn');
+  if(btn && currentUser && currentUser.email){
+    const base = STRIPE_LINK.split('?')[0];
+    const successUrl = encodeURIComponent(window.location.href + '?paid=1&uid=' + currentUser.id);
+    btn.href = base + '?prefilled_email=' + encodeURIComponent(currentUser.email) +
+               '&client_reference_id=' + (currentUser.id||'');
+  }
+}
+
+// Check if payment exists in Supabase
+async function checkPaymentStatus(userId){
+  try{
+    const res = await supaFetch(
+      '/rest/v1/user_payments?user_id=eq.'+userId+'&select=paid&limit=1'
+    );
+    if(!res.ok) return false;
+    const rows = await res.json();
+    return rows.length > 0 && rows[0].paid === true;
+  }catch(e){ return false; }
+}
+
+// Mark payment as complete in Supabase
+async function markAsPaid(userId){
+  try{
+    await supaFetch('/rest/v1/user_payments',{
+      method:'POST',
+      headers:{'Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({
+        user_id: userId,
+        paid: true,
+        paid_at: new Date().toISOString()
+      })
+    });
+    return true;
+  }catch(e){ return false; }
+}
+
+// Called when user clicks "I already paid"
+async function checkPaymentManually(){
+  const checking = document.getElementById('payment-checking');
+  const errEl    = document.getElementById('payment-err');
+  if(checking) checking.style.display='block';
+  if(errEl)    errEl.style.display='none';
+
+  // 1. Check URL params — Stripe redirects back with ?paid=1
+  const params = new URLSearchParams(window.location.search);
+  if(params.get('paid')==='1'){
+    await markAsPaid(currentUser.id);
+    if(checking) checking.style.display='none';
+    proceedToCourse();
+    return;
+  }
+
+  // 2. Check database
+  const paid = await checkPaymentStatus(currentUser.id);
+  if(checking) checking.style.display='none';
+
+  if(paid){
+    proceedToCourse();
+  }else{
+    if(errEl){
+      errEl.textContent='Nu am gasit o plata pentru acest cont. Daca tocmai ai platit, asteapta 30 de secunde si incearca din nou.';
+      errEl.style.display='block';
+    }
+  }
+}
+
+// Move to course after confirmed payment
+function proceedToCourse(){
+  // Clean URL if it has ?paid=1
+  if(window.history && window.history.replaceState){
+    window.history.replaceState({},'',window.location.pathname);
+  }
+  showScreen('dash');
+  renderDash();
+}
+
+// Show payment wall (called after login if not paid)
+function showPaymentWall(){
+  // Set user email on the pay button
+  const btn = document.getElementById('stripe-pay-btn');
+  if(btn && currentUser && currentUser.email){
+    btn.href = STRIPE_LINK + '?prefilled_email=' + encodeURIComponent(currentUser.email) +
+               '&client_reference_id=' + (currentUser.id||'');
+  }
+  showScreen('payment');
+}
