@@ -36,10 +36,10 @@ input,textarea,select{font-family:inherit}
 .hero-tag{font-size:11px;color:rgba(255,255,255,.6);font-weight:700;letter-spacing:1.5px;text-transform:uppercase}
 .hero h1{color:#fff;font-size:clamp(22px,4vw,40px);font-weight:800;line-height:1.1;margin:2px 0}
 .hero-para{color:rgba(255,255,255,.78);font-size:14px;max-width:580px;line-height:1.65;margin:0 0 20px}
-.ls-row{display:flex;align-items:center;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+
 .ls-row span{font-size:12px;color:rgba(255,255,255,.55)}
-.ls-btn{padding:5px 14px;border-radius:20px;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:rgba(255,255,255,.7);font-size:12px;font-weight:600}
-.ls-btn.on{background:rgba(255,255,255,.18);color:#fff;border-color:rgba(255,255,255,.55)}
+
+
 .stats{display:flex;gap:12px;flex-wrap:wrap}
 .stat{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.14);border-radius:12px;padding:12px 18px;text-align:center;min-width:68px}
 .stat-n{color:#FCD34D;font-size:22px;font-weight:800;line-height:1}
@@ -225,27 +225,131 @@ input,textarea,select{font-family:inherit}
 </head>
 <body>
 
-<!-- ════════════════════════════ LANG CHOOSER ════════════════════════════ -->
+<!-- ════════════════════════ AUTH SCREEN ════════════════════════ -->
 <div id="s-lang" class="screen active">
-  <div id="lc" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0F172A 0%,#1E3A6E 60%,#2563EB 100%);padding:24px">
-    <div class="lc-card">
-      <div class="lc-flag">🇺🇸</div>
-      <h1>30-Day American English Marathon</h1>
-      <p class="sub">CEFR Level A1 — All lessons built-in. No PDFs needed.</p>
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0F172A 0%,#1E3A6E 60%,#2563EB 100%);padding:24px">
+    <div class="lc-card" style="max-width:420px;width:100%">
+
+      <div style="text-align:center;margin-bottom:16px">
+        <div style="font-size:44px">🇺🇸🇷🇴</div>
+        <h1 style="font-size:20px;font-weight:800;color:#0F172A;margin:8px 0 4px">30-Day English Marathon</h1>
+        <p style="font-size:13px;color:#64748B">CEFR A1 — Română · Cont personal</p>
+      </div>
+
       <div class="lc-divider"></div>
-      <p class="lc-choose">Choose your translation language / Alegeți limba / Выберите язык:</p>
-      <div class="lc-btns">
-        <button class="lc-btn" onclick="chooseLang('ro')">
-          <span class="f">🇷🇴</span>
-          <span class="ln">Română</span>
-          <span class="ls">Romanian</span>
+
+      <!-- TAB SWITCHER -->
+      <div style="display:flex;border-radius:10px;overflow:hidden;border:1.5px solid #E2E8F0;margin-bottom:20px">
+        <button id="tab-login" onclick="showTab('login')"
+          style="flex:1;padding:10px;border:none;background:#1D4ED8;color:#fff;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s">
+          🔑 Intră în cont
         </button>
-        <button class="lc-btn" onclick="chooseLang('ru')">
-          <span class="f">🇷🇺</span>
-          <span class="ln">Русский</span>
-          <span class="ls">Russian</span>
+        <button id="tab-reg" onclick="showTab('reg')"
+          style="flex:1;padding:10px;border:none;background:#F8FAFC;color:#374151;font-size:14px;font-weight:600;cursor:pointer;transition:all .2s">
+          ✨ Cont nou
         </button>
       </div>
+
+      <!-- LOGIN FORM -->
+      <div id="form-login">
+        <div style="margin-bottom:12px">
+          <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">📧 Email</label>
+          <input id="l-email" type="email" placeholder="email@exemplu.com" onkeydown="if(event.key==='Enter')doLogin()"
+            style="width:100%;padding:11px 13px;border:1.5px solid #CBD5E1;border-radius:9px;font-size:14px;outline:none;box-sizing:border-box;transition:border-color .2s"
+            onfocus="this.style.borderColor='#2563EB'" onblur="this.style.borderColor='#CBD5E1'">
+        </div>
+        <div style="margin-bottom:6px">
+          <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">🔒 Parolă</label>
+          <input id="l-pass" type="password" placeholder="Parola ta" onkeydown="if(event.key==='Enter')doLogin()"
+            style="width:100%;padding:11px 13px;border:1.5px solid #CBD5E1;border-radius:9px;font-size:14px;outline:none;box-sizing:border-box;transition:border-color .2s"
+            onfocus="this.style.borderColor='#2563EB'" onblur="this.style.borderColor='#CBD5E1'">
+        </div>
+        <div style="text-align:right;margin-bottom:14px">
+          <a href="#" onclick="showForgot();return false" style="font-size:12px;color:#2563EB;font-weight:600">Ai uitat parola?</a>
+        </div>
+        <div id="l-err" style="color:#DC2626;font-size:12px;background:#FEF2F2;border:1px solid #FECACA;border-radius:7px;padding:8px 12px;margin-bottom:12px;display:none"></div>
+        <button onclick="doLogin()" id="l-btn"
+          style="width:100%;padding:13px;background:#1D4ED8;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s">
+          🔑 Intră în cont
+        </button>
+        <p style="font-size:12px;color:#64748B;margin-top:14px;text-align:center">
+          Nu ai cont? <a href="#" onclick="showTab('reg');return false" style="color:#1D4ED8;font-weight:700">Creează unul gratuit →</a>
+        </p>
+      </div>
+
+      <!-- REGISTER FORM -->
+      <div id="form-reg" style="display:none">
+        <div style="margin-bottom:12px">
+          <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">👤 Nume complet</label>
+          <input id="r-name" type="text" placeholder="Maria Ionescu"
+            style="width:100%;padding:11px 13px;border:1.5px solid #CBD5E1;border-radius:9px;font-size:14px;outline:none;box-sizing:border-box"
+            onfocus="this.style.borderColor='#059669'" onblur="this.style.borderColor='#CBD5E1'">
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">📧 Email</label>
+          <input id="r-email" type="email" placeholder="email@exemplu.com"
+            style="width:100%;padding:11px 13px;border:1.5px solid #CBD5E1;border-radius:9px;font-size:14px;outline:none;box-sizing:border-box"
+            onfocus="this.style.borderColor='#059669'" onblur="this.style.borderColor='#CBD5E1'">
+        </div>
+        <div style="margin-bottom:12px">
+          <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">🔒 Parolă <span style="color:#94A3B8;font-weight:400">(minim 6 caractere)</span></label>
+          <input id="r-pass" type="password" placeholder="Creează o parolă"
+            style="width:100%;padding:11px 13px;border:1.5px solid #CBD5E1;border-radius:9px;font-size:14px;outline:none;box-sizing:border-box"
+            onfocus="this.style.borderColor='#059669'" onblur="this.style.borderColor='#CBD5E1'">
+        </div>
+        <div style="margin-bottom:16px">
+          <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">🔒 Confirmă parola</label>
+          <input id="r-pass2" type="password" placeholder="Repetă parola" onkeydown="if(event.key==='Enter')doRegister()"
+            style="width:100%;padding:11px 13px;border:1.5px solid #CBD5E1;border-radius:9px;font-size:14px;outline:none;box-sizing:border-box"
+            onfocus="this.style.borderColor='#059669'" onblur="this.style.borderColor='#CBD5E1'">
+        </div>
+        <div id="r-err" style="color:#DC2626;font-size:12px;background:#FEF2F2;border:1px solid #FECACA;border-radius:7px;padding:8px 12px;margin-bottom:12px;display:none"></div>
+        <button onclick="doRegister()" id="r-btn"
+          style="width:100%;padding:13px;background:#059669;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer">
+          ✨ Creează cont gratuit
+        </button>
+        <p style="font-size:12px;color:#64748B;margin-top:14px;text-align:center">
+          Ai deja cont? <a href="#" onclick="showTab('login');return false" style="color:#1D4ED8;font-weight:700">← Intră în cont</a>
+        </p>
+      </div>
+
+      <!-- FORGOT PASSWORD FORM -->
+      <div id="form-forgot" style="display:none">
+        <div style="text-align:center;margin-bottom:16px">
+          <div style="font-size:36px">📧</div>
+          <p style="font-size:14px;color:#374151;margin-top:8px">Introdu email-ul și îți trimitem link de resetare parolă.</p>
+        </div>
+        <div style="margin-bottom:14px">
+          <input id="f-email" type="email" placeholder="email@exemplu.com"
+            style="width:100%;padding:11px 13px;border:1.5px solid #CBD5E1;border-radius:9px;font-size:14px;outline:none;box-sizing:border-box">
+        </div>
+        <div id="f-err" style="color:#DC2626;font-size:12px;background:#FEF2F2;border:1px solid #FECACA;border-radius:7px;padding:8px 12px;margin-bottom:12px;display:none"></div>
+        <div id="f-ok" style="color:#059669;font-size:12px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:7px;padding:8px 12px;margin-bottom:12px;display:none"></div>
+        <button onclick="doForgot()"
+          style="width:100%;padding:13px;background:#7C3AED;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer">
+          📧 Trimite link resetare
+        </button>
+        <p style="font-size:12px;color:#64748B;margin-top:14px;text-align:center">
+          <a href="#" onclick="showTab('login');return false" style="color:#1D4ED8;font-weight:700">← Înapoi la login</a>
+        </p>
+      </div>
+
+      <!-- SUCCESS MSG -->
+      <div id="auth-success" style="display:none;text-align:center;padding:20px 0">
+        <div style="font-size:48px">✅</div>
+        <p style="color:#059669;font-weight:800;font-size:16px;margin:10px 0 6px">Cont creat cu succes!</p>
+        <p style="color:#64748B;font-size:13px">Verifică email-ul pentru confirmare, apoi intră în cont.</p>
+        <button onclick="showTab('login')" style="margin-top:14px;padding:10px 24px;background:#1D4ED8;color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer">
+          🔑 Intră în cont
+        </button>
+      </div>
+
+      <!-- LOADING STATE -->
+      <div id="auth-loading" style="display:none;text-align:center;padding:24px 0">
+        <div style="width:36px;height:36px;border:3px solid #BFDBFE;border-top:3px solid #2563EB;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 12px"></div>
+        <p style="color:#2563EB;font-weight:600;font-size:14px" id="auth-loading-msg">Se încarcă...</p>
+      </div>
+
     </div>
   </div>
 </div>
@@ -254,19 +358,27 @@ input,textarea,select{font-family:inherit}
 <div id="s-dash" class="screen">
   <div class="hero">
     <div class="hero-inner">
+      <!-- User bar -->
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="width:32px;height:32px;border-radius:50%;background:rgba(255,255,255,.2);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:700;color:#FCD34D" id="user-avatar">?</div>
+          <div>
+            <div style="color:rgba(255,255,255,.6);font-size:10px;text-transform:uppercase;letter-spacing:1px">Cont activ</div>
+            <div style="color:#fff;font-size:13px;font-weight:700" id="user-name-display">—</div>
+          </div>
+        </div>
+        <button onclick="doLogout()" style="background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.8);padding:6px 14px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer">
+          🚪 Ieșire
+        </button>
+      </div>
       <div class="hero-top">
         <svg id="flag-d" width="56" height="30" viewBox="0 0 190 100" style="border-radius:3px;flex-shrink:0"></svg>
         <div>
-          <div class="hero-tag" id="d-tag">American English • CEFR A1</div>
+          <div class="hero-tag" id="d-tag">Engleză Americană 🇺🇸 • CEFR A1</div>
           <h1>30-Day English Marathon</h1>
         </div>
       </div>
       <p class="hero-para" id="d-para"></p>
-      <div class="ls-row">
-        <span id="d-ls-lbl"></span>
-        <button class="ls-btn" id="ls-ro" onclick="switchLang('ro')">🇷🇴 Română</button>
-        <button class="ls-btn" id="ls-ru" onclick="switchLang('ru')">🇷🇺 Русский</button>
-      </div>
       <div class="stats">
         <div class="stat"><div class="stat-n" id="s-done">0</div><div class="stat-l" id="s-done-l"></div></div>
         <div class="stat"><div class="stat-n" id="s-left">30</div><div class="stat-l" id="s-left-l"></div></div>
@@ -1203,10 +1315,217 @@ let progress={};
 let curFilter='all';
 let exAnswers={};
 
-try{progress=JSON.parse(localStorage.getItem('em_v4')||'{}');}catch(e){}
-function saveProgress(day,score){progress[day]=score;try{localStorage.setItem('em_v4',JSON.stringify(progress));}catch(e){}}
-function isUnlocked(d){if(d===1)return true;const s=progress[d-1];return s!==undefined&&s>=80;}
-function scColor(s){return s>=80?'#059669':s>=60?'#D97706':'#DC2626';}
+// ══════════════════════════════════════════════════════════════════
+//  SUPABASE CONFIG
+// ══════════════════════════════════════════════════════════════════
+const SUPA_URL = 'https://pmlmjqrifecphqwmoxdv.supabase.co';
+const SUPA_KEY = 'sb_publishable_-vZttfsRkaN1fr7_yvSoXQ_tYJWvfnJ';
+
+async function supaFetch(path, opts){
+  opts = opts || {};
+  const headers = {'apikey':SUPA_KEY,'Content-Type':'application/json'};
+  if(opts.headers) Object.assign(headers, opts.headers);
+  if(currentUser && currentUser.access_token) headers['Authorization']='Bearer '+currentUser.access_token;
+  else headers['Authorization']='Bearer '+SUPA_KEY;
+  return fetch(SUPA_URL+path, Object.assign({},opts,{headers}));
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  AUTH STATE & UI
+// ══════════════════════════════════════════════════════════════════
+let currentUser = null;
+
+function showTab(tab){
+  const ids=['form-login','form-reg','form-forgot','auth-success','auth-loading'];
+  ids.forEach(id=>{const el=document.getElementById(id);if(el)el.style.display='none';});
+  const show=document.getElementById('form-'+tab);if(show)show.style.display='';
+  const tl=document.getElementById('tab-login');
+  const tr=document.getElementById('tab-reg');
+  if(tl){tl.style.background=(tab==='login'||tab==='forgot')?'#1D4ED8':'#F8FAFC';tl.style.color=(tab==='login'||tab==='forgot')?'#fff':'#374151';}
+  if(tr){tr.style.background=(tab==='reg')?'#059669':'#F8FAFC';tr.style.color=(tab==='reg')?'#fff':'#374151';}
+  ['l-err','r-err','f-err','f-ok'].forEach(id=>{const el=document.getElementById(id);if(el){el.style.display='none';el.textContent='';}});
+}
+
+function showForgot(){ showTab('forgot'); }
+
+function setAuthLoading(show,msg){
+  const el=document.getElementById('auth-loading');
+  const ml=document.getElementById('auth-loading-msg');
+  if(el)el.style.display=show?'block':'none';
+  if(ml&&msg)ml.textContent=msg;
+}
+
+function showErr(id,msg){
+  const el=document.getElementById(id);
+  if(el){el.textContent=msg;el.style.display='block';}
+}
+
+async function doLogin(){
+  const email=(document.getElementById('l-email')?.value||'').trim().toLowerCase();
+  const pass=(document.getElementById('l-pass')?.value||'').trim();
+  if(!email||!pass){showErr('l-err','Completează email-ul și parola.');return;}
+  setAuthLoading(true,'Se autentifică...');
+  try{
+    const res=await fetch(SUPA_URL+'/auth/v1/token?grant_type=password',{
+      method:'POST',headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email,password:pass})
+    });
+    const data=await res.json();
+    setAuthLoading(false);
+    if(!res.ok){showErr('l-err','❌ '+(data.error_description||data.message||'Email sau parolă incorectă.'));return;}
+    await loginSuccess(data);
+  }catch(e){setAuthLoading(false);showErr('l-err','❌ Eroare de conexiune. Încearcă din nou.');}
+}
+
+async function doRegister(){
+  const name=(document.getElementById('r-name')?.value||'').trim();
+  const email=(document.getElementById('r-email')?.value||'').trim().toLowerCase();
+  const pass=(document.getElementById('r-pass')?.value||'').trim();
+  const pass2=(document.getElementById('r-pass2')?.value||'').trim();
+  if(!name||!email||!pass||!pass2){showErr('r-err','Completează toate câmpurile.');return;}
+  if(pass.length<6){showErr('r-err','Parola trebuie să aibă minim 6 caractere.');return;}
+  if(pass!==pass2){showErr('r-err','Parolele nu se potrivesc.');return;}
+  if(!email.includes('@')){showErr('r-err','Email invalid.');return;}
+  setAuthLoading(true,'Se creează contul...');
+  try{
+    const res=await fetch(SUPA_URL+'/auth/v1/signup',{
+      method:'POST',headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email,password:pass,data:{full_name:name}})
+    });
+    const data=await res.json();
+    setAuthLoading(false);
+    if(!res.ok){showErr('r-err','❌ '+(data.error_description||data.message||'Eroare la creare cont.'));return;}
+    if(data.session){await loginSuccess(data.session,name);}
+    else{
+      const fr=document.getElementById('form-reg');if(fr)fr.style.display='none';
+      const fs=document.getElementById('auth-success');if(fs)fs.style.display='block';
+    }
+  }catch(e){setAuthLoading(false);showErr('r-err','❌ Eroare de conexiune. Încearcă din nou.');}
+}
+
+async function doForgot(){
+  const email=(document.getElementById('f-email')?.value||'').trim().toLowerCase();
+  if(!email){showErr('f-err','Introdu email-ul tău.');return;}
+  setAuthLoading(true,'Se trimite email-ul...');
+  try{
+    await fetch(SUPA_URL+'/auth/v1/recover',{
+      method:'POST',headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
+      body:JSON.stringify({email})
+    });
+    setAuthLoading(false);
+    const ok=document.getElementById('f-ok');
+    if(ok){ok.textContent='✅ Email trimis! Verifică inbox-ul (și spam-ul).';ok.style.display='block';}
+  }catch(e){setAuthLoading(false);showErr('f-err','❌ Eroare. Încearcă din nou.');}
+}
+
+async function loginSuccess(data,nameOverride){
+  const user=data.user||{};
+  currentUser={
+    id:user.id,
+    email:user.email||'',
+    name:nameOverride||(user.user_metadata&&user.user_metadata.full_name)||(user.email?user.email.split('@')[0]:'Student'),
+    access_token:data.access_token,
+    refresh_token:data.refresh_token
+  };
+  localStorage.setItem('em_session_v2',JSON.stringify(currentUser));
+  await loadProgressFromDB();
+  lang='ro';
+  document.getElementById('s-lang').style.display='none';
+  showScreen('dash');
+  renderDash();
+}
+
+async function loadProgressFromDB(){
+  progress={};
+  try{
+    const res=await supaFetch('/rest/v1/user_progress?select=day_number,score&order=day_number');
+    if(res.ok){const rows=await res.json();rows.forEach(r=>{progress[r.day_number]=r.score;});}
+  }catch(e){console.log('Load progress error:',e);}
+}
+
+async function saveProgress(day,score){
+  progress[day]=score;
+  localStorage.setItem('em_prog_local',JSON.stringify(progress));
+  if(!currentUser)return;
+  try{
+    await supaFetch('/rest/v1/user_progress',{
+      method:'POST',
+      headers:{'Prefer':'resolution=merge-duplicates'},
+      body:JSON.stringify({user_id:currentUser.id,day_number:day,score:score})
+    });
+  }catch(e){console.log('Save progress error:',e);}
+}
+
+async function doLogout(){
+  try{
+    if(currentUser&&currentUser.access_token)
+      await fetch(SUPA_URL+'/auth/v1/logout',{method:'POST',headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+currentUser.access_token}});
+  }catch(e){}
+  currentUser=null;progress={};
+  localStorage.removeItem('em_session_v2');
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const sl=document.getElementById('s-lang');
+  if(sl){sl.style.display='';sl.classList.add('active');}
+  ['l-email','l-pass','r-name','r-email','r-pass','r-pass2'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  showTab('login');
+}
+
+async function checkAuth(){
+  try{
+    const saved=localStorage.getItem('em_session_v2');
+    if(!saved){showTab('login');return;}
+    const session=JSON.parse(saved);
+    if(!session||!session.access_token){showTab('login');return;}
+    const res=await fetch(SUPA_URL+'/auth/v1/user',{
+      headers:{'apikey':SUPA_KEY,'Authorization':'Bearer '+session.access_token}
+    });
+    if(res.ok){
+      const user=await res.json();
+      currentUser=Object.assign({},session,{
+        id:user.id,email:user.email,
+        name:session.name||(user.user_metadata&&user.user_metadata.full_name)||(user.email?user.email.split('@')[0]:'Student')
+      });
+      localStorage.setItem('em_session_v2',JSON.stringify(currentUser));
+      await loadProgressFromDB();
+      lang='ro';
+      document.getElementById('s-lang').style.display='none';
+      showScreen('dash');renderDash();
+    }else{
+      if(session.refresh_token){
+        const rr=await fetch(SUPA_URL+'/auth/v1/token?grant_type=refresh_token',{
+          method:'POST',headers:{'apikey':SUPA_KEY,'Content-Type':'application/json'},
+          body:JSON.stringify({refresh_token:session.refresh_token})
+        });
+        if(rr.ok){
+          const rd=await rr.json();
+          currentUser=Object.assign({},session,{access_token:rd.access_token,refresh_token:rd.refresh_token});
+          localStorage.setItem('em_session_v2',JSON.stringify(currentUser));
+          await loadProgressFromDB();
+          lang='ro';
+          document.getElementById('s-lang').style.display='none';
+          showScreen('dash');renderDash();return;
+        }
+      }
+      localStorage.removeItem('em_session_v2');showTab('login');
+    }
+  }catch(e){showTab('login');}
+}
+
+// ══════════════════════════════════════════════════════════════════
+//  FLAG SVG
+// ══════════════════════════════════════════════════════════════════
+function flagSVG(){
+  let s='';
+  for(let i=0;i<13;i++) s+='<rect x="0" y="'+(i*7.69).toFixed(2)+'" width="190" height="7.7" fill="'+(i%2===0?'#B22234':'#FFFFFF')+'"/>';
+  s+='<rect x="0" y="0" width="76" height="53.84" fill="#3C3B6E"/>';
+  let stars=[];
+  for(let r=0;r<9;r++){
+    const cols=r%2===0?6:5,xo=r%2===0?6.3:13.5,xs=r%2===0?12.3:14.6;
+    for(let c=0;c<cols;c++){const x=xo+c*xs,y=5.5+r*5.2;if(y<52&&stars.length<50)stars.push('<text x="'+x.toFixed(1)+'" y="'+y.toFixed(1)+'" font-size="5.5" fill="#fff" text-anchor="middle" dominant-baseline="middle">★</text>');}
+  }
+  return s+stars.join('');
+}
+function initFlags(){document.querySelectorAll('[id^="flag-"]').forEach(el=>el.innerHTML=flagSVG());}
 
 // ══════════════════════════════════════════════════════════════════
 //  ROUTING
@@ -1214,78 +1533,85 @@ function scColor(s){return s>=80?'#059669':s>=60?'#D97706':'#DC2626';}
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById('s-lang').style.display='none';
-  document.getElementById('s-'+id).classList.add('active');
+  const el=document.getElementById('s-'+id);
+  if(el)el.classList.add('active');
   window.scrollTo(0,0);
 }
-
-function chooseLang(l){lang=l;document.getElementById('s-lang').style.display='none';showScreen('dash');renderDash();}
-function switchLang(l){lang=l;document.getElementById('ls-ro').className='ls-btn'+(l==='ro'?' on':'');document.getElementById('ls-ru').className='ls-btn'+(l==='ru'?' on':'');renderDash();}
-function setFilter(f){curFilter=f;document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));document.getElementById('fb-'+f).classList.add('on');renderGrid();}
-function goTo(view,day){if(day!==undefined)selDay=day;showScreen(view);if(view==='dash')renderDash();else if(view==='lesson')renderLesson();else if(view==='exercise')renderExercise();}
+function setFilter(f){
+  curFilter=f;
+  ['all','done','pend'].forEach(k=>{const b=document.getElementById('fb-'+k);if(b)b.classList.remove('on');});
+  const active=document.getElementById('fb-'+(f==='all'?'all':f==='done'?'done':'pend'));
+  if(active)active.classList.add('on');
+  renderGrid();
+}
+function goTo(view,day){
+  if(day!==undefined)selDay=day;
+  showScreen(view);
+  if(view==='dash')renderDash();
+  else if(view==='lesson')renderLesson();
+  else if(view==='exercise')renderExercise();
+}
+function chooseLang(l){lang='ro';}
+function switchLang(l){lang='ro';}
+function isUnlocked(d){if(d===1)return true;const s=progress[d-1];return s!==undefined&&s>=80;}
+function scColor(s){return s>=80?'#059669':s>=60?'#D97706':'#DC2626';}
 
 // ══════════════════════════════════════════════════════════════════
 //  DASHBOARD
 // ══════════════════════════════════════════════════════════════════
 function renderDash(){
   initFlags();
+  if(currentUser){
+    const initials=(currentUser.name||'?').split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+    const nameEl=document.getElementById('user-name-display');
+    const avatarEl=document.getElementById('user-avatar');
+    if(nameEl)nameEl.textContent=currentUser.name;
+    if(avatarEl)avatarEl.textContent=initials;
+  }
   const done=Object.keys(progress).length;
   const scores=Object.values(progress);
   const avg=done?Math.round(scores.reduce((a,b)=>a+b,0)/done):null;
   const pct=Math.round(done/30*100);
-
-  document.getElementById('d-tag').textContent=L('american')+' • CEFR A1';
-  document.getElementById('d-para').textContent=L('heroPara');
-  document.getElementById('d-ls-lbl').textContent=L('lsLbl');
-  document.getElementById('ls-ro').className='ls-btn'+(lang==='ro'?' on':'');
-  document.getElementById('ls-ru').className='ls-btn'+(lang==='ru'?' on':'');
-  document.getElementById('s-done').textContent=done;document.getElementById('s-done-l').textContent=L('days');
-  document.getElementById('s-left').textContent=30-done;document.getElementById('s-left-l').textContent=L('daysLeft');
-  document.getElementById('s-avg').textContent=avg||'—';document.getElementById('s-avg-l').textContent=L('avgScore');
-  document.getElementById('s-pct').textContent=pct+'%';document.getElementById('s-pct-l').textContent=L('complete');
-  document.getElementById('prog').style.width=pct+'%';
-  document.getElementById('fb-all').textContent=L('showAll');
-  document.getElementById('fb-done').textContent=L('showDone');
-  document.getElementById('fb-pend').textContent=L('showPend');
-  document.getElementById('how-t').textContent=L('howWorks');
-  document.getElementById('how-f').textContent=L('howFoot');
-  document.getElementById('how-g').innerHTML=['h1','h2','h3','h4'].map((k,i)=>`
-    <div class="how-card"><div class="hn">${['1️⃣','2️⃣','3️⃣','4️⃣'][i]}</div><h3>${L(k+'t')}</h3><p>${L(k+'d')}</p></div>`).join('');
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  set('d-tag','Engleză Americană 🇺🇸 • CEFR A1');
+  set('d-para','Cursul complet de engleză americană. Studiază lecțiile, completează exercițiile și primești evaluare.');
+  set('s-done',done);set('s-done-l','Zile');
+  set('s-left',30-done);set('s-left-l','Rămase');
+  set('s-avg',avg||'—');set('s-avg-l','Scor mediu');
+  set('s-pct',pct+'%');set('s-pct-l','Complet');
+  const pg=document.getElementById('prog');if(pg)pg.style.width=pct+'%';
+  set('fb-all','Toate 30');set('fb-done','✅ Terminate');set('fb-pend','⏳ În curs');
+  set('how-t','Cum funcționează');
+  set('how-f','🔒 Nivelurile se deblochează cu scor 80+ • 🇺🇸 Engleză americană');
+  const hg=document.getElementById('how-g');
+  if(hg)hg.innerHTML=['Studiază lecția','Fă exercițiile','Trimite pentru evaluare','Deblochează ziua următoare'].map((t,i)=>
+    '<div class="how-card"><div class="hn">'+['1️⃣','2️⃣','3️⃣','4️⃣'][i]+'</div><h3>'+t+'</h3><p>'+
+    ['Gramatică, vocabular și lectură în română.','Completează toate exercițiile.','Primești scor și corecții instant.','Scor 80+ deblochează lecția următoare!'][i]+
+    '</p></div>').join('');
   renderGrid();
 }
 
 function renderGrid(){
-  const days=DAYS.filter(d=>{
-    if(curFilter==='done')return progress[d.day]!==undefined;
-    if(curFilter==='pend')return progress[d.day]===undefined;
-    return true;
-  });
-  document.getElementById('grid').innerHTML=days.map(d=>{
+  const days=DAYS.filter(d=>curFilter==='done'?progress[d.day]!==undefined:curFilter==='pend'?progress[d.day]===undefined:true);
+  const grid=document.getElementById('grid');if(!grid)return;
+  grid.innerHTML=days.map(d=>{
     const ul=isUnlocked(d.day);
     const sc=progress[d.day];
     const done=sc!==undefined;
-    const t=d.tr[lang]?.title||d.title;
-    const g=d.tr[lang]?.grammar||d.grammar;
-    const v=d.tr[lang]?.vocab||d.vocab;
-    return `<div class="dc ${ul?'open':'lkd'}" style="border-top-color:${ul?d.color:'#94A3B8'}"
-      ${ul?`onclick="goTo('lesson',${d.day})"`:''}>
-      <div class="dc-top">
-        <span class="dc-day" style="color:${ul?d.color:'#94A3B8'}">${!ul?'🔒 ':''}Day ${d.day}</span>
-        ${done?`<span class="dc-score" style="background:${scColor(sc)}">${sc}/100 ${sc>=80?'✓':'↺'}</span>`
-               :ul?`<span class="dc-dot"></span>`:''}
-      </div>
-      <div class="dc-title">${t}</div>
-      <div class="dc-gram">${g}</div>
-      <div class="dc-vocab">📝 ${v}</div>
-      ${d.isReview?`<span class="badge-r">${L('reviewBadge')}</span>`:''}
-      ${d.isGrad?`<span class="badge-g">${L('gradBadge')}</span>`:''}
-      ${!ul?`<div class="lk-hint">${L('lockNote')} ${d.day-1}</div>`:''}
-      <div class="dc-btns">
-        ${ul?`
-          <button class="dc-btn" style="background:${d.color}" onclick="event.stopPropagation();goTo('lesson',${d.day})">${done?L('continueLesson'):L('startLesson')}</button>
-          <button class="dc-btn" style="background:#334155" onclick="event.stopPropagation();goTo('exercise',${d.day})">${L('doExercises')}</button>
-        `:`<button class="dc-btn grey" disabled>${L('locked')}</button>`}
-      </div>
-    </div>`;
+    const t=(d.tr&&d.tr.ro&&d.tr.ro.title)||d.title;
+    const g=(d.tr&&d.tr.ro&&d.tr.ro.grammar)||d.grammar;
+    const v=(d.tr&&d.tr.ro&&d.tr.ro.vocab)||d.vocab;
+    return '<div class="dc '+(ul?'open':'lkd')+'" style="border-top-color:'+(ul?d.color:'#94A3B8')+'"'+(ul?' onclick="goTo(\'lesson\','+d.day+')"':'')+'>'+
+      '<div class="dc-top"><span class="dc-day" style="color:'+(ul?d.color:'#94A3B8')+'">'+(!ul?'🔒 ':'')+'Day '+d.day+'</span>'+
+      (done?'<span class="dc-score" style="background:'+scColor(sc)+'">'+sc+'/100 '+(sc>=80?'✓':'↺')+'</span>':ul?'<span class="dc-dot"></span>':'')+
+      '</div><div class="dc-title">'+t+'</div><div class="dc-gram">'+g+'</div><div class="dc-vocab">📝 '+v+'</div>'+
+      (d.isReview?'<span class="badge-r">⭐ Recapitulare</span>':'')+(d.isGrad?'<span class="badge-g">🎓 Final!</span>':'')+
+      (!ul?'<div class="lk-hint">Scor 80+ la Ziua '+(d.day-1)+'</div>':'')+
+      '<div class="dc-btns">'+
+      (ul?'<button class="dc-btn" style="background:'+d.color+'" onclick="event.stopPropagation();goTo(\'lesson\','+d.day+')">'+(done?'📖 Continuă':'📚 Începe lecția')+'</button>'+
+          '<button class="dc-btn" style="background:#334155" onclick="event.stopPropagation();goTo(\'exercise\','+d.day+')">✏️ Exerciții</button>':
+          '<button class="dc-btn grey" disabled>🔒 Blocat</button>')+
+      '</div></div>';
   }).join('');
 }
 
@@ -1297,106 +1623,42 @@ function renderLesson(){
   const d=DAYS[selDay-1];
   const ul=isUnlocked(selDay);
   const sc=progress[selDay];
-  const t=d.tr[lang]?.title||d.title;
-  const g=d.tr[lang]?.grammar||d.grammar;
-  const v=d.tr[lang]?.vocab||d.vocab;
-
-  document.getElementById('lh-bg').style.background=ul?d.color:'#374151';
-  document.getElementById('lb-back').textContent=L('backToCourse');
-  document.getElementById('l-badge').textContent=`${L('dayLabel')} ${d.day} / 30 • ${L('american')}`;
-  document.getElementById('l-title').textContent=t;
-  document.getElementById('l-sub').textContent=g+' • '+v;
-
+  const t=(d.tr&&d.tr.ro&&d.tr.ro.title)||d.title;
+  const g=(d.tr&&d.tr.ro&&d.tr.ro.grammar)||d.grammar;
+  const v=(d.tr&&d.tr.ro&&d.tr.ro.vocab)||d.vocab;
+  const hbg=document.getElementById('lh-bg');if(hbg)hbg.style.background=ul?d.color:'#374151';
+  const fl=document.getElementById('flag-l');if(fl)fl.innerHTML=flagSVG();
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+  set('lb-back','← Înapoi la curs');
+  set('l-badge','ZIUA '+selDay+' / 30 • Engleză Americană 🇺🇸');
+  set('l-title',t);set('l-sub',g+' • '+v);
   const sp=document.getElementById('l-score');
-  if(sc!==undefined){sp.style.display='inline-block';sp.textContent=`✅ ${sc}/100 ${sc>=80?'🎉':'💪'}`;}
-  else sp.style.display='none';
-
-  const lb=document.getElementById('l-locked');
-  if(!ul){lb.style.display='flex';document.getElementById('l-locked-txt').textContent=L('passReq');}
-  else lb.style.display='none';
-
+  if(sp){if(sc!==undefined){sp.style.display='inline-block';sp.textContent='✅ '+sc+'/100 '+(sc>=80?'🎉':'💪');}else sp.style.display='none';}
+  const lb=document.getElementById('l-locked'),lt=document.getElementById('l-locked-txt');
+  if(lb){if(!ul){lb.style.display='flex';if(lt)lt.textContent='Trebuie să obții minim 80/100 la ziua anterioară.';}else lb.style.display='none';}
+  const lc=document.getElementById('l-content');if(!lc)return;
   if(!ul){
     const pd=selDay>1?DAYS[selDay-2]:null;
-    document.getElementById('l-content').innerHTML=`
-      <div style="text-align:center;padding:48px 0">
-        <div style="font-size:60px">🔒</div>
-        <h2 style="color:#374151;margin:14px 0 8px">${L('locked')}</h2>
-        <p style="color:#64748B;max-width:300px;margin:0 auto 20px;font-size:14px">${L('passReq')}</p>
-        ${pd?`<button class="btn-main" style="background:${pd.color}" onclick="goTo('lesson',${pd.day})">${L('backToCourse')} Day ${pd.day}</button>`:''}
-      </div>`;
+    lc.innerHTML='<div style="text-align:center;padding:48px 0"><div style="font-size:60px">🔒</div><h2 style="color:#374151;margin:14px 0 8px">Blocat</h2><p style="color:#64748B;max-width:300px;margin:0 auto 20px;font-size:14px">Obține 80+ la ziua anterioară pentru a debloca.</p>'+(pd?'<button class="btn-main" style="background:'+pd.color+'" onclick="goTo(\'lesson\','+pd.day+')">← Înapoi la Ziua '+pd.day+'</button>':'')+' </div>';
     return;
   }
-
   const les=d.lesson;
   let html='';
-
-  // ── GRAMMAR ──
-  html+=`<div class="lesson-section">
-    <div class="ls-header" style="background:${d.color}">
-      <span class="icon">📘</span>
-      <h2>${L('grammarSection')}: ${g}</h2>
-      <span class="tag">GRAMMAR</span>
-    </div>
-    <div class="ls-body">`;
-
-  les.grammar.rules.forEach(rule=>{
-    const desc=lang==='ro'?rule.ro:rule.ru;
-    html+=`<div class="grammar-rule"><h3>${rule.title}</h3><p style="margin-bottom:10px;font-size:13px;color:#475569">${desc||''}</p>${rule.content}</div>`;
-  });
-  html+=`</div></div>`;
-
-  // ── VOCABULARY ──
-  html+=`<div class="lesson-section">
-    <div class="ls-header" style="background:#7C3AED">
-      <span class="icon">📝</span>
-      <h2>${L('vocabSection')}: ${v}</h2>
-      <span class="tag">${les.vocabulary.length} ${L('wordOf')}s</span>
-    </div>
-    <div class="ls-body">
-    <table class="vocab-table">
-      <tr><th>${L('wordOf')}</th><th>${L('meaning')}</th><th>${L('translation')}</th><th>${L('example')}</th><th>${L('pronunciation')}</th></tr>`;
-  les.vocabulary.forEach(w=>{
-    const tr=w.tr[lang]||w.tr.ro||'';
-    html+=`<tr><td class="vw">${w.word}</td><td class="vm">${w.meaning}</td><td class="ve">${tr}</td><td class="ve">${w.example}</td><td class="vp">/${w.pron}/</td></tr>`;
-  });
-  html+=`</table></div></div>`;
-
-  // ── READING ──
-  html+=`<div class="lesson-section">
-    <div class="ls-header" style="background:#059669">
-      <span class="icon">📖</span><h2>${L('readSection')}: "${les.reading.title}"</h2><span class="tag">READING</span>
-    </div>
-    <div class="ls-body">
-      <p style="font-size:13px;color:#475569;margin-bottom:10px">${L('readInstr')}</p>
-      <div class="reading-text">${les.reading.text.replace(/\n/g,'<br>')}</div>
-      <p style="font-weight:700;color:#0F172A;margin-bottom:8px">📋 ${L('readQ')}:</p>
-      <ol class="qs-list">${les.reading.questions.map(q=>`<li>${q}</li>`).join('')}</ol>
-    </div></div>`;
-
-  // Listening section removed - no audio in this course
-
-  // ── SPEAKING ──
-  html+=`<div class="lesson-section">
-    <div class="ls-header" style="background:#B45309">
-      <span class="icon">🗣️</span><h2>${L('speakSection')}</h2><span class="tag">SPEAKING</span>
-    </div>
-    <div class="ls-body">
-      <p style="font-size:13px;color:#475569;margin-bottom:12px">${L('speakInstr')}</p>
-      ${les.speaking.map(t=>`<div class="speaking-task"><span class="si">${t.icon}</span><p>${t.task}</p></div>`).join('')}
-    </div></div>`;
-
-  // ── NAV BUTTONS ──
+  html+='<div class="lesson-section"><div class="ls-header" style="background:'+d.color+'"><span class="icon">📘</span><h2>Gramatică: '+g+'</h2><span class="tag">GRAMMAR</span></div><div class="ls-body">';
+  les.grammar.rules.forEach(rule=>{html+='<div class="grammar-rule"><h3>'+rule.title+'</h3><p style="margin-bottom:10px;font-size:13px;color:#475569">'+(rule.ro||'')+'</p>'+rule.content+'</div>';});
+  html+='</div></div>';
+  html+='<div class="lesson-section"><div class="ls-header" style="background:#7C3AED"><span class="icon">📝</span><h2>Vocabular: '+v+'</h2><span class="tag">'+les.vocabulary.length+' cuvinte</span></div><div class="ls-body"><table class="vocab-table"><tr><th>Cuvânt</th><th>Înțeles</th><th>Traducere</th><th>Exemplu</th><th>Pronunție</th></tr>';
+  les.vocabulary.forEach(w=>{html+='<tr><td class="vw">'+w.word+'</td><td class="vm">'+w.meaning+'</td><td class="ve">'+((w.tr&&w.tr.ro)||'')+'</td><td class="ve">'+w.example+'</td><td class="vp">/'+w.pron+'/</td></tr>';});
+  html+='</table></div></div>';
+  html+='<div class="lesson-section"><div class="ls-header" style="background:#059669"><span class="icon">📖</span><h2>Lectură: "'+les.reading.title+'"</h2><span class="tag">READING</span></div><div class="ls-body"><p style="font-size:13px;color:#475569;margin-bottom:10px">Citește cu atenție textul de mai jos.</p><div class="reading-text">'+les.reading.text.replace(/\n/g,'<br>')+'</div><p style="font-weight:700;color:#0F172A;margin-bottom:8px">📋 Întrebări de înțelegere:</p><ol class="qs-list">'+les.reading.questions.map(q=>'<li>'+q+'</li>').join('')+'</ol></div></div>';
+  html+='<div class="lesson-section"><div class="ls-header" style="background:#B45309"><span class="icon">🗣️</span><h2>Practică orală</h2><span class="tag">SPEAKING</span></div><div class="ls-body"><p style="font-size:13px;color:#475569;margin-bottom:12px">Exersează cu voce tare!</p>'+les.speaking.map(t=>'<div class="speaking-task"><span class="si">'+t.icon+'</span><p>'+t.task+'</p></div>').join('')+'</div></div>';
   const prev=selDay>1?DAYS[selDay-2]:null;
   const next=selDay<30?DAYS[selDay]:null;
-  html+=`<div class="nav-btns">
-    ${prev&&isUnlocked(prev.day)?`<button class="btn-sec" onclick="goTo('lesson',${prev.day})">← Day ${prev.day}</button>`:''}
-    <button class="btn-main" style="background:${d.color}" onclick="goTo('exercise',${selDay})">${L('doExercises')} →</button>
-    ${next&&isUnlocked(next.day)?`<button class="btn-sec" onclick="goTo('lesson',${next.day})">Day ${next.day} →</button>`:''}
-  </div>`;
-
-  document.getElementById('l-content').innerHTML=html;
-  // Show translations
-  document.querySelectorAll(`[id$="-${lang}"]`).forEach(el=>el.style.display='');
+  html+='<div class="nav-btns">'+(prev&&isUnlocked(prev.day)?'<button class="btn-sec" onclick="goTo(\'lesson\','+prev.day+')">← Ziua '+prev.day+'</button>':'')+
+    '<button class="btn-main" style="background:'+d.color+'" onclick="goTo(\'exercise\','+selDay+')">✏️ Fă exercițiile →</button>'+
+    (next&&isUnlocked(next.day)?'<button class="btn-sec" onclick="goTo(\'lesson\','+next.day+')">Ziua '+next.day+' →</button>':'')+
+    '</div>';
+  lc.innerHTML=html;
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -1406,451 +1668,164 @@ function renderExercise(){
   initFlags();
   if(!isUnlocked(selDay)){goTo('lesson');return;}
   const d=DAYS[selDay-1];
-  const t=d.tr[lang]?.title||d.title;
-  const g=d.tr[lang]?.grammar||d.grammar;
-
-  document.getElementById('eh-bg').style.background=d.color;
-  document.getElementById('eb-back').textContent='← '+L('backToCourse');
-  document.getElementById('e-badge').textContent=`${L('dayLabel')} ${d.day}`;
-  document.getElementById('e-title').textContent=t;
-  document.getElementById('e-sub').textContent='✏️ '+L('doExercises')+' — '+g;
-  document.getElementById('flag-e').innerHTML=flagSVG();
-
+  const t=(d.tr&&d.tr.ro&&d.tr.ro.title)||d.title;
+  const g=(d.tr&&d.tr.ro&&d.tr.ro.grammar)||d.grammar;
+  const ehbg=document.getElementById('eh-bg');if(ehbg)ehbg.style.background=d.color;
+  const fe=document.getElementById('flag-e');if(fe)fe.innerHTML=flagSVG();
+  const set=(id,val)=>{const el=document.getElementById(id);if(el)el.textContent=val;};
+  set('eb-back','← Înapoi la lecție');set('e-badge','ZIUA '+selDay);set('e-title',t);set('e-sub','✏️ Exerciții — '+g);
   exAnswers={mc:{},match:{}};
-  let html=`<div class="ex-intro"><p>${lang==='ro'?'Completează toate exercițiile. Apasă <strong>Trimite</strong> la final pentru evaluare AI.':'Выполни все упражнения. Нажми <strong>Отправить</strong> для оценки ИИ.'} Scor minim / Минимальный балл: <code>80/100</code></p></div>`;
-
+  let html='<div class="ex-intro"><p>Completează toate exercițiile. Apasă <strong>Trimite</strong> la final. Scor minim: <code>80/100</code></p></div>';
+  const icons=['✏️','🔘','🔴','🔗','✍️'];
+  const labels=['Completează spațiile','Alegere multiplă','Corectează greșeala','Potrivire','Scrie propoziții'];
   d.exercises.forEach((ex,ei)=>{
     const colors=['#1D4ED8','#7C3AED','#DC2626','#047857','#B45309'];
     const bg=ex.color||colors[ei%5];
-    html+=`<div class="ex-section">
-      <div class="ex-hdr" style="background:${bg}">
-        <span class="eicon">${['✏️','🔘','🔴','🔗','✍️'][ei]||'📝'}</span>
-        <h3>${L('ex'+(ei+1))||ex.header}</h3>
-        <span class="pts">${ex.pts} ${L('pts')}</span>
-      </div>
-      <div class="ex-body">`;
-
+    html+='<div class="ex-section"><div class="ex-hdr" style="background:'+bg+'"><span class="eicon">'+(icons[ei]||'📝')+'</span><h3>'+(labels[ei]||ex.header)+'</h3><span class="pts">'+ex.pts+' puncte</span></div><div class="ex-body">';
     if(ex.type==='fill'){
-      ex.qs.forEach((q,qi)=>{
-        html+=`<div class="q-item">
-          <div class="q-stem"><span class="qnum">${qi+1}.</span> ${q.stem.replace('___',`<input class="blank-input" id="fi-${ei}-${qi}" placeholder="?" size="8">`)}</div>
-          <div style="font-size:11px;color:#94A3B8;margin-top:3px">💡 ${q.hint}</div>
-        </div>`;
-      });
+      ex.qs.forEach((q,qi)=>{html+='<div class="q-item"><div class="q-stem"><span class="qnum">'+(qi+1)+'.</span> '+q.stem.replace('___','<input class="blank-input" id="fi-'+ei+'-'+qi+'" placeholder="?" size="8">')+'</div><div style="font-size:11px;color:#94A3B8;margin-top:3px">💡 '+q.hint+'</div></div>';});
+    }else if(ex.type==='mc'){
+      ex.qs.forEach((q,qi)=>{html+='<div class="q-item"><div class="q-stem"><span class="qnum">'+(qi+1)+'.</span> '+q.stem+'</div><div class="mc-opts">'+q.opts.map((o,oi)=>'<button class="mc-opt" id="mc-'+ei+'-'+qi+'-'+oi+'" onclick="selMC('+ei+','+qi+','+oi+','+q.answer+')">'+String.fromCharCode(65+oi)+') '+o+'</button>').join('')+'</div></div>';});
+    }else if(ex.type==='error'){
+      ex.qs.forEach((q,qi)=>{html+='<div class="q-item"><div class="q-stem"><span class="qnum">'+(qi+1)+'.</span> Corectează propoziția greșită:</div><div class="err-input">❌ '+q.wrong+'</div><input class="fix-input" id="er-'+ei+'-'+qi+'" placeholder="✅ Scrie propoziția corectă..."></div>';});
+    }else if(ex.type==='match'){
+      const shuffled=ex.pairs.map((p,i)=>({val:p[1],idx:i})).sort(()=>Math.random()-.5);
+      html+='<div style="margin-bottom:8px;font-size:13px;color:#475569">Potrivește cuvântul cu definiția:</div>';
+      ex.pairs.forEach((p,pi)=>{html+='<div class="match-area"><div class="match-left">'+(pi+1)+'. <strong>'+p[0]+'</strong></div><select class="match-sel" id="ma-'+ei+'-'+pi+'"><option value="">— alege —</option>'+shuffled.map(s=>'<option value="'+s.idx+'">'+s.val+'</option>').join('')+'</select></div>';});
+    }else if(ex.type==='write'){
+      ex.prompts.forEach((p,pi)=>{html+='<div class="q-item"><div class="q-stem"><span class="qnum">'+(pi+1)+'.</span> '+p+'</div><textarea class="write-area" id="wr-'+ei+'-'+pi+'" placeholder="Scrie răspunsul tău..." rows="2"></textarea></div>';});
     }
-    else if(ex.type==='mc'){
-      ex.qs.forEach((q,qi)=>{
-        html+=`<div class="q-item"><div class="q-stem"><span class="qnum">${qi+1}.</span> ${q.stem}</div>
-          <div class="mc-opts">${q.opts.map((o,oi)=>`<button class="mc-opt" id="mc-${ei}-${qi}-${oi}" onclick="selMC(${ei},${qi},${oi},${q.answer})">${String.fromCharCode(65+oi)}) ${o}</button>`).join('')}</div>
-        </div>`;
-      });
-    }
-    else if(ex.type==='error'){
-      ex.qs.forEach((q,qi)=>{
-        html+=`<div class="q-item">
-          <div class="q-stem"><span class="qnum">${qi+1}.</span> ${L('wrongFixed')}</div>
-          <div class="err-input">❌ ${q.wrong}</div>
-          <input class="fix-input" id="er-${ei}-${qi}" placeholder="✅ Write the correct sentence..." data-correct="${q.correct}">
-        </div>`;
-      });
-    }
-    else if(ex.type==='match'){
-      const shuffled=[...ex.pairs].map((p,i)=>({val:p[1],idx:i})).sort(()=>Math.random()-.5);
-      html+=`<div style="margin-bottom:8px;font-size:13px;color:#475569">${lang==='ro'?'Potrivește cuvântul cu definiția:':'Сопоставь слово с определением:'}</div>`;
-      ex.pairs.forEach((p,pi)=>{
-        html+=`<div class="match-area"><div class="match-left">${pi+1}. <strong>${p[0]}</strong></div>
-          <select class="match-sel" id="ma-${ei}-${pi}">
-            <option value="">— ${lang==='ro'?'alege':'выбери'} —</option>
-            ${shuffled.map((s,si)=>`<option value="${s.idx}">${s.val}</option>`).join('')}
-          </select></div>`;
-      });
-    }
-    else if(ex.type==='write'){
-      ex.prompts.forEach((p,pi)=>{
-        html+=`<div class="q-item"><div class="q-stem"><span class="qnum">${pi+1}.</span> ${p}</div>
-          <textarea class="write-area" id="wr-${ei}-${pi}" placeholder="${lang==='ro'?'Scrie răspunsul tău...':'Напиши свой ответ...'}" rows="2"></textarea>
-        </div>`;
-      });
-    }
-    html+=`</div></div>`;
+    html+='</div></div>';
   });
-
-  html+=`<div class="submit-bar">
-    <button class="btn-sec" onclick="goTo('lesson')">${L('backToCourse')}</button>
-    <button class="btn-main" id="ex-submit" onclick="submitExercises()">${L('submitEx')}</button>
-  </div>
-  <div class="loading-box" id="ex-loading">
-    <div class="spinner"></div>
-    <p>${L('reviewing')}</p>
-  </div>`;
-
-  document.getElementById('e-content').innerHTML=html;
+  html+='<div class="submit-bar"><button class="btn-sec" onclick="goTo(\'lesson\')">← Înapoi la lecție</button><button class="btn-main" id="ex-submit" onclick="submitExercises()">🚀 Trimite pentru evaluare</button></div><div class="loading-box" id="ex-loading"><div class="spinner"></div><p>Se evaluează răspunsurile...</p></div>';
+  const ec=document.getElementById('e-content');if(ec)ec.innerHTML=html;
 }
 
 function selMC(ei,qi,oi,correct){
-  document.querySelectorAll(`[id^="mc-${ei}-${qi}-"]`).forEach(b=>b.classList.remove('sel'));
-  document.getElementById(`mc-${ei}-${qi}-${oi}`).classList.add('sel');
-  if(!exAnswers.mc[ei]) exAnswers.mc[ei]={};
+  document.querySelectorAll('[id^="mc-'+ei+'-'+qi+'-"]').forEach(b=>b.classList.remove('sel'));
+  const btn=document.getElementById('mc-'+ei+'-'+qi+'-'+oi);if(btn)btn.classList.add('sel');
+  if(!exAnswers.mc[ei])exAnswers.mc[ei]={};
   exAnswers.mc[ei][qi]=oi;
 }
 
 // ══════════════════════════════════════════════════════════════════
-//  COLLECT & SUBMIT EXERCISES
+//  LOCAL GRADER
 // ══════════════════════════════════════════════════════════════════
-function collectAnswers(){
-  const d=DAYS[selDay-1];
-  const lines=[];
-  let autoScore=0;
-  let totalAuto=0;
-
-  d.exercises.forEach((ex,ei)=>{
-    lines.push(`\n=== Exercise ${ei+1}: ${ex.header} (${ex.pts} pts) ===`);
-    if(ex.type==='fill'){
-      ex.qs.forEach((q,qi)=>{
-        const val=(document.getElementById(`fi-${ei}-${qi}`)?.value||'').trim();
-        const correct=val.toLowerCase()===q.answer.toLowerCase();
-        if(correct) autoScore+=ex.pts/ex.qs.length;
-        totalAuto+=ex.pts/ex.qs.length;
-        lines.push(`Q${qi+1}: "${q.stem}" → Student: "${val}" | Correct: "${q.answer}" | ${correct?'✓':'✗'}`);
-      });
-    }
-    else if(ex.type==='mc'){
-      ex.qs.forEach((q,qi)=>{
-        const sel=exAnswers.mc[ei]?.[qi];
-        const correct=sel===q.answer;
-        if(correct) autoScore+=ex.pts/ex.qs.length;
-        totalAuto+=ex.pts/ex.qs.length;
-        lines.push(`Q${qi+1}: "${q.stem}" → Student chose: ${sel!==undefined?q.opts[sel]:'(no answer)'} | Correct: ${q.opts[q.answer]} | ${correct?'✓':'✗'}`);
-      });
-    }
-    else if(ex.type==='error'){
-      ex.qs.forEach((q,qi)=>{
-        const val=(document.getElementById(`er-${ei}-${qi}`)?.value||'').trim();
-        lines.push(`Q${qi+1}: Wrong: "${q.wrong}" → Student fix: "${val}" | Expected: "${q.correct}"`);
-      });
-    }
-    else if(ex.type==='match'){
-      ex.pairs.forEach((p,pi)=>{
-        const sel=document.getElementById(`ma-${ei}-${pi}`)?.value;
-        const correct=sel==pi.toString();
-        if(correct) autoScore+=ex.pts/ex.pairs.length;
-        totalAuto+=ex.pts/ex.pairs.length;
-        lines.push(`Q${pi+1}: "${p[0]}" → Student: "${sel!==undefined&&sel!==''?ex.pairs[parseInt(sel)]?.[1]:'(no answer)'}" | Correct: "${p[1]}" | ${correct?'✓':'✗'}`);
-      });
-    }
-    else if(ex.type==='write'){
-      ex.prompts.forEach((p,pi)=>{
-        const val=(document.getElementById(`wr-${ei}-${pi}`)?.value||'').trim();
-        lines.push(`Q${pi+1}: "${p}" → Student: "${val}"`);
-      });
-    }
-  });
-
-  const baseScore=Math.round(autoScore/totalAuto*100)||0;
-  return {text:lines.join('\n'),baseScore};
-}
-
 function submitExercises(){
-  const d=DAYS[selDay-1];
-  const t=d.tr[lang]?.title||d.title;
-  const g=d.tr[lang]?.grammar||d.grammar;
   const btn=document.getElementById('ex-submit');
   const load=document.getElementById('ex-loading');
-  btn.disabled=true;
-  btn.textContent=L('grading');
-  load.classList.add('show');
-
-  // Small delay so the user sees the loading state
+  if(btn){btn.disabled=true;btn.textContent='🔄 Se evaluează...';}
+  if(load)load.classList.add('show');
   setTimeout(()=>{
-    try{
-      const result = gradeLocally(d);
-      saveProgress(selDay, result.score);
-      renderResults(result);
-      showScreen('results');
-    }catch(e){
-      renderResults({error:true});
-      showScreen('results');
-    }
-    btn.disabled=false;
-    btn.textContent=L('submitEx');
-    load.classList.remove('show');
-  }, 900);
+    try{const result=gradeLocally(DAYS[selDay-1]);saveProgress(selDay,result.score);renderResults(result);showScreen('results');}
+    catch(e){renderResults({error:true});showScreen('results');}
+    if(btn){btn.disabled=false;btn.textContent='🚀 Trimite pentru evaluare';}
+    if(load)load.classList.remove('show');
+  },700);
 }
 
-// ── LOCAL GRADER ─────────────────────────────────────────────────
-function gradeLocally(d){
-  const corrections=[];
-  let totalPoints=0;
-  let earnedPoints=0;
+function similarity(a,b){
+  const wa=a.split(' ').filter(Boolean),wb=b.split(' ').filter(Boolean);
+  if(!wb.length)return 0;let m=0;wa.forEach(w=>{if(wb.includes(w))m++;});return m/wb.length;
+}
 
+function gradeLocally(d){
+  const corrections=[];let total=0,earned=0;
   d.exercises.forEach((ex,ei)=>{
     const pts=ex.pts||20;
-
     if(ex.type==='fill'){
       const perQ=pts/ex.qs.length;
       ex.qs.forEach((q,qi)=>{
-        totalPoints+=perQ;
-        const val=(document.getElementById('fi-'+ei+'-'+qi)?.value||'').trim().toLowerCase();
-        const correct=val===q.answer.toLowerCase();
-        if(correct) earnedPoints+=perQ;
-        corrections.push({
-          question:'Q'+(qi+1)+': '+q.stem,
-          student_answer:val||'(blank)',
-          correct_answer:q.answer,
-          is_correct:correct,
-          explanation:correct?'':explainFill(q,lang),
-          tip:correct?'':q.hint||''
-        });
+        total+=perQ;
+        const raw=(document.getElementById('fi-'+ei+'-'+qi)?.value||'');
+        const val=raw.trim().toLowerCase().replace(/\s+/g,' ');
+        const ans=q.answer.toLowerCase().trim();
+        const ok=val===ans||val===ans.replace(/[.,!?]/g,'');
+        if(ok)earned+=perQ;
+        corrections.push({question:'Q'+(qi+1)+': '+q.stem,student_answer:val||'(gol)',correct_answer:q.answer,is_correct:ok,explanation:ok?'':'Răspunsul corect este "'+q.answer+'". '+(q.hint?'Indiciu: '+q.hint:''),tip:ok?'':q.hint||''});
       });
-    }
-
-    else if(ex.type==='mc'){
+    }else if(ex.type==='mc'){
       const perQ=pts/ex.qs.length;
       ex.qs.forEach((q,qi)=>{
-        totalPoints+=perQ;
-        const sel=exAnswers.mc[ei]?.[qi];
-        const correct=sel===q.answer;
-        if(correct) earnedPoints+=perQ;
-        corrections.push({
-          question:'Q'+(qi+1)+': '+q.stem,
-          student_answer:sel!==undefined?q.opts[sel]:'(not answered)',
-          correct_answer:q.opts[q.answer],
-          is_correct:correct,
-          explanation:correct?'':explainMC(q,lang),
-          tip:''
-        });
+        total+=perQ;const sel=exAnswers.mc[ei]&&exAnswers.mc[ei][qi];const ok=sel===q.answer;
+        if(ok)earned+=perQ;
+        corrections.push({question:'Q'+(qi+1)+': '+q.stem,student_answer:sel!==undefined?q.opts[sel]:'(fără răspuns)',correct_answer:q.opts[q.answer],is_correct:ok,explanation:ok?'':'Răspunsul corect este "'+q.opts[q.answer]+'". Verifică regulile din lecție.',tip:''});
       });
-    }
-
-    else if(ex.type==='error'){
+    }else if(ex.type==='error'){
       const perQ=pts/ex.qs.length;
       ex.qs.forEach((q,qi)=>{
-        totalPoints+=perQ;
-        const val=(document.getElementById('er-'+ei+'-'+qi)?.value||'').trim().toLowerCase();
-        const expected=q.correct.toLowerCase();
-        // Flexible match: accept if >70% words correct
-        const correct=val===expected || similarity(val,expected)>=0.75;
-        if(correct) earnedPoints+=perQ;
-        corrections.push({
-          question:'Q'+(qi+1)+': Fix — '+q.wrong,
-          student_answer:val||'(blank)',
-          correct_answer:q.correct,
-          is_correct:correct,
-          explanation:correct?'':explainError(q,lang),
-          tip:''
-        });
+        total+=perQ;const val=(document.getElementById('er-'+ei+'-'+qi)?.value||'').trim().toLowerCase();
+        const ok=val===q.correct.toLowerCase()||similarity(val,q.correct.toLowerCase())>=0.75;
+        if(ok)earned+=perQ;
+        corrections.push({question:'Q'+(qi+1)+': '+q.wrong,student_answer:val||'(gol)',correct_answer:q.correct,is_correct:ok,explanation:ok?'':'Propoziția corectă este: "'+q.correct+'".',tip:''});
       });
-    }
-
-    else if(ex.type==='match'){
+    }else if(ex.type==='match'){
       const perQ=pts/ex.pairs.length;
       ex.pairs.forEach((p,pi)=>{
-        totalPoints+=perQ;
-        const sel=document.getElementById('ma-'+ei+'-'+pi)?.value;
-        const correct=sel!==undefined&&sel!==''&&parseInt(sel)===pi;
-        if(correct) earnedPoints+=perQ;
-        corrections.push({
-          question:'Match: '+p[0],
-          student_answer:sel!==undefined&&sel!==''?ex.pairs[parseInt(sel)]?.[1]||'?':'(not answered)',
-          correct_answer:p[1],
-          is_correct:correct,
-          explanation:correct?'':explainMatch(p,lang),
-          tip:''
-        });
+        total+=perQ;const sel=document.getElementById('ma-'+ei+'-'+pi)?.value;
+        const ok=sel!==undefined&&sel!==''&&parseInt(sel)===pi;
+        if(ok)earned+=perQ;
+        corrections.push({question:'Match: '+p[0],student_answer:sel&&sel!==''?((ex.pairs[parseInt(sel)]&&ex.pairs[parseInt(sel)][1])||'?'):'(fără răspuns)',correct_answer:p[1],is_correct:ok,explanation:ok?'':'"'+p[0]+'" înseamnă "'+p[1]+'". Revizuiește vocabularul.',tip:''});
       });
-    }
-
-    else if(ex.type==='write'){
-      // Writing: give full points if student wrote something meaningful (>5 chars per answer)
+    }else if(ex.type==='write'){
       const perQ=pts/ex.prompts.length;
       ex.prompts.forEach((p,pi)=>{
-        totalPoints+=perQ;
-        const val=(document.getElementById('wr-'+ei+'-'+pi)?.value||'').trim();
-        const hasContent=val.length>=6;
-        // Basic quality check: contains at least one word from expected grammar
-        if(hasContent) earnedPoints+=perQ;
-        corrections.push({
-          question:'Write: '+p,
-          student_answer:val||'(blank)',
-          correct_answer:lang==='ro'?'Răspuns propriu (verificat manual)':'Собственный ответ (проверка вручную)',
-          is_correct:hasContent,
-          explanation:hasContent?'':
-            lang==='ro'?'Răspunsul este gol sau prea scurt. Scrie cel puțin o propoziție completă.':
-                         'Ответ пустой или слишком короткий. Напиши хотя бы одно полное предложение.',
-          tip:hasContent?'':
-            lang==='ro'?'Încearcă să scrii o propoziție completă cu subiect și verb.':
-                         'Попробуй написать полное предложение с подлежащим и сказуемым.'
-        });
+        total+=perQ;const val=(document.getElementById('wr-'+ei+'-'+pi)?.value||'').trim();
+        const ok=val.length>=6;if(ok)earned+=perQ;
+        corrections.push({question:'Scrie: '+p,student_answer:val||'(gol)',correct_answer:'Răspuns propriu',is_correct:ok,explanation:ok?'':'Răspunsul este gol sau prea scurt. Scrie cel puțin o propoziție completă.',tip:ok?'':'Încearcă: Subiect + Verb + Complement.'});
       });
     }
   });
-
-  const score=totalPoints>0?Math.round((earnedPoints/totalPoints)*100):0;
+  const score=total>0?Math.round(earned/total*100):0;
   const passed=score>=80;
-
-  // Grade letter
   const grade=score>=90?'A':score>=80?'B':score>=70?'C':score>=60?'D':'F';
-
-  // Emoji
   const emoji=score>=90?'🌟':score>=80?'🎉':score>=60?'💪':'📚';
-
-  // Count correct vs wrong
-  const numCorrect=corrections.filter(c=>c.is_correct).length;
-  const numWrong=corrections.filter(c=>!c.is_correct).length;
-
-  // Messages in the right language
-  const msgs=buildMessages(score,numCorrect,numWrong,passed,lang,d);
-
-  return {
-    score,grade,emoji,
-    overall_message:msgs.overall,
+  const correct=corrections.filter(c=>c.is_correct).length;
+  const wrong=corrections.filter(c=>!c.is_correct).length;
+  const g=(DAYS[selDay-1].tr&&DAYS[selDay-1].tr.ro&&DAYS[selDay-1].tr.ro.grammar)||DAYS[selDay-1].grammar;
+  return {score,grade,emoji,
+    overall_message:score>=90?'Excelent! Ai înțeles perfect lecția de azi!':score>=80?'Bine făcut! Ai trecut testul și ai deblocat ziua următoare!':score>=60?'Bun efort! Exersează și încearcă din nou.':'Nu te descuraja! Recitește lecția și încearcă din nou.',
     corrections,
-    grammar_weaknesses:msgs.weaknesses,
-    strengths:msgs.strengths,
-    review_suggestion:msgs.review,
-    motivation:msgs.motivation
-  };
+    grammar_weaknesses:wrong>0?['Mai exersează: '+g,wrong+' răspunsuri necesită atenție.']:['Fără puncte slabe majore azi!'],
+    strengths:correct>0?[correct+' din '+(correct+wrong)+' răspunsuri corecte!',passed?'Ai demonstrat că înțelegi '+g+'.':'Continuă să exersezi.']:['Ai finalizat exercițiile — asta e primul pas!'],
+    review_suggestion:passed?'Ești pregătit pentru ziua următoare! Recapitulează rapid '+g+'.':'Recitește secțiunea de Gramatică, în special regulile pentru '+g+'.',
+    motivation:passed?'Ziua '+(selDay+1)+' te așteaptă! Fiecare zi te face mai bun! 🇺🇸':'Fiecare greșeală este o lecție. Recitește și vei reuși! 💪'};
 }
 
-// ── SIMILARITY HELPER (for error correction flexible matching) ────
-function similarity(a,b){
-  const wa=a.split(' ').filter(Boolean);
-  const wb=b.split(' ').filter(Boolean);
-  if(!wb.length) return 0;
-  let matches=0;
-  wa.forEach(w=>{ if(wb.includes(w)) matches++; });
-  return matches/wb.length;
-}
-
-// ── EXPLANATION GENERATORS ────────────────────────────────────────
-function explainFill(q,lang){
-  if(lang==='ro') return 'Răspunsul corect este +q.answer+. '+( q.hint?'Indiciu: '+q.hint:'');
-  return 'Правильный ответ: +q.answer+. '+(q.hint?'Подсказка: '+q.hint:'');
-}
-function explainMC(q,lang){
-  if(lang==='ro') return 'Răspunsul corect este +q.opts[q.answer]+. Verifică regulile de gramatică din lecție.';
-  return 'Правильный ответ: +q.opts[q.answer]+. Проверь грамматические правила в уроке.';
-}
-function explainError(q,lang){
-  if(lang==='ro') return 'Propoziția corectă este: +q.correct+. Identifică greșeala și corectează forma verbului.';
-  return 'Правильное предложение: +q.correct+. Найди ошибку и исправь форму глагола.';
-}
-function explainMatch(p,lang){
-  if(lang==='ro') return '+p[0]+ înseamnă +p[1]+. Revizuiește lista de vocabular.';
-  return '+p[0]+ означает +p[1]+. Повтори список словарного запаса.';
-}
-
-// ── BUILD RESULT MESSAGES ─────────────────────────────────────────
-function buildMessages(score,correct,wrong,passed,lang,d){
-  const g=d.tr[lang]?.grammar||d.grammar;
-  if(lang==='ro'){
-    const overallArr=[
-      score>=90 ? 'Felicitări! Ai făcut o treabă excelentă azi! Răspunsurile tale arată că ai înțeles bine lecția.' :
-      score>=80 ? 'Bună treabă! Ai trecut testul și ai deblocat ziua următoare! Continuă tot așa.' :
-      score>=60 ? 'Ai depus efort bun! Ai câteva greșeli, dar ești pe drumul cel bun. Mai exersează și încearcă din nou.' :
-                  'Nu te descuraja! Recitește lecția cu atenție și încearcă din nou. Poți face asta!'
-    ];
-    return {
-      overall: overallArr[0],
-      strengths: correct>0 ? [
-        correct+' din '+( correct+wrong)+' răspunsuri corecte!',
-        passed?'Ai demonstrat că înțelegi '+g+'.':'Continuă să exersezi '+g+'.'
-      ] : ['Ai finalizat exercițiile — asta e primul pas!'],
-      weaknesses: wrong>0 ? [
-        'Mai exersează: '+g,
-        wrong+' răspunsuri necesită atenție.'
-      ] : ['Fără puncte slabe majore azi!'],
-      review: passed ?
-        'Ești pregătit pentru ziua următoare! Recapitulează rapid '+g+' dacă simți că mai ai nevoie.' :
-        'Recitește secțiunea de Gramatică din lecția de azi, în special regulile pentru '+g+'.',
-      motivation: passed ?
-        'Ziua '+(selDay+1)+' te așteaptă! Fiecare zi te face mai bun în engleză. 🇺🇸' :
-        'Fiecare greșeală este o lecție. Recitește, exersează și vei reuși! 💪'
-    };
-  } else {
-    const overallArr=[
-      score>=90 ? 'Поздравляем! Ты отлично справился сегодня! Твои ответы показывают, что ты хорошо понял урок.' :
-      score>=80 ? 'Молодец! Ты прошёл тест и разблокировал следующий день! Продолжай в том же духе.' :
-      score>=60 ? 'Хорошая попытка! Есть несколько ошибок, но ты на правильном пути. Попрактикуйся ещё.' :
-                  'Не расстраивайся! Перечитай урок внимательно и попробуй снова. У тебя получится!'
-    ];
-    return {
-      overall: overallArr[0],
-      strengths: correct>0 ? [
-        correct+' из '+(correct+wrong)+' ответов правильно!',
-        passed?'Ты показал, что понимаешь '+g+'.':'Продолжай практиковать '+g+'.'
-      ] : ['Ты выполнил упражнения — это первый шаг!'],
-      weaknesses: wrong>0 ? [
-        'Ещё попрактикуй: '+g,
-        wrong+' ответов требуют внимания.'
-      ] : ['Никаких серьёзных слабых мест сегодня!'],
-      review: passed ?
-        'Ты готов к следующему дню! Быстро повтори '+g+', если чувствуешь необходимость.' :
-        'Перечитай раздел Грамматики сегодняшнего урока, особенно правила для '+g+'.',
-      motivation: passed ?
-        'День '+(selDay+1)+' ждёт тебя! Каждый день делает твой английский лучше. 🇺🇸' :
-        'Каждая ошибка — это урок. Перечитай, попрактикуйся и у тебя получится! 💪'
-    };
-  }
-}
-
-
+// ══════════════════════════════════════════════════════════════════
+//  RESULTS PAGE
+// ══════════════════════════════════════════════════════════════════
 function renderResults(r){
-  const d=DAYS[selDay-1];
-  document.getElementById('rb-back').textContent=L('backToCourse');
-  document.getElementById('r-retry').textContent=L('resubmit');
-  document.getElementById('r-dash').textContent=L('backDash');
-
+  const set=(id,v)=>{const el=document.getElementById(id);if(el)el.textContent=v;};
+  const setH=(id,v)=>{const el=document.getElementById(id);if(el)el.innerHTML=v;};
+  set('rb-back','← Înapoi la curs');set('r-retry','↩ Încearcă din nou');set('r-dash','📅 Înapoi la curs');
   if(r.error){
-    document.getElementById('rh-bg').style.background='linear-gradient(135deg,#7F1D1D,#DC2626)';
-    document.getElementById('r-emoji').textContent='⚠️';
-    document.getElementById('r-score').textContent='—';
-    document.getElementById('r-grade').textContent='Error';
-    document.getElementById('r-msg').textContent=L('errorMsg');
-    document.getElementById('r-banner').innerHTML='';
-    document.getElementById('r-cl').innerHTML='';
-    return;
+    const rh=document.getElementById('rh-bg');if(rh)rh.style.background='linear-gradient(135deg,#7F1D1D,#DC2626)';
+    set('r-emoji','⚠️');set('r-score','—');set('r-grade','Eroare');set('r-msg','Eroare. Încearcă din nou.');setH('r-banner','');setH('r-cl','');return;
   }
-
   const passed=r.score>=80;
-  document.getElementById('rh-bg').style.background=passed
-    ?'linear-gradient(135deg,#064E3B,#059669)':'linear-gradient(135deg,#7F1D1D,#DC2626)';
-  document.getElementById('r-emoji').textContent=r.emoji||'📝';
-  document.getElementById('r-score').textContent=r.score+'/100';
-  document.getElementById('r-grade').textContent=`Grade ${r.grade} ${passed?'🎉':'💪'}`;
-  document.getElementById('r-msg').textContent=r.overall_message||'';
-  document.getElementById('r-banner').innerHTML=passed
-    ?`<div class="res-pass">✅ ${L('unlocked')}</div>`
-    :`<div class="res-fail">📖 ${L('retry')}</div>`;
-
-  document.getElementById('r-st').textContent=L('strengths');
-  document.getElementById('r-it').textContent=L('improve');
-  document.getElementById('r-sl').innerHTML=(r.strengths||[]).map(s=>`<p>• ${s}</p>`).join('');
-  document.getElementById('r-il').innerHTML=(r.grammar_weaknesses||[]).map(w=>`<p>• ${w}</p>`).join('');
-
-  document.getElementById('r-ct').textContent=L('corrections');
-  document.getElementById('r-cl').innerHTML=(r.corrections||[]).map(c=>`
-    <div class="corr-item ${c.is_correct?'ok':'bad'}">
-      <div class="corr-top"><span>${c.is_correct?'✅':'❌'}</span><span class="corr-q">${c.question}</span></div>
-      ${c.is_correct?`<p style="color:#059669;font-size:13px;padding-left:26px">Perfect! ✨</p>`:`
-      <div class="corr-detail">
-        <p><strong>${L('yourAns')}</strong> <span class="corr-wrong">${c.student_answer}</span></p>
-        <p><strong>${L('correctAns')}</strong> <span class="corr-right">${c.correct_answer}</span></p>
-        <p><strong>${L('why')}</strong> ${c.explanation}</p>
-        ${c.tip?`<div class="tip-pill">${L('tip')} ${c.tip}</div>`:''}
-      </div>`}
-    </div>`).join('');
-
-  document.getElementById('r-revt').textContent=L('reviewThis');
-  document.getElementById('r-revp').textContent=r.review_suggestion||'';
-  document.getElementById('r-mot').textContent=L('motivation');
-  document.getElementById('r-mop').textContent=r.motivation?`"${r.motivation}"`:'';
+  const rh=document.getElementById('rh-bg');
+  if(rh)rh.style.background=passed?'linear-gradient(135deg,#064E3B,#059669)':'linear-gradient(135deg,#7F1D1D,#DC2626)';
+  set('r-emoji',r.emoji||'📝');set('r-score',r.score+'/100');set('r-grade','Nota '+r.grade+' '+(passed?'🎉':'💪'));
+  set('r-msg',r.overall_message||'');
+  setH('r-banner',passed?'<div class="res-pass">✅ Felicitări! Ai deblocat ziua următoare! 🎉</div>':'<div class="res-fail">📖 Mai studiază și încearcă din nou pentru 80+! 💪</div>');
+  set('r-st','✅ Puncte forte');set('r-it','📌 Zone de îmbunătățit');
+  setH('r-sl',(r.strengths||[]).map(s=>'<p>• '+s+'</p>').join(''));
+  setH('r-il',(r.grammar_weaknesses||[]).map(w=>'<p>• '+w+'</p>').join(''));
+  set('r-ct','📝 Corecții detaliate');
+  setH('r-cl',(r.corrections||[]).map(c=>'<div class="corr-item '+(c.is_correct?'ok':'bad')+'"><div class="corr-top"><span>'+(c.is_correct?'✅':'❌')+'</span><span class="corr-q">'+c.question+'</span></div>'+(c.is_correct?'<p class="perfect">Perfect! ✨</p>':'<div class="corr-detail"><p><strong>Răspunsul tău:</strong> <span class="corr-wrong">'+c.student_answer+'</span></p><p><strong>Răspuns corect:</strong> <span class="corr-right">'+c.correct_answer+'</span></p><p><strong>De ce?</strong> '+c.explanation+'</p>'+(c.tip?'<div class="tip-pill">💡 Sfat: '+c.tip+'</div>':'')+'</div>')+'</div>').join(''));
+  set('r-revt','📚 Revizuiește asta');set('r-revp',r.review_suggestion||'');
+  set('r-mot','🌟 Motivație');set('r-mop',r.motivation?'"'+r.motivation+'"':'');
 }
 
 // ══════════════════════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════════════════════
-document.addEventListener("DOMContentLoaded", function() { initFlags(); });
+document.addEventListener("DOMContentLoaded", function() {
+  initFlags();
+  checkAuth();
+});
+
 </script>
 </body>
 </html>
