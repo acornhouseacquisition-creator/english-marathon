@@ -425,6 +425,42 @@ input,textarea,select{font-family:inherit}
   </div>
 </div>
 
+<!-- ════════════════════════ RESET PASSWORD SCREEN ════════════════════════ -->
+<div id="s-reset" class="screen">
+  <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#0F172A 0%,#1E3A6E 60%,#2563EB 100%);padding:24px">
+    <div class="lc-card" style="max-width:420px;width:100%">
+      <div style="text-align:center;margin-bottom:20px">
+        <div style="font-size:44px">🔐</div>
+        <h1 style="font-size:20px;font-weight:800;color:#0F172A;margin:10px 0 4px">Setează parola nouă</h1>
+        <p style="font-size:13px;color:#64748B">Introdu noua ta parolă mai jos</p>
+      </div>
+      <div class="lc-divider"></div>
+      <div style="margin-bottom:14px">
+        <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">🔒 Parolă nouă</label>
+        <input id="rp-pass" type="password" placeholder="Minim 6 caractere"
+          style="width:100%;padding:11px 13px;border:1.5px solid #CBD5E1;border-radius:9px;font-size:14px;outline:none;box-sizing:border-box"
+          onfocus="this.style.borderColor='#2563EB'" onblur="this.style.borderColor='#CBD5E1'">
+      </div>
+      <div style="margin-bottom:18px">
+        <label style="font-size:12px;font-weight:700;color:#374151;display:block;margin-bottom:5px">🔒 Confirmă parola nouă</label>
+        <input id="rp-pass2" type="password" placeholder="Repetă parola" onkeydown="if(event.key==='Enter')doResetPassword()"
+          style="width:100%;padding:11px 13px;border:1.5px solid #CBD5E1;border-radius:9px;font-size:14px;outline:none;box-sizing:border-box"
+          onfocus="this.style.borderColor='#2563EB'" onblur="this.style.borderColor='#CBD5E1'">
+      </div>
+      <div id="rp-err" style="color:#DC2626;font-size:12px;background:#FEF2F2;border:1px solid #FECACA;border-radius:7px;padding:8px 12px;margin-bottom:12px;display:none"></div>
+      <div id="rp-ok" style="color:#059669;font-size:12px;background:#F0FDF4;border:1px solid #BBF7D0;border-radius:7px;padding:8px 12px;margin-bottom:12px;display:none"></div>
+      <button onclick="doResetPassword()" id="rp-btn"
+        style="width:100%;padding:13px;background:#2563EB;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer">
+        ✅ Salvează parola nouă
+      </button>
+      <div id="rp-loading" style="display:none;text-align:center;padding:14px">
+        <div style="width:28px;height:28px;border:3px solid #BFDBFE;border-top:3px solid #2563EB;border-radius:50%;animation:spin .7s linear infinite;margin:0 auto 8px"></div>
+        <p style="color:#2563EB;font-size:13px;font-weight:600">Se salvează...</p>
+      </div>
+    </div>
+  </div>
+</div>
+
 <div id="s-dash" class="screen">
   <div class="hero">
     <div class="hero-inner">
@@ -1679,9 +1715,10 @@ function initFlags(){document.querySelectorAll('[id^="flag-"]').forEach(el=>el.i
 // ══════════════════════════════════════════════════════════════════
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById('s-lang').style.display='none';
+  const sl=document.getElementById('s-lang');
+  if(sl) sl.style.display='none';
   const el=document.getElementById('s-'+id);
-  if(el)el.classList.add('active');
+  if(el) el.classList.add('active');
   window.scrollTo(0,0);
 }
 function setFilter(f){
@@ -1970,15 +2007,129 @@ function renderResults(r){
 // ══════════════════════════════════════════════════════════════════
 document.addEventListener("DOMContentLoaded", async function() {
   initFlags();
-  // If Stripe redirected back with ?paid=1, mark as paid then auth
+
+  // ── Handle Supabase password reset link ──────────────────────
+  // Supabase sends: #access_token=xxx&type=recovery
+  const hash = window.location.hash;
+  if(hash && hash.includes('type=recovery') && hash.includes('access_token=')){
+    // Extract the access token from hash
+    const hashParams = {};
+    hash.slice(1).split('&').forEach(p=>{
+      const [k,v]=p.split('=');
+      hashParams[k]=decodeURIComponent(v||'');
+    });
+    if(hashParams.access_token){
+      // Show password reset form with this token
+      showPasswordResetForm(hashParams.access_token);
+      return;
+    }
+  }
+
+  // ── Handle Stripe redirect ────────────────────────────────────
   const params = new URLSearchParams(window.location.search);
   if(params.get('paid')==='1' && params.get('uid')){
-    // We'll handle this inside checkPaymentManually after auth
+    // handled inside checkPaymentManually after auth
   }
+
   await checkAuth();
 });
 
 // ══════════════════════════════════════════════════════════════════
+
+// ══════════════════════════════════════════════════════════════════
+//  PASSWORD RESET HANDLER
+// ══════════════════════════════════════════════════════════════════
+let resetAccessToken = null; // stores token from email link
+
+// Show the password reset form (called when #type=recovery detected)
+function showPasswordResetForm(token){
+  resetAccessToken = token;
+  // Clear URL hash so it doesn't show ugly token in bar
+  if(window.history && window.history.replaceState){
+    window.history.replaceState({}, document.title, window.location.pathname);
+  }
+  // Hide auth screen, show reset screen
+  const sl = document.getElementById('s-lang');
+  if(sl) sl.style.display = 'none';
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const rs = document.getElementById('s-reset');
+  if(rs) rs.classList.add('active');
+  window.scrollTo(0,0);
+}
+
+// Submit new password to Supabase
+async function doResetPassword(){
+  const pass  = (document.getElementById('rp-pass')?.value  ||'').trim();
+  const pass2 = (document.getElementById('rp-pass2')?.value ||'').trim();
+  const errEl = document.getElementById('rp-err');
+  const okEl  = document.getElementById('rp-ok');
+  const btn   = document.getElementById('rp-btn');
+  const load  = document.getElementById('rp-loading');
+
+  // Clear previous messages
+  if(errEl){errEl.style.display='none';errEl.textContent='';}
+  if(okEl) {okEl.style.display='none';okEl.textContent='';}
+
+  if(!pass || pass.length < 6){
+    if(errEl){errEl.textContent='Parola trebuie să aibă minim 6 caractere.';errEl.style.display='block';}
+    return;
+  }
+  if(pass !== pass2){
+    if(errEl){errEl.textContent='Parolele nu se potrivesc.';errEl.style.display='block';}
+    return;
+  }
+  if(!resetAccessToken){
+    if(errEl){errEl.textContent='Token invalid. Te rugăm să ceri un nou link de resetare.';errEl.style.display='block';}
+    return;
+  }
+
+  if(btn)  btn.style.display  = 'none';
+  if(load) load.style.display = 'block';
+
+  try{
+    // Use the recovery token to update password
+    const res = await fetch(SUPA_URL+'/auth/v1/user', {
+      method: 'PUT',
+      headers: {
+        'apikey': SUPA_KEY,
+        'Authorization': 'Bearer ' + resetAccessToken,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ password: pass })
+    });
+
+    const data = await res.json();
+    if(load) load.style.display = 'none';
+
+    if(res.ok){
+      if(okEl){
+        okEl.textContent = '✅ Parola a fost schimbată cu succes! Te redirecționăm la login...';
+        okEl.style.display = 'block';
+      }
+      resetAccessToken = null;
+      // Clear the password fields
+      const p1=document.getElementById('rp-pass'); if(p1) p1.value='';
+      const p2=document.getElementById('rp-pass2'); if(p2) p2.value='';
+      // Redirect to login after 2 seconds
+      setTimeout(()=>{
+        document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+        const sl=document.getElementById('s-lang');
+        if(sl){sl.style.display='';sl.classList.add('active');}
+        showTab('login');
+      }, 2000);
+    } else {
+      if(btn) btn.style.display = 'block';
+      const msg = data.error_description || data.message || data.error || 'Eroare la schimbarea parolei.';
+      if(errEl){errEl.textContent='❌ '+msg;errEl.style.display='block';}
+    }
+  } catch(e){
+    if(load) load.style.display = 'none';
+    if(btn)  btn.style.display  = 'block';
+    if(errEl){errEl.textContent='❌ Eroare de conexiune. Încearcă din nou.';errEl.style.display='block';}
+  }
+}
+
+
 // ══════════════════════════════════════════════════════════════════
 //  PROGRESS SYNC UTILITIES
 // ══════════════════════════════════════════════════════════════════
