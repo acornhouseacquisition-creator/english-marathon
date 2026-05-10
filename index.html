@@ -347,7 +347,8 @@ input,textarea,select{font-family:inherit}
   </div>
 </div>
 
-<script>
+<script>let lang=null;
+
 // ══════════════════════════════════════════════════════════════════
 //  FLAG SVG
 // ══════════════════════════════════════════════════════════════════
@@ -1130,8 +1131,8 @@ I drink a cup of coffee and read a book. <strong>The</strong> book is very inter
           grammar:{
             rules:[
               {title:`Grammar Focus: ${d.grammar}`,
-               ro:lang==='ro'?d.grammarKey:d.grammarKey,
-               ru:lang==='ru'?d.grammarKey:d.grammarKey,
+               ro:d.grammarKey,
+               ru:d.grammarKey,
                content:`<div class="formula-box"><p style="white-space:pre-line">${d.grammarKey}</p></div>
                ${mistakes.map(m=>{const p=m.split('→');return p.length===2?`<div class="example-row"><div class="ex-en" style="background:#FEF2F2;border-color:#FCA5A5"><span style="color:#DC2626">❌</span> ${p[0].trim()}</div><div class="ex-en"><span style="color:#059669">✅</span> ${p[1].trim()}</div></div>`:''}).join('')}`
               }
@@ -1197,7 +1198,6 @@ I drink a cup of coffee and read a book. <strong>The</strong> book is very inter
 // ══════════════════════════════════════════════════════════════════
 //  STATE
 // ══════════════════════════════════════════════════════════════════
-let lang=null;
 let selDay=null;
 let progress={};
 let curFilter='all';
@@ -1685,7 +1685,7 @@ function renderResults(r){
 // ══════════════════════════════════════════════════════════════════
 //  INIT
 // ══════════════════════════════════════════════════════════════════
-initFlags();
+document.addEventListener("DOMContentLoaded", function() { initFlags(); });
 </script>
 </body>
 </html>
