@@ -550,7 +550,7 @@ We are in the same class. We are very happy to learn American English together!
       speaking:[
         {icon:"🗣️",task:"Say your name out loud: 'My name is ______.'"},{icon:"🗣️",task:"Say where you are from: 'I am from ______.'"},{icon:"🗣️",task:"Say how you feel: 'I am ______ today.'"},
         {icon:"🎙️",task:"RECORD yourself: Introduce yourself in 3 sentences."},
-        {icon:"🔁",task:"SHADOW: Read the dialogue above and repeat each line out loud."}
+        {icon:"📖",task:"Re-read the lesson text out loud 2 times for fluency."}
       ]
     },
     exercises:[
@@ -677,7 +677,7 @@ There are 4 people in my family. I love them very much!`,
         {icon:"🗣️",task:"Talk about your family: 'My mother is ______. She is ______ years old.'"},
         {icon:"🗣️",task:"Replace names with pronouns: 'Tom → He is my ______.'"},
         {icon:"🎙️",task:"RECORD: Talk about 2 family members for 30 seconds."},
-        {icon:"🔁",task:"SHADOW: Read the family dialogue and repeat each line."}
+        {icon:"📖",task:"Re-read the reading text out loud and practice pronunciation."}
       ]
     },
     exercises:[
@@ -809,7 +809,7 @@ I drink a cup of coffee and read a book. <strong>The</strong> book is very inter
         {icon:"🗣️",task:"Practice: 'an apple / an egg / an umbrella / a book / a pen / a cat'"},
         {icon:"🗣️",task:"Describe your room: 'In my room, there is a ______.'"},
         {icon:"🎙️",task:"RECORD: Describe 5 objects around you using a / an / the."},
-        {icon:"🔁",task:"SHADOW: Read the shopping dialogue and repeat."}
+        {icon:"📖",task:"Read today's vocabulary table out loud — word by word."}
       ]
     },
     exercises:[
@@ -1156,7 +1156,7 @@ I drink a cup of coffee and read a book. <strong>The</strong> book is very inter
             {icon:"🗣️",task:"Read the dialogue out loud 2 times."},
             {icon:"🗣️",task:"Make 3 sentences using today's vocabulary."},
             {icon:"🎙️",task:"RECORD: Speak for 1 minute about today's topic."},
-            {icon:"🔁",task:"SHADOW: Repeat the dialogue line by line."}
+            {icon:"📖",task:"Read the example sentences in the grammar section out loud."}
           ]
         },
         exercises:[
@@ -1213,11 +1213,12 @@ function scColor(s){return s>=80?'#059669':s>=60?'#D97706':'#DC2626';}
 // ══════════════════════════════════════════════════════════════════
 function showScreen(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById('s-lang').style.display='none';
   document.getElementById('s-'+id).classList.add('active');
   window.scrollTo(0,0);
 }
 
-function chooseLang(l){lang=l;showScreen('dash');renderDash();}
+function chooseLang(l){lang=l;document.getElementById('s-lang').style.display='none';showScreen('dash');renderDash();}
 function switchLang(l){lang=l;document.getElementById('ls-ro').className='ls-btn'+(l==='ro'?' on':'');document.getElementById('ls-ru').className='ls-btn'+(l==='ru'?' on':'');renderDash();}
 function setFilter(f){curFilter=f;document.querySelectorAll('.fb').forEach(b=>b.classList.remove('on'));document.getElementById('fb-'+f).classList.add('on');renderGrid();}
 function goTo(view,day){if(day!==undefined)selDay=day;showScreen(view);if(view==='dash')renderDash();else if(view==='lesson')renderLesson();else if(view==='exercise')renderExercise();}
@@ -1372,24 +1373,7 @@ function renderLesson(){
       <ol class="qs-list">${les.reading.questions.map(q=>`<li>${q}</li>`).join('')}</ol>
     </div></div>`;
 
-  // ── LISTENING ──
-  html+=`<div class="lesson-section">
-    <div class="ls-header" style="background:#1D4ED8">
-      <span class="icon">🎧</span><h2>${L('listenSection')}: "${les.listening.title}"</h2><span class="tag">LISTENING</span>
-    </div>
-    <div class="ls-body">
-      <p style="font-size:13px;color:#475569;margin-bottom:10px">${L('listenInstr')}</p>
-      <p style="font-size:12px;font-style:italic;color:#64748B;margin-bottom:8px">📍 Scene: ${les.listening.scene}</p>
-      <div class="script-box">`;
-  les.listening.lines.forEach(line=>{
-    html+=`<div class="script-line"><span class="script-speaker">${line.speaker}:</span> <span class="script-text">${line.text}</span></div>`;
-  });
-  html+=`</div>`;
-  if(les.listening.keyVocab&&les.listening.keyVocab.length){
-    html+=`<p style="font-weight:700;color:#0F172A;margin:12px 0 6px">🔑 ${L('keyVocab')}:</p><div class="key-vocab">${les.listening.keyVocab.map(w=>`<span class="kv-chip">${w}</span>`).join('')}</div>`;
-  }
-  html+=`<p style="font-weight:700;color:#0F172A;margin:10px 0 8px">🎙️ ${L('listenQ')}:</p><ol class="qs-list">${les.listening.questions.map(q=>`<li>${q}</li>`).join('')}</ol>
-    </div></div>`;
+  // Listening section removed - no audio in this course
 
   // ── SPEAKING ──
   html+=`<div class="lesson-section">
