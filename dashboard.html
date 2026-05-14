@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Dashboard — English Crush Academy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:       #0F1E4D;
+  --navy2:      #1B2E6B;
+  --blue:       #1E3A8A;
+  --blue2:      #2563EB;
+  --blue3:      #3B82F6;
+  --gold:       #FBBF24;
+  --gold2:      #F59E0B;
+  --green:      #10B981;
+  --red:        #EF4444;
+  --white:      #FFFFFF;
+  --text:       #F1F5F9;
+  --muted:      #94A3B8;
+  --muted2:     #64748B;
+  --card:       #1E293B;
+  --card2:      #243047;
+  --border:     rgba(255,255,255,.08);
+  --border2:    rgba(255,255,255,.15);
+  --sidebar-w:  252px;
+  --font-h:     'Figtree',sans-serif;
+  --font-b:     'Inter',sans-serif;
+  --r:          14px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-b);background:#080E24;color:var(--text);min-height:100vh;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+button{cursor:pointer;font-family:inherit;border:none;background:none}
+input{font-family:inherit}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+/* ══════════════════════════════════
+   LOADING SCREEN
+══════════════════════════════════ */
+#loading{position:fixed;inset:0;background:#080E24;z-index:999;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+#loading .spin{width:40px;height:40px;border:3px solid rgba(37,99,235,.2);border-top:3px solid var(--blue3);border-radius:50%;animation:spin .7s linear infinite}
+#loading p{font-size:14px;color:var(--muted)}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ══════════════════════════════════
+   LAYOUT
+══════════════════════════════════ */
+.dash{display:flex;min-height:100vh}
+
+/* ══════════════════════════════════
+   SIDEBAR
+══════════════════════════════════ */
+.sidebar{width:var(--sidebar-w);background:#0A1228;border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100;transition:transform .3s}
+.sb-logo{padding:20px 18px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.sb-logo .shield{flex-shrink:0}
+.sb-logo .wm{display:flex;flex-direction:column;line-height:1}
+.sb-logo .wm-t{font-family:var(--font-h);font-size:14px;font-weight:800;color:var(--white)}
+.sb-logo .wm-t span{color:var(--blue3)}
+.sb-logo .wm-s{font-size:9px;font-weight:600;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:2px}
+
+.sb-user{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.user-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue2),var(--blue3));display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-size:13px;font-weight:800;color:var(--white);flex-shrink:0}
+.user-info .name{font-size:13px;font-weight:700;color:var(--white);line-height:1.2}
+.user-info .email{font-size:11px;color:var(--muted);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:158px}
+
+.sb-nav{flex:1;padding:10px 8px;overflow-y:auto}
+.sb-label{font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2);padding:10px 10px 5px}
+.ni{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:10px;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:all .18s;width:100%;text-align:left;border:none;background:none;margin-bottom:1px}
+.ni:hover{background:rgba(255,255,255,.06);color:var(--white)}
+.ni.active{background:rgba(37,99,235,.2);color:var(--white);font-weight:600}
+.ni .ic{font-size:16px;width:20px;text-align:center;flex-shrink:0}
+.ni .badge{margin-left:auto;background:var(--gold);color:#0F1E4D;font-size:9px;font-weight:800;padding:2px 6px;border-radius:6px;font-family:var(--font-h)}
+.ni .free-tag{margin-left:auto;background:rgba(16,185,129,.2);border:1px solid rgba(16,185,129,.3);color:#34D399;font-size:9px;font-weight:700;padding:1px 6px;border-radius:5px}
+
+.sb-bottom{padding:10px 8px;border-top:1px solid var(--border)}
+.logout-btn{display:flex;align-items:center;gap:9px;padding:9px 11px;border-radius:10px;font-size:13px;font-weight:500;color:var(--muted);width:100%;transition:all .18s}
+.logout-btn:hover{background:rgba(239,68,68,.1);color:#FCA5A5}
+
+/* ══════════════════════════════════
+   MAIN
+══════════════════════════════════ */
+.main{flex:1;margin-left:var(--sidebar-w);display:flex;flex-direction:column;min-height:100vh}
+
+/* TOPBAR */
+.topbar{height:60px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;background:rgba(8,14,36,.92);backdrop-filter:blur(12px);z-index:50}
+.topbar-left h1{font-family:var(--font-h);font-size:18px;font-weight:800;letter-spacing:-.02em}
+.topbar-left p{font-size:12px;color:var(--muted);margin-top:1px}
+.topbar-right{display:flex;align-items:center;gap:12px}
+.refresh-btn{display:flex;align-items:center;gap:6px;padding:7px 13px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);transition:all .2s}
+.refresh-btn:hover{color:var(--white);border-color:var(--border2)}
+.mob-sb-btn{display:none;padding:8px;border-radius:8px;background:rgba(255,255,255,.06);border:1px solid var(--border);font-size:16px;color:var(--text)}
+
+/* PAGE CONTENT */
+.page-wrap{padding:24px 28px;flex:1}
+
+/* ══════════════════════════════════
+   PANELS
+══════════════════════════════════ */
+.panel{display:none}
+.panel.on{display:block}
+
+/* ══════════════════════════════════
+   HOME PANEL
+══════════════════════════════════ */
+.welcome-hero{background:linear-gradient(135deg,#0F1E4D,#163485 50%,#1E3A8A);border-radius:20px;padding:28px 32px;margin-bottom:24px;position:relative;overflow:hidden}
+.welcome-hero::after{content:'🎓';position:absolute;right:24px;bottom:-8px;font-size:72px;opacity:.12;pointer-events:none}
+.welcome-hero h2{font-family:var(--font-h);font-size:20px;font-weight:800;margin-bottom:6px}
+.welcome-hero p{font-size:14px;color:rgba(255,255,255,.72);max-width:500px;line-height:1.65;margin-bottom:18px}
+.wh-stats{display:flex;gap:16px;flex-wrap:wrap}
+.whs{background:rgba(255,255,255,.1);border-radius:10px;padding:11px 16px;text-align:center;min-width:80px}
+.whs-n{font-family:var(--font-h);font-size:19px;font-weight:800;color:var(--gold);line-height:1}
+.whs-l{font-size:10px;color:rgba(255,255,255,.6);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
+
+.section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:8px}
+.section-header h2{font-family:var(--font-h);font-size:15px;font-weight:800;display:flex;align-items:center;gap:7px}
+.section-header a{font-size:12px;color:var(--blue3);font-weight:600}
+
+/* ══════════════════════════════════
+   CONTENT CARDS GRID
+══════════════════════════════════ */
+.cards-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;margin-bottom:28px}
+
+.ccard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:transform .2s,box-shadow .2s,border-color .2s}
+.ccard:hover{transform:translateY(-3px);box-shadow:0 12px 36px rgba(0,0,0,.4);border-color:var(--border2)}
+.ccard-thumb{height:130px;display:flex;align-items:center;justify-content:center;font-size:44px;position:relative}
+.ccard-thumb .lock{position:absolute;inset:0;background:rgba(8,14,36,.65);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.ccard-thumb .lock .lk{font-size:26px}
+.ccard-thumb .lock span{font-size:11px;font-weight:700;color:rgba(255,255,255,.7);background:rgba(0,0,0,.4);padding:2px 8px;border-radius:6px}
+.ccard-body{padding:15px}
+.ccard-tags{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px}
+.tag{font-size:10px;font-weight:700;padding:2px 7px;border-radius:5px;text-transform:uppercase;letter-spacing:.04em}
+.tag-free{background:rgba(16,185,129,.15);color:#34D399}
+.tag-paid{background:rgba(37,99,235,.15);color:var(--blue3)}
+.tag-new{background:rgba(251,191,36,.15);color:var(--gold)}
+.tag-video{background:rgba(124,58,237,.15);color:#A78BFA}
+.tag-doc{background:rgba(239,68,68,.12);color:#FCA5A5}
+.tag-tool{background:rgba(6,182,212,.12);color:#67E8F9}
+.ccard-title{font-family:var(--font-h);font-size:14px;font-weight:700;line-height:1.3;margin-bottom:5px}
+.ccard-desc{font-size:12px;color:var(--muted);line-height:1.55;margin-bottom:12px}
+.ccard-foot{display:flex;align-items:center;justify-content:space-between}
+.ccard-price{font-family:var(--font-h);font-size:16px;font-weight:800;color:var(--gold)}
+.ccard-price.free{font-size:12px;font-weight:700;color:#34D399}
+.ccard-price.owned{font-size:12px;font-weight:700;color:#34D399}
+.acc-btn{padding:7px 14px;border-radius:8px;font-size:12px;font-weight:700;transition:all .18s;border:none;cursor:pointer}
+.acc-btn.go{background:var(--blue2);color:var(--white)}
+.acc-btn.go:hover{background:var(--blue3)}
+.acc-btn.buy{background:rgba(251,191,36,.15);border:1px solid rgba(251,191,36,.3);color:var(--gold)}
+.acc-btn.buy:hover{background:rgba(251,191,36,.25)}
+.acc-btn.open{background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.3);color:#34D399}
+.acc-btn.open:hover{background:rgba(16,185,129,.25)}
+.acc-btn.soon{background:rgba(255,255,255,.06);color:var(--muted2);cursor:default}
+
+/* ══════════════════════════════════
+   VIDEO CARDS
+══════════════════════════════════ */
+.vcard{background:var(--card);border:1px solid var(--border);border-radius:var(--r);overflow:hidden;transition:transform .2s,border-color .2s}
+.vcard:hover{transform:translateY(-3px);border-color:var(--border2)}
+.vcard-thumb{height:148px;background:linear-gradient(135deg,#1E293B,#243047);display:flex;align-items:center;justify-content:center;position:relative;cursor:pointer}
+.play-ring{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.15);border:2px solid rgba(255,255,255,.3);display:flex;align-items:center;justify-content:center;transition:all .2s;backdrop-filter:blur(4px)}
+.play-ring:hover{background:rgba(255,255,255,.25);transform:scale(1.08)}
+.play-arrow{width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:17px solid white;margin-left:3px}
+.vcard-dur{position:absolute;bottom:8px;right:10px;background:rgba(0,0,0,.75);color:var(--white);font-size:10px;font-weight:700;padding:2px 6px;border-radius:5px}
+.vcard-body{padding:13px}
+.vcard-title{font-family:var(--font-h);font-size:13px;font-weight:700;margin-bottom:3px;line-height:1.35}
+.vcard-meta{font-size:11px;color:var(--muted)}
+
+/* ══════════════════════════════════
+   PROFILE PANEL
+══════════════════════════════════ */
+.profile-card{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:26px;margin-bottom:18px}
+.profile-av-lg{width:68px;height:68px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--blue3));display:flex;align-items:center;justify-content:center;font-family:var(--font-h);font-size:26px;font-weight:800;color:var(--white);margin-bottom:12px}
+.profile-name{font-family:var(--font-h);font-size:20px;font-weight:800;margin-bottom:3px}
+.profile-email{font-size:14px;color:var(--muted);margin-bottom:16px}
+.profile-stats{display:flex;gap:14px;flex-wrap:wrap}
+.ps{background:#0D1535;border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-align:center;min-width:80px}
+.ps-n{font-family:var(--font-h);font-size:18px;font-weight:800;color:var(--blue3)}
+.ps-l{font-size:10px;color:var(--muted);margin-top:3px;text-transform:uppercase;letter-spacing:.04em}
+.settings-card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:20px}
+.settings-card h3{font-family:var(--font-h);font-size:14px;font-weight:700;margin-bottom:14px;color:var(--text)}
+.fi{width:100%;padding:10px 12px;background:#0D1535;border:1px solid var(--border);border-radius:9px;font-size:14px;color:var(--white);outline:none;transition:border-color .2s;box-sizing:border-box;margin-bottom:10px}
+.fi::placeholder{color:var(--muted)}
+.fi:focus{border-color:var(--blue3)}
+.ferr{display:none;padding:8px 12px;background:rgba(239,68,68,.1);border:1px solid rgba(239,68,68,.25);border-radius:8px;font-size:12px;color:#FCA5A5;margin-bottom:10px}
+.fok{display:none;padding:8px 12px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.25);border-radius:8px;font-size:12px;color:#6EE7B7;margin-bottom:10px}
+.btn-save{padding:10px 22px;border-radius:9px;font-size:13px;font-weight:700;background:var(--blue2);color:var(--white);transition:all .2s}
+.btn-save:hover{background:var(--blue3)}
+
+/* ══════════════════════════════════
+   PAYMENT MODAL
+══════════════════════════════════ */
+.pay-overlay{position:fixed;inset:0;background:rgba(8,14,36,.88);backdrop-filter:blur(10px);z-index:400;display:none;align-items:center;justify-content:center;padding:20px}
+.pay-overlay.open{display:flex}
+.pay-box{background:var(--card);border:1px solid var(--border);border-radius:22px;padding:30px;max-width:420px;width:100%;box-shadow:0 32px 80px rgba(0,0,0,.6)}
+.pay-box-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:5px}
+.pay-box-top h2{font-family:var(--font-h);font-size:17px;font-weight:800}
+.pay-x{width:28px;height:28px;border-radius:7px;background:var(--card2);border:1px solid var(--border);color:var(--muted);font-size:13px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pay-x:hover{color:var(--white)}
+.pay-desc{font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6}
+.pay-price-block{background:linear-gradient(135deg,var(--navy),var(--blue));border-radius:13px;padding:18px;text-align:center;margin-bottom:18px}
+.ppb-price{font-family:var(--font-h);font-size:40px;font-weight:900;color:var(--gold);line-height:1}
+.ppb-label{font-size:12px;color:rgba(255,255,255,.6);margin-top:4px}
+.pay-includes{margin-bottom:18px}
+.pay-includes p{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:8px}
+.pay-includes li{font-size:13px;color:var(--text);margin-bottom:5px;display:flex;align-items:center;gap:7px;list-style:none}
+.pay-includes li::before{content:'✓';color:#34D399;font-weight:700;font-size:13px}
+.btn-pay{display:block;width:100%;padding:13px;border-radius:10px;background:linear-gradient(135deg,var(--green),#047857);color:var(--white);font-size:15px;font-weight:800;text-align:center;border:none;cursor:pointer;text-decoration:none;transition:all .2s;margin-bottom:8px;font-family:var(--font-h)}
+.btn-pay:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(16,185,129,.4)}
+.btn-already{width:100%;padding:10px;border-radius:9px;background:transparent;border:1px solid var(--border);color:var(--muted);font-size:13px;font-weight:600;margin-bottom:6px;transition:all .2s}
+.btn-already:hover{border-color:var(--border2);color:var(--white)}
+.pay-check-msg{font-size:12px;text-align:center;color:var(--muted);min-height:18px}
+.btn-cancel-pay{display:block;width:100%;padding:9px;border-radius:9px;background:transparent;border:1px solid var(--border);color:var(--muted);font-size:13px;font-weight:500;margin-top:4px}
+
+/* ══════════════════════════════════
+   EMPTY STATE
+══════════════════════════════════ */
+.empty{text-align:center;padding:52px 20px;color:var(--muted)}
+.empty-ico{font-size:44px;margin-bottom:12px}
+
+/* ══════════════════════════════════
+   MOBILE
+══════════════════════════════════ */
+@media(max-width:768px){
+  .sidebar{transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .main{margin-left:0}
+  .mob-sb-btn{display:flex}
+  .page-wrap{padding:16px}
+  .cards-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+
+<!-- LOADING -->
+<div id="loading">
+  <svg viewBox="0 0 58 64" width="48" height="52" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="ll"><stop offset="0%" stop-color="#3B82F6"/><stop offset="100%" stop-color="#2563EB"/></linearGradient>
+      <linearGradient id="lr"><stop offset="0%" stop-color="#1E3A8A"/><stop offset="100%" stop-color="#0D1B4B"/></linearGradient>
+    </defs>
+    <path d="M29 3 L4 13 L4 34 Q4 52 29 62 Z" fill="url(#ll)"/>
+    <path d="M29 3 L54 13 L54 34 Q54 52 29 62 Z" fill="url(#lr)"/>
+    <path d="M29 3 L4 13 L4 34 Q4 52 29 62 Q54 52 54 34 L54 13 Z" fill="none" stroke="rgba(255,255,255,.2)" stroke-width="1"/>
+    <text x="16" y="40" font-family="Georgia,serif" font-weight="700" font-size="18" fill="white" text-anchor="middle">E</text>
+    <text x="42" y="40" font-family="Georgia,serif" font-weight="700" font-size="18" fill="rgba(255,255,255,.88)" text-anchor="middle">C</text>
+    <polygon points="29,1 38,6 29,11 20,6" fill="#EEF2FF" opacity=".9"/>
+  </svg>
+  <div class="spin"></div>
+  <p>Se încarcă...</p>
+</div>
+
+<div class="dash" id="dash" style="display:none">
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sb-logo">
+    <div class="shield">
+      <svg viewBox="0 0 58 64" width="34" height="38" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="sl2"><stop offset="0%" stop-color="#3B82F6"/><stop offset="100%" stop-color="#2563EB"/></linearGradient>
+          <linearGradient id="sr2"><stop offset="0%" stop-color="#1E3A8A"/><stop offset="100%" stop-color="#0D1B4B"/></linearGradient>
+        </defs>
+        <path d="M29 3 L4 13 L4 34 Q4 52 29 62 Z" fill="url(#sl2)"/>
+        <path d="M29 3 L54 13 L54 34 Q54 52 29 62 Z" fill="url(#sr2)"/>
+        <path d="M29 3 L4 13 L4 34 Q4 52 29 62 Q54 52 54 34 L54 13 Z" fill="none" stroke="rgba(255,255,255,.18)" stroke-width="1"/>
+        <text x="16" y="40" font-family="Georgia,serif" font-weight="700" font-size="18" fill="white" text-anchor="middle">E</text>
+        <text x="42" y="40" font-family="Georgia,serif" font-weight="700" font-size="18" fill="rgba(255,255,255,.88)" text-anchor="middle">C</text>
+        <polygon points="29,1 38,6 29,11 20,6" fill="#EEF2FF" opacity=".9"/>
+      </svg>
+    </div>
+    <div class="wm">
+      <span class="wm-t">English <span>Crush</span></span>
+      <span class="wm-s">Academy</span>
+    </div>
+  </div>
+
+  <div class="sb-user">
+    <div class="user-av" id="sb-av">?</div>
+    <div class="user-info">
+      <div class="name" id="sb-name">—</div>
+      <div class="email" id="sb-email">—</div>
+    </div>
+  </div>
+
+  <nav class="sb-nav">
+    <div class="sb-label">Principal</div>
+    <button class="ni active" id="nav-home" onclick="go('home')">
+      <span class="ic">🏠</span> Acasă
+    </button>
+    <button class="ni" id="nav-free" onclick="go('free')">
+      <span class="ic">🆓</span> Material gratuit
+      <span class="free-tag">FREE</span>
+    </button>
+
+    <div class="sb-label">Conținut</div>
+    <button class="ni" id="nav-courses" onclick="go('courses')">
+      <span class="ic">📚</span> Cursuri
+    </button>
+    <button class="ni" id="nav-videos" onclick="go('videos')">
+      <span class="ic">🎥</span> Videouri
+      <span class="badge">NOU</span>
+    </button>
+    <button class="ni" id="nav-docs" onclick="go('docs')">
+      <span class="ic">📄</span> Documente & Tools
+    </button>
+
+    <div class="sb-label">Cont</div>
+    <button class="ni" id="nav-profile" onclick="go('profile')">
+      <span class="ic">👤</span> Profilul meu
+    </button>
+  </nav>
+
+  <div class="sb-bottom">
+    <button class="logout-btn" onclick="doLogout()">
+      <span style="font-size:15px">🚪</span> Ieși din cont
+    </button>
+  </div>
+</aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-left">
+      <h1 id="tb-title">Acasă</h1>
+      <p id="tb-sub">Bun venit înapoi!</p>
+    </div>
+    <div class="topbar-right">
+      <button class="refresh-btn" onclick="syncAll()" id="sync-btn">🔄 Sincronizează</button>
+      <button class="mob-sb-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">☰</button>
+    </div>
+  </div>
+
+  <div class="page-wrap">
+
+    <!-- ── HOME ── -->
+    <div class="panel on" id="panel-home">
+      <div class="welcome-hero">
+        <h2 id="welcome-msg">Bun venit! 👋</h2>
+        <p>Continuă de unde ai rămas. Progresul tău e salvat în cloud — pe orice device.</p>
+        <div class="wh-stats">
+          <div class="whs"><div class="whs-n" id="ws-courses">0</div><div class="whs-l">Cursuri</div></div>
+          <div class="whs"><div class="whs-n" id="ws-items">0</div><div class="whs-l">Iteme active</div></div>
+          <div class="whs"><div class="whs-n" id="ws-days">0</div><div class="whs-l">Zile active</div></div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h2>🆓 Material gratuit</h2>
+        <a onclick="go('free')">Vezi tot →</a>
+      </div>
+      <div class="cards-grid" id="grid-home-free"></div>
+
+      <div class="section-header">
+        <h2>📚 Cursuri recomandate</h2>
+        <a onclick="go('courses')">Vezi toate →</a>
+      </div>
+      <div class="cards-grid" id="grid-home-courses"></div>
+    </div>
+
+    <!-- ── FREE ── -->
+    <div class="panel" id="panel-free">
+      <div style="margin-bottom:20px">
+        <h2 style="font-family:var(--font-h);font-size:19px;font-weight:800;margin-bottom:4px">🆓 Material gratuit</h2>
+        <p style="font-size:14px;color:var(--muted)">Acces imediat, fără plată. Al tău pentru totdeauna.</p>
+      </div>
+      <div class="cards-grid" id="grid-free"></div>
+    </div>
+
+    <!-- ── COURSES ── -->
+    <div class="panel" id="panel-courses">
+      <div style="margin-bottom:20px">
+        <h2 style="font-family:var(--font-h);font-size:19px;font-weight:800;margin-bottom:4px">📚 Cursuri</h2>
+        <p style="font-size:14px;color:var(--muted)">Plată unică pe curs — acces pe viață.</p>
+      </div>
+      <div class="cards-grid" id="grid-courses"></div>
+    </div>
+
+    <!-- ── VIDEOS ── -->
+    <div class="panel" id="panel-videos">
+      <div style="margin-bottom:20px">
+        <h2 style="font-family:var(--font-h);font-size:19px;font-weight:800;margin-bottom:4px">🎥 Videouri</h2>
+        <p style="font-size:14px;color:var(--muted)">Lecții video exclusive. Actualizate în fiecare săptămână.</p>
+      </div>
+      <div class="cards-grid" id="grid-videos"></div>
+    </div>
+
+    <!-- ── DOCS ── -->
+    <div class="panel" id="panel-docs">
+      <div style="margin-bottom:20px">
+        <h2 style="font-family:var(--font-h);font-size:19px;font-weight:800;margin-bottom:4px">📄 Documente & Tools</h2>
+        <p style="font-size:14px;color:var(--muted)">PDF-uri, ghiduri și instrumente interactive premium.</p>
+      </div>
+      <div class="cards-grid" id="grid-docs"></div>
+    </div>
+
+    <!-- ── PROFILE ── -->
+    <div class="panel" id="panel-profile">
+      <div class="profile-card">
+        <div class="profile-av-lg" id="prof-av">?</div>
+        <div class="profile-name" id="prof-name">—</div>
+        <div class="profile-email" id="prof-email">—</div>
+        <div class="profile-stats">
+          <div class="ps"><div class="ps-n" id="ps-courses">0</div><div class="ps-l">Cursuri</div></div>
+          <div class="ps"><div class="ps-n" id="ps-items">0</div><div class="ps-l">Iteme</div></div>
+          <div class="ps"><div class="ps-n" id="ps-days">—</div><div class="ps-l">Membru din</div></div>
+        </div>
+      </div>
+      <div class="settings-card">
+        <h3>🔒 Schimbă parola</h3>
+        <input class="fi" id="cp-new" type="password" placeholder="Parolă nouă (minim 6 caractere)">
+        <input class="fi" id="cp-new2" type="password" placeholder="Repetă parola nouă" onkeydown="if(event.key==='Enter')changePassword()">
+        <div class="ferr" id="cp-err"></div>
+        <div class="fok" id="cp-ok"></div>
+        <button class="btn-save" onclick="changePassword()">Salvează parola</button>
+      </div>
+    </div>
+
+  </div><!-- /page-wrap -->
+</main>
+</div><!-- /dash -->
+
+<!-- ══════════ PAYMENT MODAL ══════════ -->
+<div class="pay-overlay" id="payOverlay">
+  <div class="pay-box">
+    <div class="pay-box-top">
+      <h2 id="pay-title">Cumpără accesul</h2>
+      <button class="pay-x" onclick="closePayModal()">✕</button>
+    </div>
+    <p class="pay-desc" id="pay-desc">Plată unică — acces pe viață la acest material.</p>
+    <div class="pay-price-block">
+      <div class="ppb-price" id="pay-price">$0</div>
+      <div class="ppb-label">plată unică · acces pe viață</div>
+    </div>
+    <div class="pay-includes">
+      <p>Ce primești:</p>
+      <ul id="pay-includes"></ul>
+    </div>
+    <a href="#" id="pay-stripe-btn" target="_blank" class="btn-pay" onclick="onPayClick()">🔐 Plătește acum cu Stripe</a>
+    <button class="btn-already" onclick="checkAlreadyPaid()">✅ Am plătit deja — verifică accesul</button>
+    <div class="pay-check-msg" id="pay-check-msg"></div>
+    <button class="btn-cancel-pay" onclick="closePayModal()">Anulează</button>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════
+//  CONFIG
+// ══════════════════════════════════════════════
+const SB  = 'https://pmlmjqrifecphqwmoxdv.supabase.co';
+const SK  = 'sb_publishable_-vZttfsRkaN1fr7_yvSoXQ_tYJWvfnJ';
+const STRIPE = 'https://buy.stripe.com/28E14oenWfTd6VW2hM28800';
+
+// ══════════════════════════════════════════════
+//  CONTENT CATALOG
+//  Add your courses/items here
+// ══════════════════════════════════════════════
+const CATALOG = [
+  // ── FREE MATERIAL ──
+  {id:'free-1', type:'free',
+    title:'Introducere în engleza americană',
+    desc:'Primele 5 lecții gratuite — alfabet, salutări, numere, prezentare personală.',
+    price:0, emoji:'🆓', bg:'linear-gradient(135deg,#064E3B,#047857)',
+    tags:['Gratuit','A1'],
+    includes:['5 lecții complete','Vocabular de bază','Exerciții interactive'],
+    url:'english-marathon.html'},
+  {id:'free-2', type:'free',
+    title:'Ghid PDF: 100 cuvinte esențiale A1',
+    desc:'Cele mai importante 100 de cuvinte în engleză americană cu traducere și exemple.',
+    price:0, emoji:'📖', bg:'linear-gradient(135deg,#065F46,#059669)',
+    tags:['Gratuit','PDF'],
+    includes:['100 cuvinte + traduceri','Exemple de propoziții','Pronunție fonetică'],
+    url:'#'},
+  {id:'free-3', type:'free',
+    title:'Mini-test: Care este nivelul tău?',
+    desc:'Test gratuit de 10 minute pentru a-ți determina nivelul actual de engleză.',
+    price:0, emoji:'📊', bg:'linear-gradient(135deg,#0C4A6E,#0284C7)',
+    tags:['Gratuit','Test'],
+    includes:['30 de întrebări','Rezultat instant','Recomandări personalizate'],
+    url:'#'},
+
+  // ── COURSES ──
+  {id:'course-1', type:'course',
+    title:'30-Day American English Marathon',
+    desc:'Curs complet A1 — 30 de lecții cu exerciții interactive, vocabular în română și sistem de notare.',
+    price:29, stripeLink: STRIPE,
+    emoji:'📚', bg:'linear-gradient(135deg,#1a0a0a,#7F1D1D)',
+    tags:['A1','30 lecții'],
+    includes:['30 lecții complete','Vocabular în română','Exerciții + notare','Acces pe viață'],
+    url:'english-marathon.html'},
+  {id:'course-2', type:'course',
+    title:'Business English Accelerator',
+    desc:'Emailuri, prezentări, negocieri și interviuri de angajare în engleză.',
+    price:39, stripeLink:'#',
+    emoji:'💼', bg:'linear-gradient(135deg,#1e1b4b,#3730a3)',
+    tags:['A2-B1','Business','În curând'],
+    includes:['20 lecții video','Șabloane emailuri','Exerciții practice'],
+    url:'#', soon:true},
+  {id:'course-3', type:'course',
+    title:'American Pronunciation Masterclass',
+    desc:'Accent american, sunete dificile, intonație, ritm și fluență.',
+    price:49, stripeLink:'#',
+    emoji:'🎙️', bg:'linear-gradient(135deg,#3b0764,#6d28d9)',
+    tags:['Toate nivelurile','Pronunție'],
+    includes:['15 lecții audio-video','Exerciții de repetare','Fișe PDF'],
+    url:'#', soon:true},
+
+  // ── VIDEOS ──
+  {id:'video-1', type:'video',
+    title:'American Slang — Episodul 1',
+    desc:'Cele mai folosite expresii colocviale americane din filme și seriale.',
+    price:0, emoji:'🎬', bg:'linear-gradient(135deg,#1F2937,#374151)',
+    tags:['Gratuit','Video','Slang'],
+    duration:'12:34', url:'#'},
+  {id:'video-2', type:'video',
+    title:'Pachet Video: Gramatică A1 (10 video)',
+    desc:'Verbul To Be, Present Simple, articole și plurale — explicat simplu.',
+    price:19, stripeLink:'#',
+    emoji:'🎥', bg:'linear-gradient(135deg,#1e3a8a,#2563eb)',
+    tags:['Video','A1','Gramatică'],
+    duration:'2h 15min',
+    includes:['10 lecții video','Fișe PDF','Exerciții','Acces pe viață'],
+    url:'#'},
+  {id:'video-3', type:'video',
+    title:'Conversații reale (8 video)',
+    desc:'Dialoguri autentice — la restaurant, în oraș, la job, la aeroport.',
+    price:24, stripeLink:'#',
+    emoji:'💬', bg:'linear-gradient(135deg,#064e3b,#059669)',
+    tags:['Video','Conversație'],
+    duration:'1h 48min',
+    includes:['8 dialoguri video','Transcrieri','Vocabular-cheie'],
+    url:'#'},
+
+  // ── DOCS & TOOLS ──
+  {id:'doc-1', type:'doc',
+    title:'Grammar Reference Guide A1',
+    desc:'PDF de 80 pagini cu toată gramatica A1 explicată în română, cu exemple.',
+    price:9, stripeLink:'#',
+    emoji:'📋', bg:'linear-gradient(135deg,#451a03,#b45309)',
+    tags:['PDF','A1','Gramatică'],
+    includes:['80 pagini PDF','Toate regulile A1','Exerciții cu soluții'],
+    url:'#'},
+  {id:'doc-2', type:'doc',
+    title:'Vocabulary Flashcards — 500 cuvinte',
+    desc:'Set de 500 flashcard-uri digitale cu cele mai importante cuvinte în engleză americană.',
+    price:14, stripeLink:'#',
+    emoji:'🃏', bg:'linear-gradient(135deg,#500724,#be185d)',
+    tags:['Tool','Vocabular','Interactiv'],
+    includes:['500 flashcard-uri','Traduceri în română','Pronunție audio'],
+    url:'#'},
+  {id:'doc-3', type:'doc',
+    title:'CV & Cover Letter Templates',
+    desc:'5 șabloane profesionale pentru CV și scrisoare de intenție în engleză americană.',
+    price:19, stripeLink:'#',
+    emoji:'📝', bg:'linear-gradient(135deg,#052e16,#15803d)',
+    tags:['PDF','Business'],
+    includes:['5 șabloane CV','5 șabloane Cover Letter','Format Word & PDF'],
+    url:'#'},
+];
+
+// ══════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════
+let currentUser = null;
+let userAccess  = {}; // { itemId: true }
+let currentPayItem = null;
+
+// ══════════════════════════════════════════════
+//  SUPABASE FETCH
+// ══════════════════════════════════════════════
+async function sbFetch(path, opts){
+  opts = opts || {};
+  const h = {'apikey':SK,'Content-Type':'application/json'};
+  if(currentUser?.access_token) h['Authorization'] = 'Bearer '+currentUser.access_token;
+  else h['Authorization'] = 'Bearer '+SK;
+  if(opts.headers) Object.assign(h, opts.headers);
+  return fetch(SB+path, Object.assign({},opts,{headers:h}));
+}
+
+// ══════════════════════════════════════════════
+//  AUTH CHECK
+// ══════════════════════════════════════════════
+async function checkAuth(){
+  const tok     = sessionStorage.getItem('ea_token');
+  const refresh = sessionStorage.getItem('ea_refresh');
+  const name    = sessionStorage.getItem('ea_name');
+  const email   = sessionStorage.getItem('ea_email');
+  const uid     = sessionStorage.getItem('ea_uid');
+
+  if(!tok){ window.location.href='index.html'; return; }
+
+  try{
+    const res = await fetch(SB+'/auth/v1/user',{
+      headers:{'apikey':SK,'Authorization':'Bearer '+tok}
+    });
+
+    if(res.ok){
+      const u = await res.json();
+      currentUser = {
+        id:            u.id,
+        email:         u.email,
+        name:          name || u.user_metadata?.full_name || u.email.split('@')[0],
+        access_token:  tok,
+        refresh_token: refresh
+      };
+      sessionStorage.setItem('ea_name',  currentUser.name);
+      sessionStorage.setItem('ea_email', currentUser.email);
+      sessionStorage.setItem('ea_uid',   u.id);
+
+      // Record last_seen in profiles table
+      await updateLastSeen();
+      // Load what they've purchased
+      await loadAccess();
+      renderAll();
+      document.getElementById('loading').style.display='none';
+      document.getElementById('dash').style.display='flex';
+
+    } else if(refresh){
+      // Refresh token
+      const rr = await fetch(SB+'/auth/v1/token?grant_type=refresh_token',{
+        method:'POST',
+        headers:{'apikey':SK,'Content-Type':'application/json'},
+        body: JSON.stringify({refresh_token:refresh})
+      });
+      if(rr.ok){
+        const rd = await rr.json();
+        const u  = rd.user||{};
+        currentUser = {
+          id:name||u.id, email:u.email,
+          name:name||u.user_metadata?.full_name||u.email.split('@')[0],
+          access_token:rd.access_token,
+          refresh_token:rd.refresh_token
+        };
+        sessionStorage.setItem('ea_token',   rd.access_token);
+        sessionStorage.setItem('ea_refresh', rd.refresh_token||'');
+        sessionStorage.setItem('ea_uid',     u.id||'');
+        await updateLastSeen();
+        await loadAccess();
+        renderAll();
+        document.getElementById('loading').style.display='none';
+        document.getElementById('dash').style.display='flex';
+      } else {
+        window.location.href='index.html';
+      }
+    } else {
+      window.location.href='index.html';
+    }
+  }catch(e){
+    console.error('Auth check error:',e);
+    window.location.href='index.html';
+  }
+}
+
+// ══════════════════════════════════════════════
+//  PROFILE TRACKING — saves every login to DB
+// ══════════════════════════════════════════════
+async function updateLastSeen(){
+  if(!currentUser?.id) return;
+  try{
+    // Upsert profile — creates row if new user, updates last_seen if existing
+    await sbFetch('/rest/v1/profiles',{
+      method:'POST',
+      headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},
+      body: JSON.stringify({
+        user_id:    currentUser.id,
+        email:      currentUser.email,
+        full_name:  currentUser.name,
+        last_seen:  new Date().toISOString()
+      })
+    });
+  }catch(e){ console.log('Profile update error:',e); }
+}
+
+// ══════════════════════════════════════════════
+//  LOAD USER ACCESS (purchased items)
+// ══════════════════════════════════════════════
+async function loadAccess(){
+  userAccess = {};
+  if(!currentUser?.id) return;
+  try{
+    const res = await sbFetch('/rest/v1/user_access?user_id=eq.'+currentUser.id+'&select=item_id');
+    if(res.ok){
+      const rows = await res.json();
+      rows.forEach(r => { userAccess[r.item_id] = true; });
+    }
+  }catch(e){ console.log('Access load error:',e); }
+}
+
+async function grantAccess(itemId){
+  userAccess[itemId] = true;
+  if(!currentUser?.id) return;
+  try{
+    await sbFetch('/rest/v1/user_access',{
+      method:'POST',
+      headers:{'Prefer':'resolution=merge-duplicates,return=minimal'},
+      body: JSON.stringify({
+        user_id:    currentUser.id,
+        item_id:    itemId,
+        granted_at: new Date().toISOString()
+      })
+    });
+  }catch(e){ console.log('Grant access error:',e); }
+}
+
+function hasAccess(item){
+  if(item.price===0) return true;
+  return userAccess[item.id]===true;
+}
+
+// ══════════════════════════════════════════════
+//  LOGOUT
+// ══════════════════════════════════════════════
+async function doLogout(){
+  try{
+    if(currentUser?.access_token)
+      await fetch(SB+'/auth/v1/logout',{method:'POST',headers:{'apikey':SK,'Authorization':'Bearer '+currentUser.access_token}});
+  }catch(e){}
+  currentUser=null; userAccess={};
+  sessionStorage.clear();
+  window.location.href='index.html';
+}
+
+// ══════════════════════════════════════════════
+//  SYNC
+// ══════════════════════════════════════════════
+async function syncAll(){
+  const btn=document.getElementById('sync-btn');
+  if(btn){btn.textContent='⏳ Sincronizează';btn.disabled=true;}
+  await loadAccess();
+  renderAll();
+  if(btn){btn.textContent='✅ Gata!';setTimeout(()=>{btn.textContent='🔄 Sincronizează';btn.disabled=false;},1500);}
+}
+
+// ══════════════════════════════════════════════
+//  RENDER
+// ══════════════════════════════════════════════
+function renderAll(){
+  if(!currentUser) return;
+  const init = currentUser.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)||'?';
+  const h = new Date().getHours();
+  const greet = h<12?'Bună dimineața':h<18?'Bună ziua':'Bună seara';
+
+  // Sidebar user
+  setText('sb-av',   init);
+  setText('sb-name', currentUser.name);
+  setText('sb-email',currentUser.email);
+
+  // Topbar
+  const daypart = h<12?'Bună dimineața, ':h<18?'Bună ziua, ':'Bună seara, ';
+  setText('tb-sub', daypart+currentUser.name.split(' ')[0]+'!');
+
+  // Welcome
+  setText('welcome-msg', (h<12?'Bună dimineața':h<18?'Bună ziua':'Bună seara')+', '+currentUser.name.split(' ')[0]+'! 👋');
+
+  // Profile
+  setText('prof-av',   init);
+  setText('prof-name', currentUser.name);
+  setText('prof-email',currentUser.email);
+
+  // Stats
+  const paid = Object.keys(userAccess).length;
+  const coursesOwned = CATALOG.filter(i=>i.type==='course'&&hasAccess(i)&&i.price>0).length;
+  ['ws-courses','ps-courses'].forEach(id=>setText(id,coursesOwned));
+  ['ws-items','ps-items'].forEach(id=>setText(id,paid));
+  const joinDate = new Date().getFullYear().toString();
+  setText('ws-days',  new Date().toLocaleDateString('ro',{month:'short',year:'numeric'}));
+  setText('ps-days',  joinDate);
+
+  // Render grids
+  renderGrid('grid-home-free',    CATALOG.filter(i=>i.type==='free').slice(0,3));
+  renderGrid('grid-home-courses', CATALOG.filter(i=>i.type==='course').slice(0,3));
+  renderGrid('grid-free',     CATALOG.filter(i=>i.type==='free'));
+  renderGrid('grid-courses',  CATALOG.filter(i=>i.type==='course'));
+  renderGrid('grid-videos',   CATALOG.filter(i=>i.type==='video'));
+  renderGrid('grid-docs',     CATALOG.filter(i=>i.type==='doc'));
+}
+
+function renderGrid(containerId, items){
+  const el = document.getElementById(containerId);
+  if(!el) return;
+  if(!items.length){
+    el.innerHTML='<div class="empty"><div class="empty-ico">📭</div><p>Nimic disponibil momentan.</p></div>';
+    return;
+  }
+  el.innerHTML = items.map(buildCard).join('');
+}
+
+function buildCard(item){
+  const acc     = hasAccess(item);
+  const tagHtml = item.tags.map(t=>`<span class="tag ${tagClass(t)}">${t}</span>`).join('');
+
+  // Price display
+  let priceHtml;
+  if(item.price===0) priceHtml = `<span class="ccard-price free">✓ Gratuit</span>`;
+  else if(acc)       priceHtml = `<span class="ccard-price owned">✓ Activ</span>`;
+  else               priceHtml = `<span class="ccard-price">$${item.price}</span>`;
+
+  // Action button
+  let btnHtml;
+  if(item.soon)       btnHtml = `<button class="acc-btn soon" disabled>🔜 În curând</button>`;
+  else if(item.price===0) btnHtml = `<button class="acc-btn go" onclick="openItem('${item.id}')">🚀 Accesează</button>`;
+  else if(acc)        btnHtml = `<button class="acc-btn open" onclick="openItem('${item.id}')">📖 Deschide</button>`;
+  else                btnHtml = `<button class="acc-btn buy" onclick="openPayModal('${item.id}')">💳 Cumpără</button>`;
+
+  // Lock overlay
+  const lockHtml = (!acc && item.price>0 && !item.soon)
+    ? `<div class="lock"><div class="lk">🔒</div><span>Conținut plătit</span></div>` : '';
+
+  return `<div class="ccard">
+    <div class="ccard-thumb" style="background:${item.bg};position:relative">${item.emoji}${lockHtml}</div>
+    <div class="ccard-body">
+      <div class="ccard-tags">${tagHtml}</div>
+      <div class="ccard-title">${item.title}</div>
+      <div class="ccard-desc">${item.desc}</div>
+      <div class="ccard-foot">${priceHtml}${btnHtml}</div>
+    </div>
+  </div>`;
+}
+
+function tagClass(t){
+  const map={'Gratuit':'tag-free','Free':'tag-free','PDF':'tag-doc','Tool':'tag-tool',
+             'Interactiv':'tag-tool','Video':'tag-video','NOU':'tag-new','În curând':'tag-new',
+             'Slang':'tag-video','Conversație':'tag-video'};
+  return map[t]||'tag-paid';
+}
+
+function setText(id,val){
+  const el=document.getElementById(id);if(el)el.textContent=val;
+}
+
+// ══════════════════════════════════════════════
+//  NAVIGATION
+// ══════════════════════════════════════════════
+const PANEL_TITLES = {
+  home:    ['Acasă',             'Continuă de unde ai rămas'],
+  free:    ['Material gratuit',  'Acces imediat, fără plată'],
+  courses: ['Cursuri',           'Plată unică — acces pe viață'],
+  videos:  ['Videouri',          'Actualizate în fiecare săptămână'],
+  docs:    ['Documente & Tools', 'PDF-uri și instrumente premium'],
+  profile: ['Profilul meu',      'Setările contului tău'],
+};
+
+function go(name){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.ni').forEach(n=>n.classList.remove('active'));
+  const panel = document.getElementById('panel-'+name);
+  const nav   = document.getElementById('nav-'+name);
+  if(panel) panel.classList.add('on');
+  if(nav)   nav.classList.add('active');
+  const [title,sub] = PANEL_TITLES[name]||['—','—'];
+  setText('tb-title', title);
+  if(name!=='home') setText('tb-sub', sub);
+  // Close mobile sidebar
+  document.getElementById('sidebar').classList.remove('open');
+  window.scrollTo(0,0);
+}
+
+// ══════════════════════════════════════════════
+//  OPEN ITEM
+// ══════════════════════════════════════════════
+function openItem(itemId){
+  const item = CATALOG.find(i=>i.id===itemId);
+  if(!item) return;
+  if(!hasAccess(item)){ openPayModal(itemId); return; }
+  if(item.url && item.url!=='#'){
+    window.open(item.url,'_blank');
+  } else {
+    alert('📚 '+item.title+'\n\nConținutul va fi disponibil în curând!');
+  }
+}
+
+// ══════════════════════════════════════════════
+//  PAYMENT MODAL
+// ══════════════════════════════════════════════
+function openPayModal(itemId){
+  const item = CATALOG.find(i=>i.id===itemId);
+  if(!item) return;
+  currentPayItem = item;
+
+  setText('pay-title',  item.title);
+  setText('pay-price', '$'+item.price);
+  document.getElementById('pay-desc').textContent = item.desc;
+  document.getElementById('pay-includes').innerHTML =
+    (item.includes||[]).map(i=>`<li>${i}</li>`).join('');
+
+  const btn = document.getElementById('pay-stripe-btn');
+  if(btn){
+    const link = (item.stripeLink && item.stripeLink!=='#') ? item.stripeLink : '#';
+    btn.href = link+(currentUser?.email ? '?prefilled_email='+encodeURIComponent(currentUser.email):'');
+    btn.textContent = '🔐 Plătește acum — $'+item.price;
+    if(link==='#') btn.onclick=(e)=>{e.preventDefault();alert('Link Stripe nu este configurat pentru acest produs.');};
+    else           btn.onclick = onPayClick;
+  }
+
+  const msg=document.getElementById('pay-check-msg');
+  if(msg){msg.textContent='';msg.style.color='';}
+
+  document.getElementById('payOverlay').classList.add('open');
+}
+
+function closePayModal(){
+  document.getElementById('payOverlay').classList.remove('open');
+  currentPayItem=null;
+}
+
+function onPayClick(){
+  if(currentPayItem) sessionStorage.setItem('ea_pay_intent',currentPayItem.id);
+}
+
+async function checkAlreadyPaid(){
+  const msg=document.getElementById('pay-check-msg');
+  if(!msg) return;
+  msg.textContent='⏳ Se verifică...';msg.style.color='var(--muted)';
+
+  // Check if intent matches (user came back from Stripe)
+  const intent=sessionStorage.getItem('ea_pay_intent');
+  if(intent && currentPayItem && intent===currentPayItem.id){
+    await grantAccess(intent);
+    sessionStorage.removeItem('ea_pay_intent');
+    msg.textContent='✅ Acces acordat!';msg.style.color='#34D399';
+    setTimeout(()=>{closePayModal();renderAll();},1400);
+    return;
+  }
+  // Re-check DB
+  await loadAccess();
+  if(currentPayItem && hasAccess(currentPayItem)){
+    msg.textContent='✅ Ai acces activ!';msg.style.color='#34D399';
+    setTimeout(()=>{closePayModal();renderAll();},1400);
+  } else {
+    msg.textContent='❌ Nu am găsit o plată. Dacă tocmai ai plătit, mai încearcă în 30 secunde.';
+    msg.style.color='#FCA5A5';
+  }
+}
+
+// ══════════════════════════════════════════════
+//  CHANGE PASSWORD
+// ══════════════════════════════════════════════
+async function changePassword(){
+  const p  = document.getElementById('cp-new')?.value?.trim()||'';
+  const p2 = document.getElementById('cp-new2')?.value?.trim()||'';
+  const err= document.getElementById('cp-err');
+  const ok = document.getElementById('cp-ok');
+  if(err)err.style.display='none';if(ok)ok.style.display='none';
+  if(!p||p.length<6){if(err){err.textContent='Parola trebuie să aibă minim 6 caractere.';err.style.display='block';}return;}
+  if(p!==p2){if(err){err.textContent='Parolele nu se potrivesc.';err.style.display='block';}return;}
+  if(!currentUser?.access_token){if(err){err.textContent='Sesiune expirată. Intră din nou în cont.';err.style.display='block';}return;}
+  try{
+    const res=await fetch(SB+'/auth/v1/user',{
+      method:'PUT',
+      headers:{'apikey':SK,'Authorization':'Bearer '+currentUser.access_token,'Content-Type':'application/json'},
+      body:JSON.stringify({password:p})
+    });
+    if(res.ok){
+      if(ok){ok.textContent='✅ Parola a fost schimbată cu succes!';ok.style.display='block';}
+      document.getElementById('cp-new').value='';
+      document.getElementById('cp-new2').value='';
+    }else{
+      const d=await res.json();
+      if(err){err.textContent='❌ '+(d.error_description||d.message||'Eroare.');err.style.display='block';}
+    }
+  }catch(e){if(err){err.textContent='❌ Eroare de conexiune.';err.style.display='block';}}
+}
+
+// ══════════════════════════════════════════════
+//  AUTO-SYNC WHEN TAB REGAINS FOCUS
+// ══════════════════════════════════════════════
+document.addEventListener('visibilitychange',async()=>{
+  if(document.visibilityState==='visible'&&currentUser){
+    await loadAccess();
+    renderAll();
+  }
+});
+
+// ══════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════
+document.addEventListener('DOMContentLoaded', checkAuth);
+</script>
+</body>
+</html>
