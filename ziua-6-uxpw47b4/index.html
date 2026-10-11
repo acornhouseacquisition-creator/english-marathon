@@ -1,0 +1,546 @@
+<!doctype html><html><head>
+<meta name="robots" content="noindex, nofollow"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ziua 6 · Recapitulare</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a lesson "stepper" — one step on screen at a time, sticky progress on top, fixed nav at the bottom; later steps stay locked until the current one is done */
+:root{
+  --bg:#FFF9FB; --surface:#FFFFFF; --soft:#F8E8EF; --soft-2:#FDF2F6;
+  --pink:#C63D6C; --pink-ink:#A52E58; --plum:#26152C; --muted:#6A5571; --line:#EFD9E3;
+  --sun:#F4C04B; --sun-soft:#FFF4D6; --sun-ink:#7A5500;
+  --ok:#2E8A5C; --ok-soft:#E3F4EA; --bad:#C2403A; --bad-soft:#FBE6E4;
+  --bubble-b:#C63D6C; --bubble-b-fg:#FFFFFF; --lock:#B9A6B4;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --r:18px; --nav-h:76px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1A1119; --surface:#251824; --soft:#3A2033; --soft-2:#2E1C2B;
+  --pink:#F07CA2; --pink-ink:#F59BB8; --plum:#F7EAF0; --muted:#C7B0C2; --line:#40283A;
+  --sun:#F4C04B; --sun-soft:#3A3018; --sun-ink:#F4C04B; --ok:#6FD3A0; --ok-soft:#1D3328; --bad:#F08C86; --bad-soft:#3D1F1D;
+  --bubble-b:#B73663; --bubble-b-fg:#FFFFFF; --lock:#6E5868; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#1A1119; --surface:#251824; --soft:#3A2033; --soft-2:#2E1C2B;
+  --pink:#F07CA2; --pink-ink:#F59BB8; --plum:#F7EAF0; --muted:#C7B0C2; --line:#40283A;
+  --sun:#F4C04B; --sun-soft:#3A3018; --sun-ink:#F4C04B; --ok:#6FD3A0; --ok-soft:#1D3328; --bad:#F08C86; --bad-soft:#3D1F1D;
+  --bubble-b:#B73663; --bubble-b-fg:#FFFFFF; --lock:#6E5868; color-scheme:dark;}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-bottom:calc(var(--nav-h) + 20px);scroll-padding-top:80px}
+body{background:var(--bg);color:var(--plum);font-family:var(--f-body);font-size:17px;line-height:1.55}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+/* Top progress */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:10px;display:flex;flex-direction:column;gap:8px}
+.top-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.brand{font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:18px;white-space:nowrap}
+.stepcount{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dots{display:flex;gap:4px}
+.dot{flex:1;height:8px;border-radius:99px;background:var(--line);border:0;padding:0;min-width:0}
+.dot.done{background:var(--pink)}
+.dot.cur{background:var(--sun)}
+.dot:disabled{cursor:default}
+
+/* Stage */
+main{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:22px calc(var(--nav-h) + 40px + env(safe-area-inset-bottom,0px))}
+.step{display:flex;flex-direction:column;gap:18px;animation:in .35s ease}
+@keyframes in{from{transform:translateY(8px)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.step{animation:none}}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pink)}
+.head{display:flex;flex-direction:column;gap:6px}
+.head h2{font-size:clamp(26px,6vw,34px);font-weight:800}
+.head p{color:var(--muted)}
+
+/* Bottom nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav-in{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:12px;display:flex;gap:10px;align-items:center}
+.nbtn{border:0;border-radius:14px;padding:14px 18px;font-weight:700;font-size:16px;min-height:52px}
+.back{background:var(--soft);color:var(--plum)}
+.next{flex:1;background:var(--pink);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px}
+.next:disabled{background:var(--soft);color:var(--muted);cursor:not-allowed}
+.next svg{width:18px;height:18px}
+
+/* Chips / misc */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--soft);font-weight:600;font-size:14px;padding:7px 14px;border-radius:999px}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--pink)}
+.chip.live i{background:#D9534F}
+.note{background:var(--sun-soft);border-radius:14px;padding:12px 16px;font-size:15px}
+.note b{color:var(--pink-ink)}
+.lockmsg{display:flex;gap:10px;align-items:center;font-size:14px;font-weight:600;color:var(--muted);background:var(--soft-2);border:1px dashed var(--line);border-radius:14px;padding:10px 14px}
+.lockmsg.ok{color:var(--ok);background:var(--ok-soft);border-color:transparent}
+.lockmsg svg{width:18px;height:18px;flex:none}
+
+/* Hero */
+.hero{background:var(--surface);border-radius:22px;border-bottom:4px solid var(--sun);padding:24px;display:flex;flex-direction:column;gap:12px}
+.day{font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:clamp(44px,12vw,64px);line-height:1}
+.date{color:var(--muted);font-weight:500;font-size:15px}
+.hero h1{font-size:clamp(28px,7vw,40px);font-weight:800}
+.hero .sub{color:var(--pink);font-weight:700;font-size:19px}
+.hero .lead{color:var(--muted)}
+.plan{display:grid;gap:8px;counter-reset:p;list-style:none;margin:0;padding:0}
+.plan li{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:600}
+.plan li span{font-size:13px;color:var(--muted);font-weight:500;margin-left:auto;white-space:nowrap}
+.plan li::before{counter-increment:p;content:counter(p);flex:none;width:28px;height:28px;border-radius:50%;background:var(--soft);color:var(--pink);font-family:var(--f-display);font-weight:800;display:grid;place-items:center;font-size:14px}
+
+/* Video + dialog */
+.vwrap{border-radius:var(--r);overflow:hidden;background:#000;aspect-ratio:16/9;max-width:100%}
+.vwrap video{width:100%;height:100%;display:block}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tbtn{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;font-weight:700;font-size:14px;display:inline-flex;gap:6px;align-items:center;min-height:44px}
+.tbtn[aria-pressed="true"]{background:var(--pink);border-color:var(--pink);color:#fff}
+.tbtn svg{width:16px;height:16px}
+.chat{display:flex;flex-direction:column;gap:10px}
+.line{display:flex;flex-direction:column;max-width:88%;gap:2px;border:0;background:none;padding:0;text-align:left}
+.line .who{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding-inline:6px}
+.line .bub{padding:10px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);transition:box-shadow .2s, transform .2s}
+.line .en{font-weight:600}
+.line .ro{display:none;font-size:15px;color:var(--muted);margin-top:4px;font-style:italic}
+.line.b{align-self:flex-end;align-items:flex-end}
+.line.b .bub{background:var(--bubble-b);color:var(--bubble-b-fg);border-color:transparent}
+.line.b .ro{color:#FBE2EB}
+.show-ro .ro{display:block}
+.line.now .bub{box-shadow:0 0 0 3px var(--sun);transform:scale(1.02)}
+.repeat-banner{position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:3;background:var(--sun);color:#3A2600;font-weight:800;border-radius:14px;padding:12px 16px;text-align:center;font-size:17px}
+.tip{font-size:14px;color:var(--muted)}
+
+/* Recap day cards */
+.days{display:flex;flex-direction:column;gap:10px}
+.daycard{background:var(--surface);border:2px solid var(--line);border-radius:var(--r);overflow:hidden}
+.daycard.seen{border-color:var(--pink)}
+.dayhead{width:100%;border:0;background:none;display:flex;align-items:center;gap:12px;padding:14px 16px;text-align:left;min-height:56px}
+.dnum{flex:none;font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:15px}
+.dt{flex:1;min-width:0;font-weight:700}
+.chev{flex:none;width:30px;height:30px;border-radius:50%;background:var(--soft);color:var(--pink);display:grid;place-items:center;font-weight:800}
+.dbody{display:flex;flex-direction:column;gap:8px;padding:0 16px 16px}
+.dbody:not([hidden]){display:flex}
+.dphrase{border:1px solid var(--line);background:var(--soft-2);border-radius:14px;padding:10px 14px;text-align:left;display:flex;flex-direction:column;gap:2px;min-height:48px}
+.dphrase .en{font-weight:700}
+.dphrase .ro{font-size:14px;color:var(--muted);font-style:italic}
+.dphrase.now{box-shadow:0 0 0 3px var(--sun)}
+.badge{font-family:var(--f-display);font-weight:800;font-size:19px;background:var(--sun-soft);border:2px solid var(--sun);border-radius:14px;padding:14px 16px;text-align:center}
+
+/* Audio player (dialogs without video) */
+.player{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
+.playall{border:0;border-radius:14px;background:var(--pink);color:#fff;font-weight:800;font-size:17px;min-height:56px;display:flex;align-items:center;justify-content:center;gap:10px}
+.playall svg{width:20px;height:20px}
+.playall[data-on="1"]{background:var(--plum);color:var(--bg)}
+.pbar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--sun);transition:width .3s}
+.card .phrase.price{font-size:34px;font-weight:800;color:var(--pink);font-variant-numeric:tabular-nums}
+
+/* Expression cards */
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;font-weight:700;font-size:14px;min-height:44px;display:inline-flex;gap:6px;align-items:center}
+.tab[aria-selected="true"]{background:var(--pink);border-color:var(--pink);color:#fff}
+.tab .ck{color:var(--ok);font-weight:800}
+.tab[aria-selected="true"] .ck{color:#fff}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:12px}
+.card{border:2px solid var(--line);background:var(--surface);border-radius:var(--r);padding:16px;text-align:left;min-height:140px;display:flex;flex-direction:column;gap:8px}
+.card .emo{font-size:26px;line-height:1}
+.card .phrase{font-family:var(--f-display);font-weight:600;font-size:20px;line-height:1.2}
+.card .tap{margin-top:auto;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pink)}
+.card .tr{display:none;font-family:var(--f-display);font-weight:600;font-size:19px;line-height:1.25}
+.card .ex{display:none;font-size:14px;font-style:italic;margin-top:auto;opacity:.92}
+.card.flipped{background:var(--pink);border-color:var(--pink);color:#fff}
+.card.flipped .phrase,.card.flipped .tap,.card.flipped .tag{display:none}
+.card.flipped .tr,.card.flipped .ex{display:block}
+.card.flip-anim{animation:flip .3s ease}
+@keyframes flip{0%{transform:scaleX(1)}50%{transform:scaleX(.05)}100%{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.card.flip-anim{animation:none}}
+.tag{align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--sun);color:#3A2600;padding:3px 9px;border-radius:6px}
+.card .seen{font-size:12px;font-weight:700;color:var(--ok)}
+
+/* Formula */
+.formula{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px}
+.formula h3{font-size:20px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.steps li{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start}
+.steps .n{width:32px;height:32px;border-radius:50%;background:var(--soft);color:var(--pink);font-weight:800;display:grid;place-items:center;font-family:var(--f-display);font-style:normal}
+.steps div>b{display:block}
+.steps span b{color:var(--plum)}
+.steps span{color:var(--muted);font-size:15px}
+
+/* Mistakes (tap to reveal) */
+.mist{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px}
+.m{border:2px solid var(--line);background:var(--surface);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.m .wrong{color:var(--bad);font-weight:700}
+.m.open .wrong{text-decoration:line-through;text-decoration-thickness:2px}
+.m .right,.m .why{display:none}
+.m.open .right{display:block;color:var(--ok);font-weight:800}
+.m.open .why{display:block;font-size:14px;color:var(--muted)}
+.m .hint{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pink)}
+.m.open .hint{display:none}
+.m.open{border-color:var(--ok)}
+.mark{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;font-size:12px;font-weight:800;margin-right:6px;vertical-align:1px}
+.mark.x{background:var(--bad-soft);color:var(--bad)}
+.mark.v{background:var(--ok-soft);color:var(--ok)}
+
+/* Exercises */
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:16px}
+.q{display:flex;flex-direction:column;gap:10px}
+.q .prompt{font-weight:700}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:2px solid var(--line);background:var(--bg);border-radius:14px;padding:12px 14px;text-align:left;font-weight:500;min-height:48px;width:100%}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--plum)}
+.opt.no{border-color:var(--bad);background:var(--bad-soft);color:var(--plum)}
+.opt:disabled{cursor:default}
+.score{font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:18px}
+.fill{line-height:2.3;font-size:17px}
+.gap{display:inline-block;min-width:74px;text-align:center;border-bottom:3px solid var(--line);padding-inline:6px;font-weight:700;line-height:1.4;border-radius:4px}
+.gap.active{border-color:var(--pink);background:var(--soft)}
+.gap.filled{border-color:var(--ok);color:var(--ok)}
+.bank{display:flex;flex-wrap:wrap;gap:8px}
+.word{border:2px solid var(--sun);background:var(--sun-soft);border-radius:12px;padding:10px 16px;font-weight:700;min-height:46px}
+.word.used{opacity:.35;pointer-events:none}
+.word.shake{animation:shake .35s;border-color:var(--bad);background:var(--bad-soft)}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.col-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pool,.built{display:flex;flex-direction:column;gap:8px}
+.built{background:var(--soft-2);border:2px dashed var(--line);border-radius:14px;padding:10px;min-height:64px;counter-reset:o}
+.built .opt{counter-increment:o;background:var(--surface)}
+.built .opt::before{content:counter(o) ". ";font-weight:800;color:var(--pink)}
+.built .empty{color:var(--muted);font-size:14px;padding:8px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sbtn{border:0;border-radius:12px;padding:10px 16px;font-weight:700;background:var(--soft);min-height:44px}
+.fb{font-weight:700}
+.fb.ok{color:var(--ok)} .fb.no{color:var(--bad)}
+
+/* Homework */
+.task{display:grid;grid-template-columns:auto 1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.task .big{font-family:var(--f-display);font-weight:800;font-size:32px;color:var(--pink);line-height:1;width:34px}
+.task h3{font-size:19px;margin-bottom:6px}
+.task p{color:var(--muted)}
+.task.bonus{background:var(--sun-soft);border-color:var(--sun)}
+.task.bonus .big{color:var(--sun-ink)}
+.template{margin-top:10px;background:var(--soft-2);border-radius:12px;padding:14px;line-height:2}
+.blank{display:inline-block;min-width:60px;border-bottom:2px solid var(--pink);line-height:1.3}
+.min0{min-width:0}
+
+/* Final */
+.check{background:var(--pink);color:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.check h2{font-size:28px}
+.check label{display:flex;gap:12px;align-items:flex-start;font-weight:600;cursor:pointer}
+.check input{width:24px;height:24px;accent-color:var(--sun);flex:none;margin-top:1px}
+.bar{height:10px;background:rgba(255,255,255,.25);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--sun);transition:width .3s}
+.confetti{font-size:54px;text-align:center;line-height:1}
+footer{text-align:center;color:var(--muted);font-size:14px}
+footer b{color:var(--pink)}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="top-row"><span class="brand">Ziua 6</span><span class="stepcount" id="stepcount"></span></div>
+    <div class="dots" id="dots"></div>
+  </div>
+</header>
+
+<main id="stage" aria-live="polite"></main>
+
+<nav class="nav" aria-label="Navigare lecție">
+  <div class="nav-in">
+    <button class="nbtn back" id="backBtn" type="button">Înapoi</button>
+    <button class="nbtn next" id="nextBtn" type="button"></button>
+  </div>
+</nav>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ICON={
+ play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
+ lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+ check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+ arrow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+ repeat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/></svg>',
+ tr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M5.5 5c1 3.5 3.5 6 6.5 7M10.5 5c-1 4-3.5 7-6.5 8"/><path d="M13 21l4-9 4 9M14.5 18h5"/></svg>'
+};
+
+/* ---------- audio for cards ---------- */
+let curAudio=null;
+function stopAudio(){if(curAudio){try{curAudio.pause()}catch(e){}curAudio=null}}
+function play(id){stopAudio();pauseVideos();const a=new Audio("audio/"+id+".mp3");curAudio=a;const p=a.play();if(p&&p.catch)p.catch(()=>{})}
+function pauseVideos(){document.querySelectorAll("video").forEach(v=>{try{v.pause()}catch(e){}})}
+
+/* ---------- content ---------- */
+const days=[
+ {n:1,t:"Conectare & Comunicare",e:"👋",p:[["Nice to meet you!","Încântat(ă) de cunoștință!"],["What about you?","Dar tu?"],["I'm calling about my appointment.","Vă sun în legătură cu programarea mea."]]},
+ {n:2,t:"La cumpărături",e:"🛍️",p:[["Where can I find the milk?","Unde găsesc laptele?"],["How much is this?","Cât costă asta?"],["Can I try it on?","Pot să-l probez?"]]},
+ {n:3,t:"Restaurant & bancă",e:"🍽️",p:[["Table for two, please.","O masă pentru doi, vă rog."],["Can I get the check, please?","Pot primi nota, vă rog?"],["I'd like to open an account.","Aș dori să deschid un cont."]]},
+ {n:4,t:"La doctor & urgențe",e:"🩺",p:[["I'd like to make an appointment.","Aș dori să fac o programare."],["I have a sore throat.","Mă doare gâtul."],["I need an ambulance!","Am nevoie de o ambulanță!"]]},
+ {n:5,t:"Transport & aeroport",e:"✈️",p:[["Does this bus go downtown?","Autobuzul acesta merge în centru?"],["A window seat, please.","Loc la geam, vă rog."],["The flight is delayed.","Zborul are întârziere."]]}
+];
+const places=[
+ ["„Do you need a bag?”",["La doctor","La casă, în magazin","La aeroport"],1],
+ ["„What brings you in today?”",["La doctor","La restaurant","În autobuz"],0],
+ ["„Window or aisle?”",["La bancă","La farmacie","La aeroport"],2],
+ ["„Table for two, please.”",["La restaurant","La bancă","În magazinul de haine"],0],
+ ["„I'd like to open an account.”",["La farmacie","La bancă","La supermarket"],1],
+ ["„911, what's your emergency?”",["Apel de urgență","La restaurant","În Uber"],0],
+ ["„Does this bus go downtown?”",["La aeroport","În autobuz","La bancă"],1],
+ ["„Can I take a message?”",["La casă","La doctor, în cabinet","La telefon"],2]
+];
+const answers=[
+ ["„How's it going?”",["I'm going home.","Good, thanks! And you?","Yes, it is."],1],
+ ["„Did you find everything okay?”",["Yes, thank you.","Yes, I found.","I'm fine, and you?"],0],
+ ["„Are you ready to order?”",["Yes, I ready.","Give me pasta.","Yes, I'd like the pasta, please."],2],
+ ["„When did it start?”",["Three days ago.","In three days.","It starts now."],0],
+ ["„Are you checking any bags?”",["I check, yes.","Yes, one suitcase.","My bag is red."],1],
+ ["„Cash or card?”",["Card, please.","Yes, card.","I have money."],0],
+ ["„What's your date of birth?”",["I'm 36.","In Moldova.","March 5th, 1990."],2],
+ ["„Is this seat taken?”",["No, it's free.","Yes, I take.","No, thank you."],0]
+];
+const fixes=[
+ ["Cum spui corect?",["I have 30 years.","I'm 30 years old."],1],
+ ["Cum spui corect?",["How much is this?","How much costs this?"],0],
+ ["Cum spui corect?",["Can I probe it?","Can I try it on?"],1],
+ ["Cum spui corect?",["Can I get the check, please?","Give me the bill."],0],
+ ["Cum spui corect?",["I have temperature.","I have a fever."],1],
+ ["Cum spui corect?",["I missed the bus.","I lost the bus."],0],
+ ["Cum spui corect?",["I am agree.","I agree."],1],
+ ["Cum spui corect?",["The doctor gave me a prescription.","The doctor gave me a recipe."],0]
+];
+const order=["Hi! Table for two, please.","Sure. Follow me, please.","Are you ready to order?","Yes, I'd like the pasta, please.","Everything was delicious! Can I get the check, please?","Here you go. Have a nice evening!"];
+const shuffled=[4,1,5,0,3,2];
+const fillParts=["Ana lives in the USA, and she speaks English every day. At the store she asks: “Where can I ",["find"]," the milk?” At the restaurant she says: “Can I get the ",["check"],", please?” At the doctor she says: “I have a sore ",["throat"],".” At the airport she asks for a ",["window"]," seat. At the bus stop she asks: “Does this bus go ",["downtown"],"?” And on the phone she says: “Hi, ",["this"]," is Ana!”"];
+const bank=["window","this","find","downtown","throat","check"];
+const speak=[
+ ["Încântată de cunoștință!","Nice to meet you!"],
+ ["Unde găsesc laptele?","Where can I find the milk?"],
+ ["Pot s-o probez?","Can I try it on?"],
+ ["Pot primi nota, vă rog?","Can I get the check, please?"],
+ ["Mă doare capul.","I have a headache."],
+ ["Am nevoie de o ambulanță!","I need an ambulance!"],
+ ["Autobuzul acesta merge în centru?","Does this bus go downtown?"],
+ ["Zborul are întârziere.","The flight is delayed."]
+];
+const test=[
+ ["receipt",["rețetă","bon","chitanță de chirie"],1],
+ ["prescription",["rețetă de la doctor","rețetă de mâncare","programare"],0],
+ ["aisle seat",["loc la geam","loc la culoar","loc în față"],1],
+ ["check (la restaurant)",["control","nota de plată","meniul"],1],
+ ["fitting room",["cabină de probă","sală de sport","cameră de hotel"],0],
+ ["insurance",["asigurare","instalare","inspecție"],0],
+ ["refund",["reducere","schimb","banii înapoi"],2],
+ ["fare",["prețul biletului","departe","corect"],0],
+ ["delayed",["anulat","întârziat","îmbarcat"],1],
+ ["appointment",["apartament","programare","aplicație"],1]
+];
+const goals=["Pot să mă prezint și să fac small talk","Pot să vorbesc la telefon și să las un mesaj","Pot să cumpăr, să plătesc și să returnez ceva","Pot să comand la restaurant și să deschid un cont","Pot să merg la doctor și să sun la 911","Pot să mă descurc în autobuz, în Uber și la aeroport","Am trimis prezentarea mea finală"];
+
+/* ---------- state ---------- */
+const KEY="eca-d6-v1";
+let st={cur:0,max:0,done:{},ans:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&typeof s.cur==="number")st=Object.assign(st,s)}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+
+/* ---------- steps ---------- */
+const STEPS=[
+ {k:"start",label:"Start"},
+ {k:"recap",label:"Ce am învățat"},
+ {k:"places",label:"Unde ești?"},
+ {k:"answers",label:"Ce răspunzi?"},
+ {k:"fixes",label:"Corect sau greșit"},
+ {k:"order",label:"Construiește dialogul"},
+ {k:"fill",label:"Povestea Anei"},
+ {k:"speak",label:"Spune-o în engleză"},
+ {k:"test",label:"Testul final"},
+ {k:"show",label:"Prezentarea ta"},
+ {k:"end",label:"Final"}
+];
+
+const NEXT_LABEL={start:"Începe lecția",end:"Maraton terminat"};
+const stage=$("#stage"),nextBtn=$("#nextBtn"),backBtn=$("#backBtn"),dots=$("#dots");
+let canNext=false,lockText="";
+
+function setReady(ok,text){
+  canNext=ok;lockText=text||"";
+  const s=STEPS[st.cur];
+  if(ok){st.done[st.cur]=1;save()}
+  nextBtn.disabled=!ok;
+  const label=NEXT_LABEL[s.k]||"Continuă";
+  nextBtn.innerHTML=ok?`<span>${label}</span>${s.k==="end"?"":ICON.arrow}`:`${ICON.lock}<span>${s.k==="end"?label:"Continuă"}</span>`;
+  const lm=stage.querySelector(".lockmsg");
+  if(lm){lm.className="lockmsg"+(ok?" ok":"");lm.innerHTML=(ok?ICON.check:ICON.lock)+`<span>${esc(ok?(lm.dataset.done||"Gata! Poți merge mai departe."):text)}</span>`}
+  renderDots();
+}
+function renderDots(){
+  dots.innerHTML=STEPS.map((s,i)=>`<button class="dot ${i===st.cur?"cur":(st.done[i]?"done":"")}" ${i<=st.max?"":"disabled"} aria-label="${esc(s.label)}${i>st.max?" (blocat)":""}" data-i="${i}"></button>`).join("");
+  $("#stepcount").textContent=`Pasul ${st.cur+1} din ${STEPS.length} · ${STEPS[st.cur].label}`;
+}
+dots.addEventListener("click",e=>{const b=e.target.closest(".dot");if(b&&!b.disabled)go(+b.dataset.i)});
+function go(i){
+  stopAudio();pauseVideos();
+  st.cur=Math.max(0,Math.min(STEPS.length-1,i));st.max=Math.max(st.max,st.cur);save();
+  backBtn.hidden=st.cur===0;
+  stage.innerHTML="";
+  const s=STEPS[st.cur];
+  RENDER[s.k](s);
+  try{window.scrollTo({top:0,behavior:"instant"})}catch(e){window.scrollTo(0,0)}
+}
+nextBtn.onclick=()=>{if(!canNext)return;if(st.cur<STEPS.length-1){st.max=Math.max(st.max,st.cur+1);go(st.cur+1)}};
+backBtn.onclick=()=>go(st.cur-1);
+function lockmsg(doneText){return `<div class="lockmsg" data-done="${esc(doneText||"")}"></div>`}
+function add(html){const d=document.createElement("section");d.className="step";d.innerHTML=html;stage.appendChild(d);return d}
+
+/* ---------- renderers ---------- */
+const RENDER={};
+
+/* generic multiple-choice step */
+function mcqStep({eyebrow,title,sub,key,qs,doneMsg,final}){
+  const el=add(`<div class="head"><span class="eyebrow">${eyebrow}</span><h2>${title}</h2><p>${sub}</p></div>
+  ${lockmsg(doneMsg)}
+  <div class="box"><div class="qs" style="display:flex;flex-direction:column;gap:22px"></div><div class="score"></div><div class="verdict"></div></div>`);
+  st.ans[key]=st.ans[key]||{};
+  const A=st.ans[key],host=el.querySelector(".qs"),score=el.querySelector(".score"),verdict=el.querySelector(".verdict");
+  qs.forEach((q,qi)=>{
+    const d=document.createElement("div");d.className="q";
+    d.innerHTML=`<div class="prompt">${qi+1}. ${esc(q[0])}</div><div class="opts">${q[1].map((o,oi)=>`<button type="button" class="opt" data-i="${oi}">${esc(o)}</button>`).join("")}</div>`;
+    const mark=pick=>{d.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok");if(+x.dataset.i===pick&&pick!==q[2])x.classList.add("no")})};
+    if(A[qi]!==undefined)mark(A[qi]);
+    d.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const p=+b.dataset.i;A[qi]=p;mark(p);upd()});
+    host.appendChild(d);
+  });
+  function upd(){save();const n=Object.keys(A).length,ok=Object.keys(A).filter(k=>A[k]===qs[k][2]).length;
+    score.textContent=`Scor: ${ok} / ${qs.length}`;
+    if(final&&n===qs.length){const pct=ok/qs.length;
+      verdict.innerHTML=`<div class="badge">${pct>=0.8?"🏆 Excelent! Ești gata pentru viața reală în America.":pct>=0.6?"⭐ Foarte bine! Mai repetă puțin cuvintele greșite.":"💪 Bun început! Repetă lecțiile și încearcă din nou."}</div>`}
+    if(n===qs.length)setReady(true);else setReady(false,`Răspunde la toate întrebările: ${n} din ${qs.length}.`)}
+  upd();
+}
+
+RENDER.start=()=>{
+  add(`<div class="hero">
+    <div><div class="day">Ziua 6</div><div class="date">sâmbătă, 17 octombrie</div></div>
+    <h1>Recapitulare</h1>
+    <div class="sub">Tot ce ai învățat, într-o singură lecție</div>
+    <p class="lead">Azi nu învățăm lucruri noi. Repetăm tot maratonul: frazele cele mai importante din fiecare zi, situații din viața reală, greșelile tipice și un test final. La sfârșit îți pregătești prezentarea pentru Zoom-ul de absolvire.</p>
+    <div class="chips"><span class="chip live"><i></i>LIVE · Zoom #3 — Finala &amp; certificate</span><span class="chip"><i></i>Nivel A2</span><span class="chip"><i></i>cca. 40 de minute</span></div>
+  </div>
+  <div class="head"><span class="eyebrow">Cum funcționează</span><h2>Lecția are 11 pași</h2><p>Treci prin ei pe rând. Pasul următor se deschide după ce îl termini pe cel de acum. Progresul tău se salvează pe acest telefon.</p></div>
+  <ol class="plan">
+    <li>Ce am învățat în 5 zile<span>pasul 2</span></li>
+    <li>6 exerciții de recapitulare<span>pașii 3–8</span></li>
+    <li>Testul final<span>pasul 9</span></li>
+    <li>Prezentarea ta pentru finală<span>pasul 10</span></li>
+  </ol>`);
+  setReady(true);
+};
+
+RENDER.recap=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Pasul 2 · Recapitulare</span><h2>Ce am învățat în 5 zile</h2><p>Deschide fiecare zi și apasă pe fiecare frază ca s-o auzi. Repet-o cu voce tare.</p></div>
+  ${lockmsg("Super! Ai recapitulat toate cele 5 zile.")}
+  <div class="days">${days.map((d,i)=>`<div class="daycard" data-i="${i}"><button type="button" class="dayhead" aria-expanded="false"><span class="dnum">Ziua ${d.n}</span><span class="dt">${d.e} ${esc(d.t)}</span><span class="chev" aria-hidden="true">＋</span></button>
+    <div class="dbody" hidden>${d.p.map((p,k)=>`<button type="button" class="dphrase" data-k="${k}"><span class="en">${esc(p[0])}</span><span class="ro">${esc(p[1])}</span></button>`).join("")}</div></div>`).join("")}</div>`);
+  st.ans.recap=st.ans.recap||{};
+  el.querySelectorAll(".daycard").forEach(c=>{
+    const i=+c.dataset.i,h=c.querySelector(".dayhead"),b=c.querySelector(".dbody");
+    const setOpen=o=>{b.hidden=!o;h.setAttribute("aria-expanded",o);c.classList.toggle("open",o);c.querySelector(".chev").textContent=o?"－":"＋"};
+    if(st.ans.recap[i])c.classList.add("seen");
+    h.onclick=()=>{setOpen(b.hidden);st.ans.recap[i]=1;c.classList.add("seen");check()};
+    c.querySelectorAll(".dphrase").forEach(p=>p.onclick=()=>{el.querySelectorAll(".dphrase.now").forEach(x=>x.classList.remove("now"));p.classList.add("now");play(`d6_s${i}_${p.dataset.k}`)});
+  });
+  function check(){save();const n=Object.keys(st.ans.recap).length;if(n>=days.length)setReady(true);else setReady(false,`Deschide toate zilele: ${n} din ${days.length}.`)}
+  check();
+};
+
+RENDER.places=()=>mcqStep({eyebrow:"Exercițiul 1 din 6",title:"Unde ești?",sub:"Citește fraza și ghicește unde o auzi.",key:"places",qs:places,doneMsg:"Bravo! Recunoști toate situațiile."});
+RENDER.answers=()=>mcqStep({eyebrow:"Exercițiul 2 din 6",title:"Ce răspunzi?",sub:"Întrebări din toate zilele. Alege răspunsul natural.",key:"answers",qs:answers,doneMsg:"Gata! Ai răspuns la toate."});
+RENDER.fixes=()=>mcqStep({eyebrow:"Exercițiul 3 din 6",title:"Corect sau greșit?",sub:"Greșelile tipice din toată săptămâna. Alege varianta corectă.",key:"fixes",qs:fixes,doneMsg:"Super! Nu mai faci aceste greșeli."});
+
+RENDER.order=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 4 din 6</span><h2>Construiește dialogul de la restaurant</h2><p>Apasă replicile în ordinea corectă. Dacă greșești, apasă pe replică din „Dialogul tău” ca s-o scoți.</p></div>
+  ${lockmsg("Perfect! Exact așa sună la restaurant.")}
+  <div class="box"><div class="col-label">Dialogul tău</div><div class="built"></div><div class="col-label">Replici amestecate</div><div class="pool"></div>
+  <div class="row"><button class="sbtn rst" type="button">De la capăt</button><span class="fb" aria-live="polite"></span></div></div>`);
+  const pool=el.querySelector(".pool"),built=el.querySelector(".built"),fb=el.querySelector(".fb");
+  let b=st.ans.order||[];
+  function draw(){
+    built.innerHTML=b.length?"":'<div class="empty">Apasă pe prima replică a dialogului…</div>';
+    b.forEach((i,p)=>{const x=document.createElement("button");x.type="button";x.className="opt";x.textContent=order[i];x.onclick=()=>{b.splice(p,1);st.ans.order=b;save();draw()};built.appendChild(x)});
+    pool.innerHTML="";
+    shuffled.filter(i=>!b.includes(i)).forEach(i=>{const x=document.createElement("button");x.type="button";x.className="opt";x.textContent=order[i];x.onclick=()=>{b.push(i);st.ans.order=b;save();draw()};pool.appendChild(x)});
+    if(b.length===order.length){
+      const nodes=built.querySelectorAll(".opt");let ok=0;b.forEach((v,p)=>{nodes[p].classList.add(v===p?"ok":"no");if(v===p)ok++});
+      if(ok===order.length){fb.textContent="Perfect!";fb.className="fb ok";setReady(true)}
+      else{fb.textContent=`${ok} din ${order.length} sunt la locul lor. Scoate replicile roșii și încearcă din nou.`;fb.className="fb no";if(!st.done[st.cur])setReady(false,"Pune toate replicile în ordinea corectă.")}
+    }else{fb.textContent="";if(!st.done[st.cur])setReady(false,`Pune toate replicile în ordine: ${b.length} din ${order.length}.`)}
+  }
+  el.querySelector(".rst").onclick=()=>{b=[];st.ans.order=b;save();draw()};
+  draw();
+};
+
+RENDER.fill=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 5 din 6</span><h2>Povestea Anei</h2><p>O zi din viața Anei, cu fraze din toate lecțiile. Spațiul roz e cel activ. Apasă cuvântul potrivit.</p></div>
+  ${lockmsg("Excelent! Povestea e completă.")}
+  <div class="box"><p class="fill"></p><div class="bank"></div><div class="row"><button class="sbtn rst" type="button">De la capăt</button><span class="fb" aria-live="polite"></span></div></div>`);
+  const fill=el.querySelector(".fill"),bk=el.querySelector(".bank"),fb=el.querySelector(".fb");
+  const ans=fillParts.filter(p=>typeof p!=="string").map(p=>p[0]);
+  let pos=st.ans.fill||0;
+  function draw(){
+    let n=0;
+    fill.innerHTML=fillParts.map(p=>{if(typeof p==="string")return esc(p);const i=n++;return `<span class="gap ${i<pos?"filled":(i===pos?"active":"")}">${i<pos?esc(ans[i]):"&nbsp;"}</span>`}).join("");
+    const used=ans.slice(0,pos);
+    bk.innerHTML=bank.map(w=>`<button type="button" class="word ${used.includes(w)?"used":""}">${esc(w)}</button>`).join("");
+    bk.querySelectorAll(".word").forEach(b=>b.onclick=()=>{
+      if(pos>=ans.length)return;
+      if(b.textContent===ans[pos]){pos++;st.ans.fill=pos;save();fb.textContent="";draw()}
+      else{b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake");fb.textContent="Nu se potrivește aici. Mai încearcă!";fb.className="fb no"}
+    });
+    if(pos>=ans.length){fb.textContent=`Perfect! ${ans.length} din ${ans.length}.`;fb.className="fb ok";setReady(true)}
+    else if(!st.done[st.cur])setReady(false,`Completează toate spațiile: ${pos} din ${ans.length}.`);
+  }
+  el.querySelector(".rst").onclick=()=>{pos=0;st.ans.fill=0;save();fb.textContent="";draw()};
+  draw();
+};
+
+RENDER.speak=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 6 din 6</span><h2>Spune-o în engleză</h2><p>Câte o frază din fiecare situație. Spune traducerea cu voce tare, apoi apasă pe card ca să verifici și să auzi pronunția.</p></div>
+  ${lockmsg("Bravo! Ai terminat toate exercițiile.")}
+  <div class="cards">${speak.map((r,k)=>`<button class="card" type="button" data-k="${k}"><span class="emo" aria-hidden="true">🇷🇴</span><span class="phrase">${esc(r[0])}</span><span class="tap">Apasă să verifici</span><span class="tr">${esc(r[1])}</span></button>`).join("")}</div>`);
+  st.ans.speak=st.ans.speak||{};
+  el.querySelectorAll(".card").forEach(c=>c.onclick=()=>{const f=c.classList.toggle("flipped");c.classList.remove("flip-anim");void c.offsetWidth;c.classList.add("flip-anim");if(f){play("d6_r"+c.dataset.k);st.ans.speak[c.dataset.k]=1;check()}});
+  function check(){save();const n=Object.keys(st.ans.speak).length;if(n>=speak.length)setReady(true);else setReady(false,`Verifică toate frazele: ${n} din ${speak.length}.`)}
+  check();
+};
+
+RENDER.test=()=>mcqStep({eyebrow:"Pasul 9 · Test",title:"Testul final: 10 cuvinte-cheie",sub:"Ce înseamnă în română? Fără grabă. Rezultatul îl vezi la final.",key:"test",qs:test,doneMsg:"Ai terminat testul final!",final:true});
+
+RENDER.show=()=>{
+  add(`<div class="head"><span class="eyebrow">Pasul 10 · Pentru finală</span><h2>Prezentarea ta la Zoom-ul de absolvire</h2><p>La finală, fiecare spune cam un minut în engleză despre ce a învățat. Pregătește-te de acum.</p></div>
+  <div class="task"><div class="big">1</div><div class="min0"><h3>Scrie-ți prezentarea</h3><p>Completează modelul cu informații despre tine.</p>
+    <div class="template">Hi everyone! My name is <span class="blank">&nbsp;</span>. I'm from <span class="blank">&nbsp;</span>.<br>This week I learned how to <span class="blank">&nbsp;</span> and <span class="blank">&nbsp;</span>.<br>My favorite day was Day <span class="blank">&nbsp;</span> because <span class="blank">&nbsp;</span>.<br>Now I can <span class="blank">&nbsp;</span> in English!<br>Thank you!</div></div></div>
+  <div class="task"><div class="big">2</div><div class="min0"><h3>Exersează și trimite</h3><p>Citește prezentarea de 3 ori cu voce tare. Apoi înregistreaz-o (audio sau video) și trimite-o în grupul de Telegram înainte de finală.</p></div></div>
+  <div class="task bonus"><div class="big">★</div><div class="min0"><h3>Sfaturi pentru finală</h3><p>Vorbește rar și zâmbește. Dacă uiți un cuvânt, e în regulă: spune „Sorry, let me start again.” Toți suntem aici ca să învățăm!</p></div></div>`);
+  setReady(true);
+};
+
+RENDER.end=()=>{
+  const el=add(`<div class="confetti" aria-hidden="true">🎓</div>
+  <div class="head" style="text-align:center"><h2>Felicitări! Ai terminat maratonul!</h2><p>În 6 zile ai învățat să te descurci în cele mai importante situații din viața în America. Ești gata pentru finală!</p></div>
+  <section class="check" aria-label="Ce pot face după maraton"><h2>Ce pot face acum în engleză</h2><div class="bar"><i></i></div><div class="gl" style="display:flex;flex-direction:column;gap:12px"></div></section>
+  <div class="note"><b>Certificatul</b> îl primești la Zoom-ul final. Vrei să continui? Întreab-o pe Felicia despre ediția următoare.</div>
+  <div class="row" style="justify-content:center"><button class="sbtn again" type="button">Reia lecția de la început</button></div>
+  <footer>Real Life English · <b>English Crush Academy</b> · @englishcrushacademy</footer>`);
+  st.ans.goals=st.ans.goals||{};
+  const gl=el.querySelector(".gl"),bar=el.querySelector(".bar i");
+  goals.forEach((g,i)=>{const l=document.createElement("label");l.innerHTML=`<input type="checkbox" id="goal${i}" ${st.ans.goals[i]?"checked":""}><span>${esc(g)}</span>`;gl.appendChild(l)});
+  const upd=()=>{gl.querySelectorAll("input").forEach((c,i)=>{if(c.checked)st.ans.goals[i]=1;else delete st.ans.goals[i]});save();bar.style.width=(Object.keys(st.ans.goals).length/goals.length*100)+"%"};
+  gl.addEventListener("change",upd);upd();
+  el.querySelector(".again").onclick=()=>go(0);
+  setReady(true);nextBtn.disabled=true;nextBtn.innerHTML=ICON.check+"<span>Maraton terminat</span>";
+};
+
+go(st.cur);
+})();
+</script>
+
+</body></html>
