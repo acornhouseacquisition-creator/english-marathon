@@ -1,0 +1,680 @@
+<!doctype html><html><head>
+<meta name="robots" content="noindex, nofollow"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ziua 3 · Restaurant & bancă</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a lesson "stepper" — one step on screen at a time, sticky progress on top, fixed nav at the bottom; later steps stay locked until the current one is done */
+:root{
+  --bg:#FFF9FB; --surface:#FFFFFF; --soft:#F8E8EF; --soft-2:#FDF2F6;
+  --pink:#C63D6C; --pink-ink:#A52E58; --plum:#26152C; --muted:#6A5571; --line:#EFD9E3;
+  --sun:#F4C04B; --sun-soft:#FFF4D6; --sun-ink:#7A5500;
+  --ok:#2E8A5C; --ok-soft:#E3F4EA; --bad:#C2403A; --bad-soft:#FBE6E4;
+  --bubble-b:#C63D6C; --bubble-b-fg:#FFFFFF; --lock:#B9A6B4;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --r:18px; --nav-h:76px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1A1119; --surface:#251824; --soft:#3A2033; --soft-2:#2E1C2B;
+  --pink:#F07CA2; --pink-ink:#F59BB8; --plum:#F7EAF0; --muted:#C7B0C2; --line:#40283A;
+  --sun:#F4C04B; --sun-soft:#3A3018; --sun-ink:#F4C04B; --ok:#6FD3A0; --ok-soft:#1D3328; --bad:#F08C86; --bad-soft:#3D1F1D;
+  --bubble-b:#B73663; --bubble-b-fg:#FFFFFF; --lock:#6E5868; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#1A1119; --surface:#251824; --soft:#3A2033; --soft-2:#2E1C2B;
+  --pink:#F07CA2; --pink-ink:#F59BB8; --plum:#F7EAF0; --muted:#C7B0C2; --line:#40283A;
+  --sun:#F4C04B; --sun-soft:#3A3018; --sun-ink:#F4C04B; --ok:#6FD3A0; --ok-soft:#1D3328; --bad:#F08C86; --bad-soft:#3D1F1D;
+  --bubble-b:#B73663; --bubble-b-fg:#FFFFFF; --lock:#6E5868; color-scheme:dark;}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-bottom:calc(var(--nav-h) + 20px);scroll-padding-top:80px}
+body{background:var(--bg);color:var(--plum);font-family:var(--f-body);font-size:17px;line-height:1.55}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+/* Top progress */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:10px;display:flex;flex-direction:column;gap:8px}
+.top-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.brand{font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:18px;white-space:nowrap}
+.stepcount{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dots{display:flex;gap:4px}
+.dot{flex:1;height:8px;border-radius:99px;background:var(--line);border:0;padding:0;min-width:0}
+.dot.done{background:var(--pink)}
+.dot.cur{background:var(--sun)}
+.dot:disabled{cursor:default}
+
+/* Stage */
+main{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:22px calc(var(--nav-h) + 40px + env(safe-area-inset-bottom,0px))}
+.step{display:flex;flex-direction:column;gap:18px;animation:in .35s ease}
+@keyframes in{from{transform:translateY(8px)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.step{animation:none}}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pink)}
+.head{display:flex;flex-direction:column;gap:6px}
+.head h2{font-size:clamp(26px,6vw,34px);font-weight:800}
+.head p{color:var(--muted)}
+
+/* Bottom nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav-in{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:12px;display:flex;gap:10px;align-items:center}
+.nbtn{border:0;border-radius:14px;padding:14px 18px;font-weight:700;font-size:16px;min-height:52px}
+.back{background:var(--soft);color:var(--plum)}
+.next{flex:1;background:var(--pink);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px}
+.next:disabled{background:var(--soft);color:var(--muted);cursor:not-allowed}
+.next svg{width:18px;height:18px}
+
+/* Chips / misc */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--soft);font-weight:600;font-size:14px;padding:7px 14px;border-radius:999px}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--pink)}
+.chip.live i{background:#D9534F}
+.note{background:var(--sun-soft);border-radius:14px;padding:12px 16px;font-size:15px}
+.note b{color:var(--pink-ink)}
+.lockmsg{display:flex;gap:10px;align-items:center;font-size:14px;font-weight:600;color:var(--muted);background:var(--soft-2);border:1px dashed var(--line);border-radius:14px;padding:10px 14px}
+.lockmsg.ok{color:var(--ok);background:var(--ok-soft);border-color:transparent}
+.lockmsg svg{width:18px;height:18px;flex:none}
+
+/* Hero */
+.hero{background:var(--surface);border-radius:22px;border-bottom:4px solid var(--sun);padding:24px;display:flex;flex-direction:column;gap:12px}
+.day{font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:clamp(44px,12vw,64px);line-height:1}
+.date{color:var(--muted);font-weight:500;font-size:15px}
+.hero h1{font-size:clamp(28px,7vw,40px);font-weight:800}
+.hero .sub{color:var(--pink);font-weight:700;font-size:19px}
+.hero .lead{color:var(--muted)}
+.plan{display:grid;gap:8px;counter-reset:p;list-style:none;margin:0;padding:0}
+.plan li{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:600}
+.plan li span{font-size:13px;color:var(--muted);font-weight:500;margin-left:auto;white-space:nowrap}
+.plan li::before{counter-increment:p;content:counter(p);flex:none;width:28px;height:28px;border-radius:50%;background:var(--soft);color:var(--pink);font-family:var(--f-display);font-weight:800;display:grid;place-items:center;font-size:14px}
+
+/* Video + dialog */
+.vwrap{border-radius:var(--r);overflow:hidden;background:#000;aspect-ratio:16/9;max-width:100%}
+.vwrap video{width:100%;height:100%;display:block}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tbtn{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;font-weight:700;font-size:14px;display:inline-flex;gap:6px;align-items:center;min-height:44px}
+.tbtn[aria-pressed="true"]{background:var(--pink);border-color:var(--pink);color:#fff}
+.tbtn svg{width:16px;height:16px}
+.chat{display:flex;flex-direction:column;gap:10px}
+.line{display:flex;flex-direction:column;max-width:88%;gap:2px;border:0;background:none;padding:0;text-align:left}
+.line .who{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding-inline:6px}
+.line .bub{padding:10px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);transition:box-shadow .2s, transform .2s}
+.line .en{font-weight:600}
+.line .ro{display:none;font-size:15px;color:var(--muted);margin-top:4px;font-style:italic}
+.line.b{align-self:flex-end;align-items:flex-end}
+.line.b .bub{background:var(--bubble-b);color:var(--bubble-b-fg);border-color:transparent}
+.line.b .ro{color:#FBE2EB}
+.show-ro .ro{display:block}
+.line.now .bub{box-shadow:0 0 0 3px var(--sun);transform:scale(1.02)}
+.repeat-banner{position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:3;background:var(--sun);color:#3A2600;font-weight:800;border-radius:14px;padding:12px 16px;text-align:center;font-size:17px}
+.tip{font-size:14px;color:var(--muted)}
+
+/* Audio player (dialogs without video) */
+.player{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
+.playall{border:0;border-radius:14px;background:var(--pink);color:#fff;font-weight:800;font-size:17px;min-height:56px;display:flex;align-items:center;justify-content:center;gap:10px}
+.playall svg{width:20px;height:20px}
+.playall[data-on="1"]{background:var(--plum);color:var(--bg)}
+.pbar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--sun);transition:width .3s}
+.card .phrase.price{font-size:34px;font-weight:800;color:var(--pink);font-variant-numeric:tabular-nums}
+
+/* Expression cards */
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;font-weight:700;font-size:14px;min-height:44px;display:inline-flex;gap:6px;align-items:center}
+.tab[aria-selected="true"]{background:var(--pink);border-color:var(--pink);color:#fff}
+.tab .ck{color:var(--ok);font-weight:800}
+.tab[aria-selected="true"] .ck{color:#fff}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:12px}
+.card{border:2px solid var(--line);background:var(--surface);border-radius:var(--r);padding:16px;text-align:left;min-height:140px;display:flex;flex-direction:column;gap:8px}
+.card .emo{font-size:26px;line-height:1}
+.card .phrase{font-family:var(--f-display);font-weight:600;font-size:20px;line-height:1.2}
+.card .tap{margin-top:auto;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pink)}
+.card .tr{display:none;font-family:var(--f-display);font-weight:600;font-size:19px;line-height:1.25}
+.card .ex{display:none;font-size:14px;font-style:italic;margin-top:auto;opacity:.92}
+.card.flipped{background:var(--pink);border-color:var(--pink);color:#fff}
+.card.flipped .phrase,.card.flipped .tap,.card.flipped .tag{display:none}
+.card.flipped .tr,.card.flipped .ex{display:block}
+.card.flip-anim{animation:flip .3s ease}
+@keyframes flip{0%{transform:scaleX(1)}50%{transform:scaleX(.05)}100%{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.card.flip-anim{animation:none}}
+.tag{align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--sun);color:#3A2600;padding:3px 9px;border-radius:6px}
+.card .seen{font-size:12px;font-weight:700;color:var(--ok)}
+
+/* Formula */
+.formula{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px}
+.formula h3{font-size:20px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.steps li{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start}
+.steps .n{width:32px;height:32px;border-radius:50%;background:var(--soft);color:var(--pink);font-weight:800;display:grid;place-items:center;font-family:var(--f-display);font-style:normal}
+.steps div>b{display:block}
+.steps span b{color:var(--plum)}
+.steps span{color:var(--muted);font-size:15px}
+
+/* Mistakes (tap to reveal) */
+.mist{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px}
+.m{border:2px solid var(--line);background:var(--surface);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.m .wrong{color:var(--bad);font-weight:700}
+.m.open .wrong{text-decoration:line-through;text-decoration-thickness:2px}
+.m .right,.m .why{display:none}
+.m.open .right{display:block;color:var(--ok);font-weight:800}
+.m.open .why{display:block;font-size:14px;color:var(--muted)}
+.m .hint{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pink)}
+.m.open .hint{display:none}
+.m.open{border-color:var(--ok)}
+.mark{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;font-size:12px;font-weight:800;margin-right:6px;vertical-align:1px}
+.mark.x{background:var(--bad-soft);color:var(--bad)}
+.mark.v{background:var(--ok-soft);color:var(--ok)}
+
+/* Exercises */
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:16px}
+.q{display:flex;flex-direction:column;gap:10px}
+.q .prompt{font-weight:700}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:2px solid var(--line);background:var(--bg);border-radius:14px;padding:12px 14px;text-align:left;font-weight:500;min-height:48px;width:100%}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--plum)}
+.opt.no{border-color:var(--bad);background:var(--bad-soft);color:var(--plum)}
+.opt:disabled{cursor:default}
+.score{font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:18px}
+.fill{line-height:2.3;font-size:17px}
+.gap{display:inline-block;min-width:74px;text-align:center;border-bottom:3px solid var(--line);padding-inline:6px;font-weight:700;line-height:1.4;border-radius:4px}
+.gap.active{border-color:var(--pink);background:var(--soft)}
+.gap.filled{border-color:var(--ok);color:var(--ok)}
+.bank{display:flex;flex-wrap:wrap;gap:8px}
+.word{border:2px solid var(--sun);background:var(--sun-soft);border-radius:12px;padding:10px 16px;font-weight:700;min-height:46px}
+.word.used{opacity:.35;pointer-events:none}
+.word.shake{animation:shake .35s;border-color:var(--bad);background:var(--bad-soft)}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.col-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pool,.built{display:flex;flex-direction:column;gap:8px}
+.built{background:var(--soft-2);border:2px dashed var(--line);border-radius:14px;padding:10px;min-height:64px;counter-reset:o}
+.built .opt{counter-increment:o;background:var(--surface)}
+.built .opt::before{content:counter(o) ". ";font-weight:800;color:var(--pink)}
+.built .empty{color:var(--muted);font-size:14px;padding:8px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sbtn{border:0;border-radius:12px;padding:10px 16px;font-weight:700;background:var(--soft);min-height:44px}
+.fb{font-weight:700}
+.fb.ok{color:var(--ok)} .fb.no{color:var(--bad)}
+
+/* Homework */
+.task{display:grid;grid-template-columns:auto 1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.task .big{font-family:var(--f-display);font-weight:800;font-size:32px;color:var(--pink);line-height:1;width:34px}
+.task h3{font-size:19px;margin-bottom:6px}
+.task p{color:var(--muted)}
+.task.bonus{background:var(--sun-soft);border-color:var(--sun)}
+.task.bonus .big{color:var(--sun-ink)}
+.template{margin-top:10px;background:var(--soft-2);border-radius:12px;padding:14px;line-height:2}
+.blank{display:inline-block;min-width:60px;border-bottom:2px solid var(--pink);line-height:1.3}
+.min0{min-width:0}
+
+/* Final */
+.check{background:var(--pink);color:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.check h2{font-size:28px}
+.check label{display:flex;gap:12px;align-items:flex-start;font-weight:600;cursor:pointer}
+.check input{width:24px;height:24px;accent-color:var(--sun);flex:none;margin-top:1px}
+.bar{height:10px;background:rgba(255,255,255,.25);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--sun);transition:width .3s}
+.confetti{font-size:54px;text-align:center;line-height:1}
+footer{text-align:center;color:var(--muted);font-size:14px}
+footer b{color:var(--pink)}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="top-row"><span class="brand">Ziua 3</span><span class="stepcount" id="stepcount"></span></div>
+    <div class="dots" id="dots"></div>
+  </div>
+</header>
+
+<main id="stage" aria-live="polite"></main>
+
+<nav class="nav" aria-label="Navigare lecție">
+  <div class="nav-in">
+    <button class="nbtn back" id="backBtn" type="button">Înapoi</button>
+    <button class="nbtn next" id="nextBtn" type="button"></button>
+  </div>
+</nav>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ICON={
+ play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
+ lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+ check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+ arrow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+ repeat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/></svg>',
+ tr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M5.5 5c1 3.5 3.5 6 6.5 7M10.5 5c-1 4-3.5 7-6.5 8"/><path d="M13 21l4-9 4 9M14.5 18h5"/></svg>'
+};
+
+/* ---------- audio for cards ---------- */
+let curAudio=null;
+function stopAudio(){if(curAudio){try{curAudio.pause()}catch(e){}curAudio=null}}
+function play(id){stopAudio();pauseVideos();const a=new Audio("audio/"+id+".mp3");curAudio=a;const p=a.play();if(p&&p.catch)p.catch(()=>{})}
+function pauseVideos(){document.querySelectorAll("video").forEach(v=>{try{v.pause()}catch(e){}})}
+
+/* ---------- content ---------- */
+const dialogs=[
+ {t:"La restaurant",video:1,end:21.0,times:[0.1, 3.4, 6.4, 9.9, 11.6, 15.4, 16.4, 19.6],w:"Ana și o prietenă intră într-un restaurant",lines:[
+  ["Hostess","a","Hi, welcome! Do you have a reservation?","Bună, bine ați venit! Aveți rezervare?"],
+  ["Ana","b","No, we don't. Do you have a table for two?","Nu, nu avem. Aveți o masă pentru două persoane?"],
+  ["Hostess","a","Yes, we do. Would you like to sit inside or outside?","Da, avem. Vreți să stați înăuntru sau afară?"],
+  ["Ana","b","Inside, please.","Înăuntru, vă rog."],
+  ["Hostess","a","Great. Follow me, please. Here's your table.","Super. Urmați-mă, vă rog. Aceasta e masa dumneavoastră."],
+  ["Ana","b","Thank you!","Mulțumesc!"],
+  ["Hostess","a","Here are your menus. Your server will be right with you.","Poftiți meniurile. Ospătarul vine imediat."],
+  ["Ana","b","Thanks!","Mersi!"]
+ ],note:"<b>Bine de știut:</b> În SUA nu te așezi singur la masă. Aștepți la intrare, iar hostess-ul te duce la masă."},
+ {t:"Comanda",video:1,end:24.1,times:[0.0, 4.4, 7.1, 8.9, 11.1, 13.0, 17.6, 19.9, 21.9],w:"Ospătarul vine la masă",lines:[
+  ["Ospătar","a","Hi, I'm Jake. I'll be your server today. Can I get you something to drink?","Bună, eu sunt Jake. Eu vă servesc azi. Vă pot aduce ceva de băut?"],
+  ["Ana","b","Yes, can I have a glass of water, please?","Da, pot primi un pahar cu apă, vă rog?"],
+  ["Ospătar","a","Sure. Are you ready to order?","Sigur. Sunteți gata să comandați?"],
+  ["Ana","b","Yes. What do you recommend?","Da. Ce îmi recomandați?"],
+  ["Ospătar","a","The chicken salad is really good.","Salata cu pui e foarte bună."],
+  ["Ana","b","Okay, I'd like the chicken salad, please. Can I get it without onions?","Bine, aș dori salata cu pui, vă rog. Se poate fără ceapă?"],
+  ["Ospătar","a","No problem. Anything else?","Nicio problemă. Altceva?"],
+  ["Ana","b","No, that's all. Thank you.","Nu, asta e tot. Mulțumesc."],
+  ["Ospătar","a","Great. I'll be right back with your water.","Super. Revin imediat cu apa."]
+ ],note:"<b>Truc:</b> „I'd like…” și „Can I have…?” sunt cele mai politicoase moduri de a comanda. Evită „I want…”, sună prea direct."},
+ {t:"Nota de plată",video:1,end:18.1,times:[0.1, 1.1, 3.9, 5.4, 8.4, 10.9, 13.6, 15.4],w:"Ana termină de mâncat",lines:[
+  ["Ospătar","a","How is everything?","Cum e totul?"],
+  ["Ana","b","Everything is delicious, thank you!","Totul e delicios, mulțumesc!"],
+  ["Ospătar","a","Would you like some dessert?","Doriți un desert?"],
+  ["Ana","b","No, thank you. Can I get the check, please?","Nu, mulțumesc. Pot primi nota, vă rog?"],
+  ["Ospătar","a","Sure. Do you need a box for the rest?","Sigur. Aveți nevoie de o cutie pentru restul?"],
+  ["Ana","b","Yes, please. Can I pay by card?","Da, vă rog. Pot plăti cu cardul?"],
+  ["Ospătar","a","Of course. Here's your check.","Desigur. Poftiți nota."],
+  ["Ana","b","Thank you. Have a nice evening!","Mulțumesc. O seară frumoasă!"]
+ ],note:"<b>Atenție:</b> Americanii spun <b>check</b> pentru notă. Iar mâncarea rămasă o iei acasă într-o cutie: „Can I get a box?” E absolut normal."},
+ {t:"La bancă",video:1,end:27.3,times:[0.0, 2.9, 5.9, 9.4, 11.4, 13.4, 15.4, 18.4, 21.6, 24.4],w:"Ana deschide un cont",lines:[
+  ["Funcționară","a","Good morning! How can I help you today?","Bună dimineața! Cu ce vă pot ajuta azi?"],
+  ["Ana","b","Hi, I'd like to open a checking account, please.","Bună, aș dori să deschid un cont curent, vă rog."],
+  ["Funcționară","a","Sure. Can I see your ID, please?","Sigur. Pot vedea actul de identitate, vă rog?"],
+  ["Ana","b","Yes, here it is.","Da, poftiți."],
+  ["Funcționară","a","Thank you. What's your address?","Mulțumesc. Care e adresa dumneavoastră?"],
+  ["Ana","b","It's 25 Oak Street.","Este 25 Oak Street."],
+  ["Funcționară","a","Great. Would you like a debit card too?","Super. Doriți și un card de debit?"],
+  ["Ana","b","Yes, please. When will I get it?","Da, vă rog. Când îl primesc?"],
+  ["Funcționară","a","Your card will arrive in 7 to 10 days.","Cardul ajunge în 7–10 zile."],
+  ["Ana","b","Perfect. Thank you for your help!","Perfect. Mulțumesc pentru ajutor!"]
+ ],note:"<b>Reține:</b> <b>checking account</b> = contul pentru plăți zilnice. <b>savings account</b> = contul de economii."}
+];
+const groups=[
+ {n:"La intrare",items:[
+  ["🪑","Table for two, please.","O masă pentru doi, vă rog.","Hi! Table for two, please.","Super util"],
+  ["📋","Do you have a reservation?","Aveți rezervare?","— Do you have a reservation? — No, we don't."],
+  ["⏳","How long is the wait?","Cât trebuie să așteptăm?","Excuse me, how long is the wait?"],
+  ["🌤️","Inside or outside?","Înăuntru sau afară?","— Inside or outside? — Outside, please."],
+  ["🪟","Can we sit by the window?","Putem sta lângă geam?","Can we sit by the window, please?"],
+  ["🧑‍🍳","Your server will be right with you.","Ospătarul vine imediat.","Here are your menus. Your server will be right with you."]
+ ]},
+ {n:"Comanda",items:[
+  ["📖","Can I see the menu, please?","Pot vedea meniul, vă rog?","Hi! Can I see the menu, please?"],
+  ["✍️","Are you ready to order?","Sunteți gata să comandați?","— Are you ready to order? — Yes, we are."],
+  ["🍝","I'd like the pasta, please.","Aș dori pastele, vă rog.","I'd like the pasta and a salad, please.","Politicos"],
+  ["🥤","Can I have a glass of water?","Pot primi un pahar cu apă?","Can I have a glass of water, please?"],
+  ["⭐","What do you recommend?","Ce îmi recomandați?","What do you recommend? Everything looks good!"],
+  ["🧅","Can I get it without onions?","Se poate fără ceapă?","Can I get the burger without onions?"],
+  ["🥜","I'm allergic to nuts.","Sunt alergic(ă) la nuci.","I'm allergic to nuts. Are there nuts in this?","Important"]
+ ]},
+ {n:"Nota",items:[
+  ["🧾","Can I get the check, please?","Pot primi nota, vă rog?","Excuse me, can I get the check, please?","Super util"],
+  ["➗","Can we split the check?","Putem plăti separat?","Can we split the check, please?"],
+  ["📦","Can I get a box?","Pot primi o cutie? (pentru rest)","This is too much food. Can I get a box?","Foarte american"],
+  ["💵","Is the tip included?","Bacșișul e inclus?","Excuse me, is the tip included?"],
+  ["😋","Everything was delicious!","Totul a fost delicios!","Thank you! Everything was delicious!"],
+  ["🪙","Keep the change.","Păstrați restul.","Here you go. Keep the change!"]
+ ]},
+ {n:"La bancă",items:[
+  ["🏦","I'd like to open an account.","Aș dori să deschid un cont.","Hi, I'd like to open an account, please."],
+  ["💳","checking account","cont curent","I have a checking account at Bank of America."],
+  ["🐷","savings account","cont de economii","I want to open a savings account."],
+  ["🪪","Can I see your ID?","Pot vedea actul de identitate?","— Can I see your ID? — Sure, here it is."],
+  ["⬇️","I'd like to deposit money.","Aș dori să depun bani.","I'd like to deposit two hundred dollars."],
+  ["⬆️","I'd like to withdraw money.","Aș dori să retrag bani.","I'd like to withdraw fifty dollars, please."],
+  ["📊","What's my balance?","Cât am în cont?","Excuse me, what's my balance?"]
+ ]},
+ {n:"Card & ATM",items:[
+  ["🏧","Where is the nearest ATM?","Unde e cel mai apropiat bancomat?","Excuse me, where is the nearest ATM?"],
+  ["🔢","Enter your PIN.","Introduceți codul PIN.","Please enter your PIN."],
+  ["⚠️","My card doesn't work.","Cardul meu nu merge.","Hi, my card doesn't work. Can you help me?"],
+  ["😟","I lost my card.","Mi-am pierdut cardul.","I lost my card. What should I do?"],
+  ["💳","I'd like a debit card.","Aș dori un card de debit.","I'd like a debit card for my checking account."]
+ ]}
+];
+const mistakes=[
+ ["Give me the bill.","Can I get the check, please?","„Give me” sună ca un ordin. În SUA nota e „the check”."],
+ ["I want a soup.","I'd like the soup, please.","„I'd like” e mult mai politicos decât „I want”."],
+ ["Bring me the menu.","Can I see the menu, please?","Cere, nu ordona: „Can I…, please?”"],
+ ["I'm allergic on nuts.","I'm allergic to nuts.","După „allergic” vine mereu „to”."],
+ ["It was very delicious.","It was delicious!","„Delicious” e deja foarte puternic. Nu are nevoie de „very”."],
+ ["I want to make an account.","I'd like to open an account.","Un cont se deschide: „open an account”."],
+ ["card of credit","credit card","În engleză, descrierea stă înainte: credit card, debit card."],
+ ["How much is in my account?","What's my balance?","La bancă și la bancomat se spune „balance”."]
+];
+const mcq=[
+ ["„How many people?”",["Two, please.","We are many.","Two persons."],0],
+ ["„Are you ready to order?”",["Yes, I ready.","Give me salad.","Yes, I'd like the salad, please."],2],
+ ["„Can I get you something to drink?”",["A glass of water, please.","I drink water.","Yes, you can."],0],
+ ["„How is everything?”",["Everything is everything.","Everything is great, thanks!","I am good food."],1],
+ ["„Can I see your ID?”",["Yes, you see.","My ID is good.","Yes, here it is."],2],
+ ["„Do you need a box?”",["Yes, please. Thank you.","No box me.","Yes, I like box."],0]
+];
+const fillTitle="Completează conversația din restaurant";
+const fillParts=["Hi! Can I ",["see"]," the menu, please? … I'd ",["like"]," the chicken salad. Can I ",["get"]," it without onions? … Everything was ",["delicious"],"! Can I get the ",["check"],", please? Can I pay by ",["card"],"?"];
+const bank=["check","get","card","see","delicious","like"];
+const orderTitle="Pune conversația de la bancă în ordine";
+const order=["Good morning! How can I help you?","Hi, I'd like to open a savings account.","Sure. Can I see your ID, please?","Yes, here it is.","Thank you. Would you like a debit card too?","No, thank you. Just the account."];
+const shuffled=[4,1,5,0,3,2];
+const rev=[
+ ["O masă pentru doi, vă rog.","Table for two, please.",""],
+ ["Ce îmi recomandați?","What do you recommend?",""],
+ ["Pot primi nota, vă rog?","Can I get the check, please?","„Check”, nu „bill”."],
+ ["Sunt alergică la nuci.","I'm allergic to nuts.","„Allergic to”!"],
+ ["Aș dori să deschid un cont.","I'd like to open an account.",""],
+ ["Aș dori să retrag 100 de dolari.","I'd like to withdraw a hundred dollars.","Sau: take out a hundred dollars."]
+];
+const goals=["Pot să cer o masă la restaurant","Pot să comand mâncare și băutură politicos","Pot să spun că am o alergie","Pot să cer nota și o cutie pentru rest","Știu cât bacșiș se lasă în SUA","Pot să deschid un cont la bancă","Am trimis tema pentru Ziua 3"];
+
+/* ---------- state ---------- */
+const KEY="eca-d3-v1";
+let st={cur:0,max:0,done:{},ans:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&typeof s.cur==="number")st=Object.assign(st,s)}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+
+/* ---------- steps ---------- */
+const STEPS=[
+ {k:"start",label:"Start"},
+ {k:"dlg",i:0,label:"Dialogul 1"},{k:"dlg",i:1,label:"Dialogul 2"},{k:"dlg",i:2,label:"Dialogul 3"},{k:"dlg",i:3,label:"Dialogul 4"},
+ {k:"expr",label:"Expresii"},{k:"recipe",label:"Restaurant & bancă în SUA"},{k:"mist",label:"Greșeli tipice"},
+ {k:"ex1",label:"Exercițiul 1"},{k:"ex2",label:"Exercițiul 2"},{k:"ex3",label:"Exercițiul 3"},{k:"ex4",label:"Exercițiul 4"},
+ {k:"hw",label:"Tema"},{k:"end",label:"Final"}
+];
+
+const NEXT_LABEL={start:"Începe lecția",end:"Lecție terminată"};
+const stage=$("#stage"),nextBtn=$("#nextBtn"),backBtn=$("#backBtn"),dots=$("#dots");
+let canNext=false,lockText="";
+
+function setReady(ok,text){
+  canNext=ok;lockText=text||"";
+  const s=STEPS[st.cur];
+  if(ok){st.done[st.cur]=1;save()}
+  nextBtn.disabled=!ok;
+  const label=NEXT_LABEL[s.k]||"Continuă";
+  nextBtn.innerHTML=ok?`<span>${label}</span>${s.k==="end"?"":ICON.arrow}`:`${ICON.lock}<span>${s.k==="end"?label:"Continuă"}</span>`;
+  const lm=stage.querySelector(".lockmsg");
+  if(lm){lm.className="lockmsg"+(ok?" ok":"");lm.innerHTML=(ok?ICON.check:ICON.lock)+`<span>${esc(ok?(lm.dataset.done||"Gata! Poți merge mai departe."):text)}</span>`}
+  renderDots();
+}
+function renderDots(){
+  dots.innerHTML=STEPS.map((s,i)=>`<button class="dot ${i===st.cur?"cur":(st.done[i]?"done":"")}" ${i<=st.max?"":"disabled"} aria-label="${esc(s.label)}${i>st.max?" (blocat)":""}" data-i="${i}"></button>`).join("");
+  $("#stepcount").textContent=`Pasul ${st.cur+1} din ${STEPS.length} · ${STEPS[st.cur].label}`;
+}
+dots.addEventListener("click",e=>{const b=e.target.closest(".dot");if(b&&!b.disabled)go(+b.dataset.i)});
+function go(i){
+  stopAudio();pauseVideos();
+  st.cur=Math.max(0,Math.min(STEPS.length-1,i));st.max=Math.max(st.max,st.cur);save();
+  backBtn.hidden=st.cur===0;
+  stage.innerHTML="";
+  const s=STEPS[st.cur];
+  RENDER[s.k](s);
+  try{window.scrollTo({top:0,behavior:"instant"})}catch(e){window.scrollTo(0,0)}
+}
+nextBtn.onclick=()=>{if(!canNext)return;if(st.cur<STEPS.length-1){st.max=Math.max(st.max,st.cur+1);go(st.cur+1)}};
+backBtn.onclick=()=>go(st.cur-1);
+function lockmsg(doneText){return `<div class="lockmsg" data-done="${esc(doneText||"")}"></div>`}
+function add(html){const d=document.createElement("section");d.className="step";d.innerHTML=html;stage.appendChild(d);return d}
+
+/* ---------- renderers ---------- */
+const RENDER={};
+
+RENDER.expr=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Pasul 6 · Vocabular</span><h2>Expresii pentru restaurant și bancă</h2><p>Citește expresia, ghicește traducerea, apoi apasă pe card ca să-l întorci și să auzi pronunția. Deschide toate cele 5 categorii.</p></div>
+  ${lockmsg("Super! Ai văzut toate categoriile.")}
+  <div class="tabs" role="tablist"></div><div class="cards"></div>`);
+  const tabs=el.querySelector(".tabs"),cards=el.querySelector(".cards");
+  st.ans.tabs=st.ans.tabs||{};
+  function check(){const n=Object.keys(st.ans.tabs).length;save();
+    if(n>=groups.length)setReady(true);else setReady(false,`Deschide toate categoriile: ${n} din ${groups.length}.`)}
+  function show(gi){
+    st.ans.tabs[gi]=1;
+    tabs.innerHTML=groups.map((g,i)=>`<button class="tab" role="tab" type="button" aria-selected="${i===gi}" data-i="${i}">${st.ans.tabs[i]&&i!==gi?'<span class="ck">✓</span>':""}${esc(g.n)} · ${g.items.length}</button>`).join("");
+    cards.innerHTML=groups[gi].items.map((it,k)=>`<button class="card" type="button" data-k="${k}"><span class="emo" aria-hidden="true">${it[0]}</span>${it[4]?`<span class="tag">${esc(it[4])}</span>`:""}<span class="phrase">${esc(it[1])}</span><span class="tap">Apasă · ascultă</span><span class="tr">${esc(it[2])}</span><span class="ex">${esc(it[3])}</span></button>`).join("");
+    cards.querySelectorAll(".card").forEach(c=>c.onclick=()=>{const f=c.classList.toggle("flipped");c.classList.remove("flip-anim");void c.offsetWidth;c.classList.add("flip-anim");if(f)play(`d3_g${gi}_${c.dataset.k}`)});
+    check();
+  }
+  tabs.addEventListener("click",e=>{const t=e.target.closest(".tab");if(t){show(+t.dataset.i);t.scrollIntoView({inline:"nearest",block:"nearest"})}});
+  show(0);
+};
+
+RENDER.mist=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Pasul 8 · Atenție</span><h2>Greșeli tipice ale vorbitorilor de română</h2><p>Când traducem din română cuvânt cu cuvânt, iese ciudat. Ghicește varianta corectă, apoi apasă pe fiecare card ca s-o vezi.</p></div>
+  ${lockmsg("Bravo! Acum știi cum spun americanii.")}
+  <div class="mist">${mistakes.map((m,k)=>`<button type="button" class="m" data-k="${k}"><span><span class="mark x">✕</span><span class="wrong">${esc(m[0])}</span></span><span class="hint">Apasă · vezi corect</span><span class="right"><span class="mark v">✓</span>${esc(m[1])}</span><span class="why">${esc(m[2])}</span></button>`).join("")}</div>`);
+  st.ans.mist=st.ans.mist||{};
+  const cards=[...el.querySelectorAll(".m")];
+  cards.forEach(c=>{if(st.ans.mist[c.dataset.k])c.classList.add("open");c.onclick=()=>{c.classList.add("open");st.ans.mist[c.dataset.k]=1;check()}});
+  function check(){save();const n=Object.keys(st.ans.mist).length;if(n>=mistakes.length)setReady(true);else setReady(false,`Deschide toate cardurile: ${n} din ${mistakes.length}.`)}
+  check();
+};
+
+RENDER.ex1=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 1 din 4</span><h2>Alege răspunsul potrivit</h2><p>Ce răspunzi când auzi…?</p></div>
+  ${lockmsg("Gata! Ai răspuns la toate întrebările.")}
+  <div class="box"><div class="qs" style="display:flex;flex-direction:column;gap:22px"></div><div class="score"></div></div>`);
+  st.ans.ex1=st.ans.ex1||{};
+  const host=el.querySelector(".qs"),score=el.querySelector(".score");
+  mcq.forEach((q,qi)=>{
+    const d=document.createElement("div");d.className="q";
+    d.innerHTML=`<div class="prompt">${qi+1}. ${esc(q[0])}</div><div class="opts">${q[1].map((o,oi)=>`<button type="button" class="opt" data-i="${oi}">${esc(o)}</button>`).join("")}</div>`;
+    const mark=pick=>{d.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok");if(+x.dataset.i===pick&&pick!==q[2])x.classList.add("no")})};
+    if(st.ans.ex1[qi]!==undefined)mark(st.ans.ex1[qi]);
+    d.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const p=+b.dataset.i;st.ans.ex1[qi]=p;mark(p);upd()});
+    host.appendChild(d);
+  });
+  function upd(){save();const a=st.ans.ex1,n=Object.keys(a).length,ok=Object.keys(a).filter(k=>a[k]===mcq[k][2]).length;
+    score.textContent=`Scor: ${ok} / ${mcq.length}`+(n===mcq.length?(ok===mcq.length?" · Perfect!":" · Bravo!"):"");
+    if(n===mcq.length)setReady(true);else setReady(false,`Răspunde la toate întrebările: ${n} din ${mcq.length}.`)}
+  upd();
+};
+
+RENDER.ex2=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 2 din 4</span><h2>${esc(fillTitle)}</h2><p>Spațiul roz e cel activ. Apasă cuvântul potrivit de mai jos.</p></div>
+  ${lockmsg("Excelent! Conversația e completă.")}
+  <div class="box"><p class="fill"></p><div class="bank"></div><div class="row"><button class="sbtn rst" type="button">De la capăt</button><span class="fb" aria-live="polite"></span></div></div>`);
+  const fill=el.querySelector(".fill"),bk=el.querySelector(".bank"),fb=el.querySelector(".fb");
+  const answers=fillParts.filter(p=>typeof p!=="string").map(p=>p[0]);
+  let pos=st.ans.ex2||0;
+  function draw(){
+    let n=0;
+    fill.innerHTML=fillParts.map(p=>{if(typeof p==="string")return esc(p);const i=n++;return `<span class="gap ${i<pos?"filled":(i===pos?"active":"")}">${i<pos?esc(answers[i]):"&nbsp;"}</span>`}).join("");
+    const used=answers.slice(0,pos);
+    bk.innerHTML=bank.map(w=>`<button type="button" class="word ${used.includes(w)?"used":""}">${esc(w)}</button>`).join("");
+    bk.querySelectorAll(".word").forEach(b=>b.onclick=()=>{
+      if(pos>=answers.length)return;
+      if(b.textContent===answers[pos]){pos++;st.ans.ex2=pos;save();fb.textContent="";draw()}
+      else{b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake");fb.textContent="Nu se potrivește aici. Mai încearcă!";fb.className="fb no"}
+    });
+    if(pos>=answers.length){fb.textContent="Perfect! 6 din 6.";fb.className="fb ok";setReady(true)}
+    else if(!st.done[st.cur])setReady(false,`Completează toate spațiile: ${pos} din ${answers.length}.`);
+  }
+  el.querySelector(".rst").onclick=()=>{pos=0;st.ans.ex2=0;save();fb.textContent="";draw()};
+  draw();
+};
+
+RENDER.ex3=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 3 din 4</span><h2>${esc(orderTitle)}</h2><p>Apasă replicile în ordinea corectă. Dacă greșești, apasă pe replică din „Conversația ta” ca s-o scoți.</p></div>
+  ${lockmsg("Perfect! Exact așa sună la bancă.")}
+  <div class="box"><div class="col-label">Conversația ta</div><div class="built"></div><div class="col-label">Replici amestecate</div><div class="pool"></div>
+  <div class="row"><button class="sbtn rst" type="button">De la capăt</button><span class="fb" aria-live="polite"></span></div></div>`);
+  const pool=el.querySelector(".pool"),built=el.querySelector(".built"),fb=el.querySelector(".fb");
+  let b=st.ans.ex3||[];
+  function draw(){
+    built.innerHTML=b.length?"":'<div class="empty">Apasă pe prima replică a conversației…</div>';
+    b.forEach((i,p)=>{const x=document.createElement("button");x.type="button";x.className="opt";x.textContent=order[i];x.onclick=()=>{b.splice(p,1);st.ans.ex3=b;save();draw()};built.appendChild(x)});
+    pool.innerHTML="";
+    shuffled.filter(i=>!b.includes(i)).forEach(i=>{const x=document.createElement("button");x.type="button";x.className="opt";x.textContent=order[i];x.onclick=()=>{b.push(i);st.ans.ex3=b;save();draw()};pool.appendChild(x)});
+    if(b.length===order.length){
+      const nodes=built.querySelectorAll(".opt");let ok=0;b.forEach((v,p)=>{nodes[p].classList.add(v===p?"ok":"no");if(v===p)ok++});
+      if(ok===order.length){fb.textContent="Perfect!";fb.className="fb ok";setReady(true)}
+      else{fb.textContent=`${ok} din ${order.length} sunt la locul lor. Scoate replicile roșii și încearcă din nou.`;fb.className="fb no";if(!st.done[st.cur])setReady(false,"Pune toate replicile în ordinea corectă.")}
+    }else{fb.textContent="";if(!st.done[st.cur])setReady(false,`Pune toate replicile în ordine: ${b.length} din ${order.length}.`)}
+  }
+  el.querySelector(".rst").onclick=()=>{b=[];st.ans.ex3=b;save();draw()};
+  draw();
+};
+
+RENDER.dlg=s=>{
+  const d=dialogs[s.i],hasVideo=!!d.video;
+  const el=add(`<div class="head"><span class="eyebrow">Dialogul ${s.i+1} din 4</span><h2>${esc(d.t)}</h2><p>${esc(d.w)}</p></div>
+  ${hasVideo?`<div class="vwrap"><video controls playsinline preload="metadata" poster="video/d3_poster${s.i}.jpg" src="video/d3_v${s.i}.mp4"></video></div>`
+  :`<div class="player"><button class="playall" type="button">${ICON.play}<span>Ascultă tot dialogul</span></button><div class="pbar"><i></i></div></div>`}
+  ${lockmsg(hasVideo?"Bravo! Ai văzut tot dialogul.":"Bravo! Ai ascultat tot dialogul.")}
+  <div class="tools">
+    <button class="tbtn trb" aria-pressed="false" type="button">${ICON.tr}<span>Traducere</span></button>
+    <button class="tbtn rpt" aria-pressed="false" type="button">${ICON.repeat}<span>Repetă după mine</span></button>
+  </div>
+  <p class="tip">Apasă pe o replică ca s-o auzi din nou. În modul „Repetă după mine”, ${hasVideo?"videoul":"dialogul"} face pauză după fiecare replică, iar tu o repeți cu voce tare.</p>
+  <div class="banner-slot"></div>
+  <div class="chat">${d.lines.map((l,k)=>`<button type="button" class="line ${l[1]}" data-k="${k}"><span class="who">${esc(l[0])}</span><span class="bub"><span class="en">${esc(l[2])}</span><span class="ro">${esc(l[3])}</span></span></button>`).join("")}</div>
+  <div class="note">${d.note}</div>`);
+  const chat=el.querySelector(".chat"),lines=[...chat.querySelectorAll(".line")];
+  const trb=el.querySelector(".trb"),rpt=el.querySelector(".rpt"),slot=el.querySelector(".banner-slot");
+  trb.onclick=()=>{const on=chat.classList.toggle("show-ro");trb.setAttribute("aria-pressed",on)};
+  if(hasVideo){videoMode(el,d,lines,chat,rpt,slot);return}
+  if(st.done[st.cur])setReady(true);else setReady(false,"Ascultă tot dialogul ca să mergi mai departe.");
+  function hi(k){lines.forEach((n,j)=>n.classList.toggle("now",j===k));if(k>=0){const r=lines[k].getBoundingClientRect();if(r.top<90||r.bottom>innerHeight-100)lines[k].scrollIntoView({block:"center",behavior:"smooth"})}}
+  function banner(t){slot.innerHTML=t?`<div class="repeat-banner">${t}</div>`:""}
+  let repeat=false,run=0,waitT=null;
+  const heard=new Set(st.ans["h"+s.i]||[]);
+  const bar=el.querySelector(".pbar i"),pa=el.querySelector(".playall");
+  function mark(k){heard.add(k);st.ans["h"+s.i]=[...heard];save();if(bar)bar.style.width=(heard.size/d.lines.length*100)+"%";if(heard.size>=d.lines.length&&!canNext)setReady(true)}
+  if(bar)bar.style.width=(heard.size/d.lines.length*100)+"%";
+  function stop(){run++;clearInterval(waitT);banner("");stopAudio();hi(-1);if(pa)pa.querySelector("span").textContent="Ascultă tot dialogul"}
+  function sayLine(k,cb){
+    stopAudio();const a=new Audio(`audio/d3_d${s.i}_${k}.mp3`);curAudio=a;hi(k);
+    let fired=false;const done=()=>{if(fired)return;fired=true;mark(k);cb&&cb()};
+    a.onended=done;a.onerror=done;const p=a.play();if(p&&p.catch)p.catch(done);
+  }
+  function seq(k,token){
+    if(token!==run||k>=d.lines.length){if(token===run)stop();return}
+    sayLine(k,()=>{
+      if(token!==run)return;
+      if(repeat){let left=Math.max(3,Math.ceil(d.lines[k][2].split(" ").length*0.6));banner(`🎤 Repetă acum cu voce tare! ${left}`);
+        clearInterval(waitT);waitT=setInterval(()=>{if(token!==run){clearInterval(waitT);return}left--;if(left<=0){clearInterval(waitT);banner("");seq(k+1,token)}else banner(`🎤 Repetă acum cu voce tare! ${left}`)},1000)}
+      else setTimeout(()=>seq(k+1,token),350);
+    });
+  }
+  if(pa)pa.onclick=()=>{const playing=pa.dataset.on==="1";stop();pa.dataset.on=playing?"0":"1";if(playing)return;pa.querySelector("span").textContent="Stop";seq(0,run)};
+  lines.forEach((n,k)=>n.onclick=()=>{stop();if(pa)pa.dataset.on="0";if(repeat){if(pa){pa.dataset.on="1";pa.querySelector("span").textContent="Stop"}seq(k,run)}else sayLine(k,()=>hi(-1))});
+  rpt.onclick=()=>{repeat=!repeat;rpt.setAttribute("aria-pressed",repeat);stop();if(pa)pa.dataset.on="0";
+    if(repeat){if(pa){pa.dataset.on="1";pa.querySelector("span").textContent="Stop"}seq(0,run)}};
+};
+
+RENDER.start=()=>{
+  add(`<div class="hero">
+    <div><div class="day">Ziua 3</div><div class="date">miercuri, 14 octombrie</div></div>
+    <h1>Restaurant &amp; bancă</h1>
+    <div class="sub">Comanzi, plătești, deschizi un cont</div>
+    <p class="lead">Azi învățăm să cerem o masă, să comandăm politicos, să cerem nota și o cutie pentru mâncarea rămasă. Apoi mergem la bancă: deschidem un cont și cerem un card. Plus: cât bacșiș lași în America.</p>
+    <div class="chips"><span class="chip"><i></i>Nivel A2</span><span class="chip"><i></i>cca. 40 de minute</span></div>
+  </div>
+  <div class="head"><span class="eyebrow">Cum funcționează</span><h2>Lecția are 14 pași</h2><p>Treci prin ei pe rând. Pasul următor se deschide după ce îl termini pe cel de acum. Progresul tău se salvează pe acest telefon.</p></div>
+  <ol class="plan">
+    <li>4 dialoguri: restaurant și bancă<span>pașii 2–5</span></li>
+    <li>Expresii pe carduri<span>pasul 6</span></li>
+    <li>Restaurant &amp; bancă în SUA<span>pasul 7</span></li>
+    <li>Greșeli tipice<span>pasul 8</span></li>
+    <li>4 exerciții<span>pașii 9–12</span></li>
+    <li>Tema pentru acasă<span>pasul 13</span></li>
+  </ol>`);
+  setReady(true);
+};
+
+function videoMode(el,d,lines,chat,rpt,slot){
+  const v=el.querySelector("video");
+  if(st.done[st.cur])setReady(true);else setReady(false,"Privește videoul până la final ca să mergi mai departe.");
+  let watched=0,lastT=0,repeat=false,stopAt=null,waitT=null,hold=null;
+  const startOf=k=>d.times[k],endOf=k=>k+1<d.times.length?d.times[k+1]:d.end;
+  const idxAt=t=>{let r=-1;d.times.forEach((x,k)=>{if(t>=x-0.05)r=k});return r};
+  function hi(k){lines.forEach((n,j)=>n.classList.toggle("now",j===k))}
+  function banner(t){slot.innerHTML=t?`<div class="repeat-banner">${t}</div>`:""}
+  v.addEventListener("timeupdate",()=>{
+    const t=v.currentTime;
+    if(t>lastT&&t-lastT<1.5)watched+=t-lastT; lastT=t;
+    hi(v.paused&&hold!==null?hold:idxAt(t));
+    if(!canNext&&v.duration&&watched>=v.duration*0.85)setReady(true);
+    if(stopAt!==null&&t>=stopAt){
+      const done=stopAt;stopAt=null;v.pause();hold=idxAt(done-0.1);hi(hold);
+      if(repeat){const k2=idxAt(done-0.1);let left=Math.max(3,Math.min(7,Math.ceil((endOf(k2)-startOf(k2))*1.3)));
+        banner(`🎤 Repetă acum cu voce tare! ${left}`);clearInterval(waitT);
+        waitT=setInterval(()=>{left--;if(left<=0){clearInterval(waitT);banner("");if(repeat&&k2+1<d.times.length){stopAt=endOf(k2+1);v.play().catch(()=>{})}}else banner(`🎤 Repetă acum cu voce tare! ${left}`)},1000)}
+    }
+  });
+  v.addEventListener("seeked",()=>{lastT=v.currentTime});
+  v.addEventListener("ended",()=>{setReady(true);hi(-1);banner("")});
+  v.addEventListener("error",()=>{if(!canNext)setReady(true)});
+  v.addEventListener("play",()=>{hold=null;stopAudio();if(repeat&&stopAt===null){stopAt=endOf(Math.max(0,idxAt(v.currentTime)))}});
+  lines.forEach((n,k)=>n.onclick=()=>{clearInterval(waitT);banner("");v.currentTime=startOf(k);stopAt=endOf(k);v.play().catch(()=>{})});
+  rpt.onclick=()=>{repeat=!repeat;rpt.setAttribute("aria-pressed",repeat);clearInterval(waitT);banner("");
+    if(repeat){const k=Math.max(0,idxAt(v.currentTime));v.currentTime=startOf(k);stopAt=endOf(k);v.play().catch(()=>{})}else stopAt=null};
+}
+
+RENDER.recipe=()=>{
+  add(`<div class="head"><span class="eyebrow">Pasul 7 · Viața în America</span><h2>Restaurant &amp; bancă în SUA: ce trebuie să știi</h2><p>Reguli nescrise pe care americanii le știu, dar nimeni nu ți le spune.</p></div>
+  <div class="formula"><h3>Bacșișul (tip)</h3><ol class="steps">
+    <li><i class="n">1</i><div><b>Se lasă 15–20% din notă</b><span>Ospătarii trăiesc din bacșiș, salariul lor e foarte mic. Fără bacșiș e considerat nepoliticos.</span></div></li>
+    <li><i class="n">2</i><div><b>Cum îl calculezi repede</b><span>Nota e $40 → 10% e $4 → dublezi → <b>$8</b> (20%).</span></div></li>
+    <li><i class="n">3</i><div><b>Pe nota de card</b><span>Scrii suma la rândul <b>Tip</b>, apoi totalul și semnezi.</span></div></li></ol></div>
+  <div class="formula"><h3>3 lucruri care te surprind la restaurant</h3><ol class="steps">
+    <li><i class="n">1</i><div><b>Apa e gratis</b><span>Apa de la robinet, cu gheață, e gratuită. Spui doar „Water, please.”</span></div></li>
+    <li><i class="n">2</i><div><b>Refill gratuit</b><span>La suc sau cafea primești adesea al doilea pahar gratis (<b>free refill</b>).</span></div></li>
+    <li><i class="n">3</i><div><b>Iei mâncarea acasă</b><span>E normal să ceri o cutie: „Can I get a box?”</span></div></li></ol></div>
+  <div class="formula"><h3>La bancă</h3><ol class="steps">
+    <li><i class="n">1</i><div><b>Checking vs. savings</b><span><b>Checking</b> e pentru plăți zilnice. <b>Savings</b> e pentru economii.</span></div></li>
+    <li><i class="n">2</i><div><b>Debit vs. credit</b><span><b>Debit card</b> ia banii din contul tău. <b>Credit card</b> înseamnă bani împrumutați de la bancă.</span></div></li>
+    <li><i class="n">3</i><div><b>Atenție la ATM</b><span>Dacă scoți bani de la bancomatul altei bănci, plătești un comision (<b>fee</b>).</span></div></li></ol></div>`);
+  setReady(true);
+};
+
+RENDER.ex4=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 4 din 4</span><h2>Spune-o în engleză</h2><p>Spune cu voce tare traducerea, apoi apasă pe card ca să verifici și să auzi pronunția corectă.</p></div>
+  ${lockmsg("Bravo! Ai terminat toate exercițiile.")}
+  <div class="cards">${rev.map((r,k)=>`<button class="card" type="button" data-k="${k}"><span class="emo" aria-hidden="true">🇷🇴</span><span class="phrase">${esc(r[0])}</span><span class="tap">Apasă să verifici</span><span class="tr">${esc(r[1])}</span>${r[2]?`<span class="ex">${esc(r[2])}</span>`:""}</button>`).join("")}</div>`);
+  st.ans.ex4=st.ans.ex4||{};
+  el.querySelectorAll(".card").forEach(c=>c.onclick=()=>{const f=c.classList.toggle("flipped");c.classList.remove("flip-anim");void c.offsetWidth;c.classList.add("flip-anim");if(f){play("d3_r"+c.dataset.k);st.ans.ex4[c.dataset.k]=1;check()}});
+  function check(){save();const n=Object.keys(st.ans.ex4).length;if(n>=rev.length)setReady(true);else setReady(false,`Verifică toate frazele: ${n} din ${rev.length}.`)}
+  check();
+};
+
+RENDER.hw=()=>{
+  add(`<div class="head"><span class="eyebrow">Pasul 13 · Pentru acasă</span><h2>Tema pentru Ziua 3</h2><p>Trimite tema până mâine, înainte de lecția Zilei 4. Primești feedback personal de la Felicia.</p></div>
+  <div class="task"><div class="big">1</div><div class="min0"><h3>Comanda ta (scris)</h3><p>Alege un restaurant preferat și scrie ce comanzi, ca în model.</p>
+    <div class="template">Hi! Table for <span class="blank">&nbsp;</span>, please.<br>Can I have <span class="blank">&nbsp;</span> to drink?<br>I'd like the <span class="blank">&nbsp;</span>, please.<br>Can I get it without <span class="blank">&nbsp;</span>?<br>Can I get the check, please?</div></div></div>
+  <div class="task"><div class="big">2</div><div class="min0"><h3>La bancă (audio, 20–30 de secunde)</h3><p>Înregistrează-te jucând rolul clientului: spui că vrei să deschizi un cont, dai actul de identitate și ceri un card de debit. Folosește dialogul 4 ca model.</p></div></div>
+  <div class="task"><div class="big">3</div><div class="min0"><h3>Calculează bacșișul (scris)</h3><p>Calculează 20% bacșiș și scrie răspunsul în engleză, ca în model: <b>„The check is $40. The tip is $8.”</b><br>Notele tale: <b>$30 · $50 · $25</b></p></div></div>
+  <div class="task bonus"><div class="big">★</div><div class="min0"><h3>Provocare bonus: comandă în engleză</h3><p>Data viitoare când ești la o cafenea sau la un restaurant, comandă în engleză și cere nota cu „Can I get the check, please?”. Scrie-ne cum a fost!</p></div></div>`);
+  setReady(true);
+};
+
+RENDER.end=()=>{
+  const el=add(`<div class="confetti" aria-hidden="true">🍽️</div>
+  <div class="head" style="text-align:center"><h2>Felicitări! Ai terminat Ziua 3</h2><p>Bifează ce poți face acum. Ne vedem mâine la Ziua 4!</p></div>
+  <section class="check" aria-label="Ce pot face după Ziua 3"><h2>Ce pot face după Ziua 3</h2><div class="bar"><i></i></div><div class="gl" style="display:flex;flex-direction:column;gap:12px"></div></section>
+  <div class="row" style="justify-content:center"><button class="sbtn again" type="button">Reia lecția de la început</button></div>
+  <footer>Real Life English · <b>English Crush Academy</b> · @englishcrushacademy</footer>`);
+  st.ans.goals=st.ans.goals||{};
+  const gl=el.querySelector(".gl"),bar=el.querySelector(".bar i");
+  goals.forEach((g,i)=>{const l=document.createElement("label");l.innerHTML=`<input type="checkbox" id="goal${i}" ${st.ans.goals[i]?"checked":""}><span>${esc(g)}</span>`;gl.appendChild(l)});
+  const upd=()=>{gl.querySelectorAll("input").forEach((c,i)=>{if(c.checked)st.ans.goals[i]=1;else delete st.ans.goals[i]});save();bar.style.width=(Object.keys(st.ans.goals).length/goals.length*100)+"%"};
+  gl.addEventListener("change",upd);upd();
+  el.querySelector(".again").onclick=()=>go(0);
+  setReady(true);nextBtn.disabled=true;nextBtn.innerHTML=ICON.check+"<span>Lecție terminată</span>";
+};
+
+go(st.cur);
+})();
+</script>
+
+</body></html>

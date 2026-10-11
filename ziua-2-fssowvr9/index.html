@@ -1,0 +1,686 @@
+<!doctype html><html><head>
+<meta name="robots" content="noindex, nofollow"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ziua 2 · La cumpărături</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a lesson "stepper" — one step on screen at a time, sticky progress on top, fixed nav at the bottom; later steps stay locked until the current one is done */
+:root{
+  --bg:#FFF9FB; --surface:#FFFFFF; --soft:#F8E8EF; --soft-2:#FDF2F6;
+  --pink:#C63D6C; --pink-ink:#A52E58; --plum:#26152C; --muted:#6A5571; --line:#EFD9E3;
+  --sun:#F4C04B; --sun-soft:#FFF4D6; --sun-ink:#7A5500;
+  --ok:#2E8A5C; --ok-soft:#E3F4EA; --bad:#C2403A; --bad-soft:#FBE6E4;
+  --bubble-b:#C63D6C; --bubble-b-fg:#FFFFFF; --lock:#B9A6B4;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --r:18px; --nav-h:76px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1A1119; --surface:#251824; --soft:#3A2033; --soft-2:#2E1C2B;
+  --pink:#F07CA2; --pink-ink:#F59BB8; --plum:#F7EAF0; --muted:#C7B0C2; --line:#40283A;
+  --sun:#F4C04B; --sun-soft:#3A3018; --sun-ink:#F4C04B; --ok:#6FD3A0; --ok-soft:#1D3328; --bad:#F08C86; --bad-soft:#3D1F1D;
+  --bubble-b:#B73663; --bubble-b-fg:#FFFFFF; --lock:#6E5868; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#1A1119; --surface:#251824; --soft:#3A2033; --soft-2:#2E1C2B;
+  --pink:#F07CA2; --pink-ink:#F59BB8; --plum:#F7EAF0; --muted:#C7B0C2; --line:#40283A;
+  --sun:#F4C04B; --sun-soft:#3A3018; --sun-ink:#F4C04B; --ok:#6FD3A0; --ok-soft:#1D3328; --bad:#F08C86; --bad-soft:#3D1F1D;
+  --bubble-b:#B73663; --bubble-b-fg:#FFFFFF; --lock:#6E5868; color-scheme:dark;}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-bottom:calc(var(--nav-h) + 20px);scroll-padding-top:80px}
+body{background:var(--bg);color:var(--plum);font-family:var(--f-body);font-size:17px;line-height:1.55}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+/* Top progress */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:10px;display:flex;flex-direction:column;gap:8px}
+.top-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.brand{font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:18px;white-space:nowrap}
+.stepcount{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dots{display:flex;gap:4px}
+.dot{flex:1;height:8px;border-radius:99px;background:var(--line);border:0;padding:0;min-width:0}
+.dot.done{background:var(--pink)}
+.dot.cur{background:var(--sun)}
+.dot:disabled{cursor:default}
+
+/* Stage */
+main{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:22px calc(var(--nav-h) + 40px + env(safe-area-inset-bottom,0px))}
+.step{display:flex;flex-direction:column;gap:18px;animation:in .35s ease}
+@keyframes in{from{transform:translateY(8px)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.step{animation:none}}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pink)}
+.head{display:flex;flex-direction:column;gap:6px}
+.head h2{font-size:clamp(26px,6vw,34px);font-weight:800}
+.head p{color:var(--muted)}
+
+/* Bottom nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav-in{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:12px;display:flex;gap:10px;align-items:center}
+.nbtn{border:0;border-radius:14px;padding:14px 18px;font-weight:700;font-size:16px;min-height:52px}
+.back{background:var(--soft);color:var(--plum)}
+.next{flex:1;background:var(--pink);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px}
+.next:disabled{background:var(--soft);color:var(--muted);cursor:not-allowed}
+.next svg{width:18px;height:18px}
+
+/* Chips / misc */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--soft);font-weight:600;font-size:14px;padding:7px 14px;border-radius:999px}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--pink)}
+.chip.live i{background:#D9534F}
+.note{background:var(--sun-soft);border-radius:14px;padding:12px 16px;font-size:15px}
+.note b{color:var(--pink-ink)}
+.lockmsg{display:flex;gap:10px;align-items:center;font-size:14px;font-weight:600;color:var(--muted);background:var(--soft-2);border:1px dashed var(--line);border-radius:14px;padding:10px 14px}
+.lockmsg.ok{color:var(--ok);background:var(--ok-soft);border-color:transparent}
+.lockmsg svg{width:18px;height:18px;flex:none}
+
+/* Hero */
+.hero{background:var(--surface);border-radius:22px;border-bottom:4px solid var(--sun);padding:24px;display:flex;flex-direction:column;gap:12px}
+.day{font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:clamp(44px,12vw,64px);line-height:1}
+.date{color:var(--muted);font-weight:500;font-size:15px}
+.hero h1{font-size:clamp(28px,7vw,40px);font-weight:800}
+.hero .sub{color:var(--pink);font-weight:700;font-size:19px}
+.hero .lead{color:var(--muted)}
+.plan{display:grid;gap:8px;counter-reset:p;list-style:none;margin:0;padding:0}
+.plan li{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:600}
+.plan li span{font-size:13px;color:var(--muted);font-weight:500;margin-left:auto;white-space:nowrap}
+.plan li::before{counter-increment:p;content:counter(p);flex:none;width:28px;height:28px;border-radius:50%;background:var(--soft);color:var(--pink);font-family:var(--f-display);font-weight:800;display:grid;place-items:center;font-size:14px}
+
+/* Video + dialog */
+.vwrap{border-radius:var(--r);overflow:hidden;background:#000;aspect-ratio:16/9;max-width:100%}
+.vwrap video{width:100%;height:100%;display:block}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tbtn{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;font-weight:700;font-size:14px;display:inline-flex;gap:6px;align-items:center;min-height:44px}
+.tbtn[aria-pressed="true"]{background:var(--pink);border-color:var(--pink);color:#fff}
+.tbtn svg{width:16px;height:16px}
+.chat{display:flex;flex-direction:column;gap:10px}
+.line{display:flex;flex-direction:column;max-width:88%;gap:2px;border:0;background:none;padding:0;text-align:left}
+.line .who{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding-inline:6px}
+.line .bub{padding:10px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);transition:box-shadow .2s, transform .2s}
+.line .en{font-weight:600}
+.line .ro{display:none;font-size:15px;color:var(--muted);margin-top:4px;font-style:italic}
+.line.b{align-self:flex-end;align-items:flex-end}
+.line.b .bub{background:var(--bubble-b);color:var(--bubble-b-fg);border-color:transparent}
+.line.b .ro{color:#FBE2EB}
+.show-ro .ro{display:block}
+.line.now .bub{box-shadow:0 0 0 3px var(--sun);transform:scale(1.02)}
+.repeat-banner{position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:3;background:var(--sun);color:#3A2600;font-weight:800;border-radius:14px;padding:12px 16px;text-align:center;font-size:17px}
+.tip{font-size:14px;color:var(--muted)}
+
+/* Audio player (dialogs without video) */
+.player{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
+.playall{border:0;border-radius:14px;background:var(--pink);color:#fff;font-weight:800;font-size:17px;min-height:56px;display:flex;align-items:center;justify-content:center;gap:10px}
+.playall svg{width:20px;height:20px}
+.playall[data-on="1"]{background:var(--plum);color:var(--bg)}
+.pbar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--sun);transition:width .3s}
+.card .phrase.price{font-size:34px;font-weight:800;color:var(--pink);font-variant-numeric:tabular-nums}
+
+/* Expression cards */
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;font-weight:700;font-size:14px;min-height:44px;display:inline-flex;gap:6px;align-items:center}
+.tab[aria-selected="true"]{background:var(--pink);border-color:var(--pink);color:#fff}
+.tab .ck{color:var(--ok);font-weight:800}
+.tab[aria-selected="true"] .ck{color:#fff}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:12px}
+.card{border:2px solid var(--line);background:var(--surface);border-radius:var(--r);padding:16px;text-align:left;min-height:140px;display:flex;flex-direction:column;gap:8px}
+.card .emo{font-size:26px;line-height:1}
+.card .phrase{font-family:var(--f-display);font-weight:600;font-size:20px;line-height:1.2}
+.card .tap{margin-top:auto;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pink)}
+.card .tr{display:none;font-family:var(--f-display);font-weight:600;font-size:19px;line-height:1.25}
+.card .ex{display:none;font-size:14px;font-style:italic;margin-top:auto;opacity:.92}
+.card.flipped{background:var(--pink);border-color:var(--pink);color:#fff}
+.card.flipped .phrase,.card.flipped .tap,.card.flipped .tag{display:none}
+.card.flipped .tr,.card.flipped .ex{display:block}
+.card.flip-anim{animation:flip .3s ease}
+@keyframes flip{0%{transform:scaleX(1)}50%{transform:scaleX(.05)}100%{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.card.flip-anim{animation:none}}
+.tag{align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--sun);color:#3A2600;padding:3px 9px;border-radius:6px}
+.card .seen{font-size:12px;font-weight:700;color:var(--ok)}
+
+/* Formula */
+.formula{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px}
+.formula h3{font-size:20px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.steps li{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start}
+.steps .n{width:32px;height:32px;border-radius:50%;background:var(--soft);color:var(--pink);font-weight:800;display:grid;place-items:center;font-family:var(--f-display);font-style:normal}
+.steps div>b{display:block}
+.steps span b{color:var(--plum)}
+.steps span{color:var(--muted);font-size:15px}
+
+/* Mistakes (tap to reveal) */
+.mist{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px}
+.m{border:2px solid var(--line);background:var(--surface);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.m .wrong{color:var(--bad);font-weight:700}
+.m.open .wrong{text-decoration:line-through;text-decoration-thickness:2px}
+.m .right,.m .why{display:none}
+.m.open .right{display:block;color:var(--ok);font-weight:800}
+.m.open .why{display:block;font-size:14px;color:var(--muted)}
+.m .hint{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pink)}
+.m.open .hint{display:none}
+.m.open{border-color:var(--ok)}
+.mark{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;font-size:12px;font-weight:800;margin-right:6px;vertical-align:1px}
+.mark.x{background:var(--bad-soft);color:var(--bad)}
+.mark.v{background:var(--ok-soft);color:var(--ok)}
+
+/* Exercises */
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:16px}
+.q{display:flex;flex-direction:column;gap:10px}
+.q .prompt{font-weight:700}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:2px solid var(--line);background:var(--bg);border-radius:14px;padding:12px 14px;text-align:left;font-weight:500;min-height:48px;width:100%}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--plum)}
+.opt.no{border-color:var(--bad);background:var(--bad-soft);color:var(--plum)}
+.opt:disabled{cursor:default}
+.score{font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:18px}
+.fill{line-height:2.3;font-size:17px}
+.gap{display:inline-block;min-width:74px;text-align:center;border-bottom:3px solid var(--line);padding-inline:6px;font-weight:700;line-height:1.4;border-radius:4px}
+.gap.active{border-color:var(--pink);background:var(--soft)}
+.gap.filled{border-color:var(--ok);color:var(--ok)}
+.bank{display:flex;flex-wrap:wrap;gap:8px}
+.word{border:2px solid var(--sun);background:var(--sun-soft);border-radius:12px;padding:10px 16px;font-weight:700;min-height:46px}
+.word.used{opacity:.35;pointer-events:none}
+.word.shake{animation:shake .35s;border-color:var(--bad);background:var(--bad-soft)}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.col-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pool,.built{display:flex;flex-direction:column;gap:8px}
+.built{background:var(--soft-2);border:2px dashed var(--line);border-radius:14px;padding:10px;min-height:64px;counter-reset:o}
+.built .opt{counter-increment:o;background:var(--surface)}
+.built .opt::before{content:counter(o) ". ";font-weight:800;color:var(--pink)}
+.built .empty{color:var(--muted);font-size:14px;padding:8px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sbtn{border:0;border-radius:12px;padding:10px 16px;font-weight:700;background:var(--soft);min-height:44px}
+.fb{font-weight:700}
+.fb.ok{color:var(--ok)} .fb.no{color:var(--bad)}
+
+/* Homework */
+.task{display:grid;grid-template-columns:auto 1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.task .big{font-family:var(--f-display);font-weight:800;font-size:32px;color:var(--pink);line-height:1;width:34px}
+.task h3{font-size:19px;margin-bottom:6px}
+.task p{color:var(--muted)}
+.task.bonus{background:var(--sun-soft);border-color:var(--sun)}
+.task.bonus .big{color:var(--sun-ink)}
+.template{margin-top:10px;background:var(--soft-2);border-radius:12px;padding:14px;line-height:2}
+.blank{display:inline-block;min-width:60px;border-bottom:2px solid var(--pink);line-height:1.3}
+.min0{min-width:0}
+
+/* Final */
+.check{background:var(--pink);color:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.check h2{font-size:28px}
+.check label{display:flex;gap:12px;align-items:flex-start;font-weight:600;cursor:pointer}
+.check input{width:24px;height:24px;accent-color:var(--sun);flex:none;margin-top:1px}
+.bar{height:10px;background:rgba(255,255,255,.25);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--sun);transition:width .3s}
+.confetti{font-size:54px;text-align:center;line-height:1}
+footer{text-align:center;color:var(--muted);font-size:14px}
+footer b{color:var(--pink)}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="top-row"><span class="brand">Ziua 2</span><span class="stepcount" id="stepcount"></span></div>
+    <div class="dots" id="dots"></div>
+  </div>
+</header>
+
+<main id="stage" aria-live="polite"></main>
+
+<nav class="nav" aria-label="Navigare lecție">
+  <div class="nav-in">
+    <button class="nbtn back" id="backBtn" type="button">Înapoi</button>
+    <button class="nbtn next" id="nextBtn" type="button"></button>
+  </div>
+</nav>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ICON={
+ play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
+ lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+ check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+ arrow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+ repeat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/></svg>',
+ tr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M5.5 5c1 3.5 3.5 6 6.5 7M10.5 5c-1 4-3.5 7-6.5 8"/><path d="M13 21l4-9 4 9M14.5 18h5"/></svg>'
+};
+
+/* ---------- audio for cards ---------- */
+let curAudio=null;
+function stopAudio(){if(curAudio){try{curAudio.pause()}catch(e){}curAudio=null}}
+function play(id){stopAudio();pauseVideos();const a=new Audio("audio/"+id+".mp3");curAudio=a;const p=a.play();if(p&&p.catch)p.catch(()=>{})}
+function pauseVideos(){document.querySelectorAll("video").forEach(v=>{try{v.pause()}catch(e){}})}
+
+/* ---------- content ---------- */
+const dialogs=[
+ {t:"La supermarket",video:1,end:26.2,times:[3.1, 5.9, 8.6, 11.8, 14.6, 17.4, 19.9, 23.8],w:"Ana caută produse în magazin",lines:[
+  ["Ana","b","Excuse me, where can I find the milk?","Scuzați-mă, unde găsesc laptele?"],
+  ["Angajat","a","It's in aisle 5, next to the eggs.","Este pe culoarul 5, lângă ouă."],
+  ["Ana","b","Thank you! And do you have fresh bread?","Mulțumesc! Și aveți pâine proaspătă?"],
+  ["Angajat","a","Yes, the bakery is at the back of the store.","Da, brutăria e în spatele magazinului."],
+  ["Ana","b","Great. How much is this cheese?","Super. Cât costă brânza asta?"],
+  ["Angajat","a","It's $4.99. It's on sale today.","Costă 4,99 $. E la reducere azi."],
+  ["Ana","b","Perfect, I'll take it. Thanks for your help!","Perfect, o iau. Mulțumesc pentru ajutor!"],
+  ["Angajat","a","You're welcome. Have a good one!","Cu plăcere. O zi bună!"]
+ ],note:"<b>Truc:</b> „Where can I find…?” e cea mai utilă întrebare din orice magazin american. Merge pentru orice produs."},
+ {t:"La casă",video:1,end:26.3,times:[0.2, 2.6, 5.0, 6.6, 8.6, 9.6, 12.6, 16.8, 18.6, 20.6, 21.6, 22.6],w:"Ana plătește cumpărăturile",lines:[
+  ["Casieră","a","Hi! Did you find everything okay?","Bună! Ați găsit tot ce căutați?"],
+  ["Ana","b","Yes, thank you.","Da, mulțumesc."],
+  ["Casieră","a","Do you have a rewards card?","Aveți card de fidelitate?"],
+  ["Ana","b","No, I don't.","Nu, nu am."],
+  ["Casieră","a","No problem. Do you need a bag?","Nicio problemă. Aveți nevoie de o pungă?"],
+  ["Ana","b","Yes, please. Just one.","Da, vă rog. Doar una."],
+  ["Casieră","a","Your total is $23.50. Cash or card?","Totalul este 23,50 $. Cash sau card?"],
+  ["Ana","b","Card, please.","Card, vă rog."],
+  ["Casieră","a","Okay. You can tap your card here.","Bine. Puteți apropia cardul aici."],
+  ["Ana","b","Here you go.","Poftiți."],
+  ["Casieră","a","Do you want your receipt?","Doriți bonul?"],
+  ["Ana","b","Yes, please. Thank you!","Da, vă rog. Mulțumesc!"]
+ ],note:"<b>Atenție:</b> În SUA, casierul aproape mereu întreabă „Did you find everything okay?”. E doar politețe. Răspunsul simplu e „Yes, thank you.”"},
+ {t:"Magazinul de haine",video:1,end:42.0,times:[3.1, 6.9, 9.9, 13.4, 16.6, 19.9, 23.1, 26.6, 29.6, 33.1, 35.9, 39.4],w:"Ana caută o geacă",lines:[
+  ["Vânzătoare","a","Hi there! Can I help you find something?","Bună! Vă pot ajuta să găsiți ceva?"],
+  ["Ana","b","Yes, I'm looking for a jacket.","Da, caut o geacă."],
+  ["Vânzătoare","a","Sure. What size are you?","Sigur. Ce mărime purtați?"],
+  ["Ana","b","I'm a medium.","Port mărimea M."],
+  ["Vânzătoare","a","How about this one? It comes in black and blue.","Ce ziceți de aceasta? O avem în negru și albastru."],
+  ["Ana","b","I like the blue one. Can I try it on?","Îmi place cea albastră. Pot s-o probez?"],
+  ["Vânzătoare","a","Of course. The fitting rooms are over there.","Desigur. Cabinele de probă sunt acolo."],
+  ["Ana","b","Thank you!","Mulțumesc!"],
+  ["Vânzătoare","a","So, how does it fit?","Deci, cum vă vine?"],
+  ["Ana","b","It's a little too big. Do you have it in a small?","E puțin prea mare. O aveți în mărimea S?"],
+  ["Vânzătoare","a","Yes, here you go.","Da, poftiți."],
+  ["Ana","b","This one fits great. I'll take it!","Asta îmi vine perfect. O iau!"]
+ ],note:"<b>Reține:</b> Mărimile în SUA se spun în cuvinte: <b>small</b> (S), <b>medium</b> (M), <b>large</b> (L). „I'm a medium” = port M."},
+ {t:"Returnez un produs",video:1,end:21.3,times:[0.9, 2.9, 5.3, 6.4, 8.3, 9.1, 11.3, 13.6, 16.4, 18.9],w:"Ana returnează un pulover",lines:[
+  ["Ana","b","Hi, I'd like to return this sweater, please.","Bună ziua, aș dori să returnez acest pulover, vă rog."],
+  ["Angajată","a","Sure. What's wrong with it?","Sigur. Ce problemă are?"],
+  ["Ana","b","It's too small for me.","E prea mic pentru mine."],
+  ["Angajată","a","Do you have the receipt?","Aveți bonul?"],
+  ["Ana","b","Yes, here it is.","Da, poftiți."],
+  ["Angajată","a","Would you like a refund or an exchange?","Doriți banii înapoi sau un schimb?"],
+  ["Ana","b","A refund, please.","Banii înapoi, vă rog."],
+  ["Angajată","a","Okay. The money will be back on your card in 3 to 5 days.","Bine. Banii revin pe card în 3–5 zile."],
+  ["Ana","b","Great, thank you so much!","Super, mulțumesc mult!"],
+  ["Angajată","a","You're welcome. Have a great day!","Cu plăcere. O zi frumoasă!"]
+ ],note:"<b>Bine de știut:</b> În SUA poți returna aproape orice în 30 de zile, dacă păstrezi bonul (<b>receipt</b>). <b>Refund</b> = banii înapoi, <b>exchange</b> = schimbi produsul."}
+];
+const groups=[
+ {n:"Cauți ceva",items:[
+  ["🔎","Excuse me, where can I find…?","Scuzați-mă, unde găsesc…?","Excuse me, where can I find the rice?","Super util"],
+  ["🛒","Do you have…?","Aveți…?","Do you have fresh bread?"],
+  ["👀","I'm looking for…","Caut…","I'm looking for a jacket."],
+  ["🙂","I'm just looking, thanks.","Doar mă uit, mulțumesc.","— Can I help you? — I'm just looking, thanks.","Foarte american"],
+  ["➡️","It's in aisle 5.","E pe culoarul 5.","— Where's the milk? — It's in aisle 5."],
+  ["🏬","at the back of the store","în spatele magazinului","The bakery is at the back of the store."]
+ ]},
+ {n:"Prețuri",items:[
+  ["💲","How much is this?","Cât costă asta?","How much is this cheese?"],
+  ["💲","How much are these?","Cât costă acestea?","How much are these apples?","La plural"],
+  ["🏷️","It's on sale.","E la reducere.","This shirt is on sale today."],
+  ["🎁","Buy one, get one free","Cumperi unul, primești unul gratis","Look! Buy one, get one free!","BOGO"],
+  ["😬","That's too expensive.","E prea scump.","Fifty dollars? That's too expensive."],
+  ["👍","That's a good price.","E un preț bun.","Ten dollars? That's a good price!"]
+ ]},
+ {n:"La casă",items:[
+  ["🙋","Did you find everything okay?","Ați găsit tot ce căutați?","— Did you find everything okay? — Yes, thank you."],
+  ["💳","Cash or card?","Cash sau card?","— Cash or card? — Card, please."],
+  ["🛍️","Do you need a bag?","Aveți nevoie de o pungă?","— Do you need a bag? — No, thanks."],
+  ["🧾","Can I get a receipt?","Pot primi bonul?","Can I get a receipt, please?","p nu se citește"],
+  ["🤲","Here you go.","Poftiți.","Here you go. Thank you!"],
+  ["📲","You can tap your card.","Puteți apropia cardul.","You can tap your card here."],
+  ["⭐","Do you have a rewards card?","Aveți card de fidelitate?","— Do you have a rewards card? — No, I don't."]
+ ]},
+ {n:"Haine",items:[
+  ["📏","What size are you?","Ce mărime purtați?","— What size are you? — I'm a medium."],
+  ["👕","Can I try it on?","Pot să-l probez?","I like this shirt. Can I try it on?"],
+  ["🚪","Where are the fitting rooms?","Unde sunt cabinele de probă?","Excuse me, where are the fitting rooms?"],
+  ["🔁","Do you have it in a small?","Îl aveți în mărimea S?","It's too big. Do you have it in a small?"],
+  ["✨","It fits great!","Îmi vine perfect!","This jacket fits great!"],
+  ["❌","It's too big. / It's too small.","E prea mare. / E prea mic.","These shoes are too small."],
+  ["✅","I'll take it.","Îl iau.","I love it. I'll take it!"]
+ ]},
+ {n:"Returnări",items:[
+  ["↩️","I'd like to return this.","Aș dori să returnez asta.","Hi, I'd like to return this sweater."],
+  ["🧾","Do you have the receipt?","Aveți bonul?","— Do you have the receipt? — Yes, here it is."],
+  ["💵","A refund, please.","Banii înapoi, vă rog.","I'd like a refund, please."],
+  ["🔄","Can I exchange it?","Pot să-l schimb?","It's too small. Can I exchange it?"],
+  ["😕","It doesn't fit.","Nu-mi vine.","I want to return it. It doesn't fit."]
+ ]}
+];
+const mistakes=[
+ ["How much costs this?","How much is this?","Întrebarea despre preț se face cu „is”: How much is it?"],
+ ["Can I probe it?","Can I try it on?","„A proba” haine = try on. „Probe” înseamnă altceva."],
+ ["I search a jacket.","I'm looking for a jacket.","„Caut” în magazin = I'm looking for."],
+ ["Where is the magazine?","Where is the store?","„Magazine” = revistă. Magazinul e „store”."],
+ ["I am size M.","I'm a medium.","Mărimea se spune în cuvinte: small, medium, large."],
+ ["Give me a bag.","Can I get a bag, please?","Fără „please” sună nepoliticos. Folosește „Can I get…?”"],
+ ["The prices are very expensive.","The prices are very high.","Produsele sunt „expensive”, prețurile sunt „high”."],
+ ["Where is the cassa?","Where is the checkout?","Casa de marcat = checkout sau register."]
+];
+const mcq=[
+ ["„Did you find everything okay?”",["Yes, thank you.","Yes, I found.","I'm fine, and you?"],0],
+ ["„Cash or card?”",["Yes, card.","Card, please.","I have money."],1],
+ ["„What size are you?”",["I'm thirty.","I'm a medium.","I'm big."],1],
+ ["„Can I help you find something?”",["No, go away.","I'm just looking, thanks.","Yes, you can."],1],
+ ["„Do you need a bag?”",["No, thanks. I have one.","Yes, I need.","I don't bag."],0],
+ ["„Do you have the receipt?”",["Yes, I have.","Yes, here it is.","Receipt is good."],1]
+];
+const fillTitle="Completează conversația din magazin";
+const fillParts=["Hi! I'm ",["looking"]," for a jacket. I like this one. Can I ",["try"]," it on? Hmm, it's too big. Do you have it in a smaller ",["size"],"? Great, it fits! How ",["much"]," is it? Perfect, I'll ",["take"]," it! Can I get a ",["receipt"],", please?"];
+const bank=["size","take","receipt","looking","much","try"];
+const orderTitle="Pune conversația de la casă în ordine";
+const order=["Hi! Did you find everything okay?","Yes, thank you.","Great. Do you need a bag?","No, thanks. I have one.","Your total is $15.80. Cash or card?","Card, please. Here you go."];
+const shuffled=[4,1,5,0,3,2];
+const prices=[
+ ["$4.99","four ninety-nine","Așa spun americanii în magazin."],
+ ["$12.50","twelve fifty","Fără „dollars” și „cents”."],
+ ["$0.99","ninety-nine cents","Sub un dolar spui „cents”."],
+ ["$25","twenty-five dollars","Fix, fără cenți."],
+ ["$1.25","a dollar twenty-five","Sau: one twenty-five."],
+ ["$100","a hundred dollars","Sau: one hundred dollars."]
+];
+const goals=["Pot să întreb unde găsesc un produs","Pot să întreb cât costă ceva","Pot să citesc prețurile ca un american","Pot să plătesc la casă","Pot să cer altă mărime și să probez haine","Pot să returnez un produs","Am trimis tema pentru Ziua 2"];
+
+/* ---------- state ---------- */
+const KEY="eca-d2-v1";
+let st={cur:0,max:0,done:{},ans:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&typeof s.cur==="number")st=Object.assign(st,s)}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+
+/* ---------- steps ---------- */
+const STEPS=[
+ {k:"start",label:"Start"},
+ {k:"dlg",i:0,label:"Dialogul 1"},{k:"dlg",i:1,label:"Dialogul 2"},{k:"dlg",i:2,label:"Dialogul 3"},{k:"dlg",i:3,label:"Dialogul 4"},
+ {k:"expr",label:"Expresii"},{k:"recipe",label:"Cumpărături în SUA"},{k:"mist",label:"Greșeli tipice"},
+ {k:"ex1",label:"Exercițiul 1"},{k:"ex2",label:"Exercițiul 2"},{k:"ex3",label:"Exercițiul 3"},{k:"ex4",label:"Exercițiul 4"},
+ {k:"hw",label:"Tema"},{k:"end",label:"Final"}
+];
+
+const NEXT_LABEL={start:"Începe lecția",end:"Lecție terminată"};
+const stage=$("#stage"),nextBtn=$("#nextBtn"),backBtn=$("#backBtn"),dots=$("#dots");
+let canNext=false,lockText="";
+
+function setReady(ok,text){
+  canNext=ok;lockText=text||"";
+  const s=STEPS[st.cur];
+  if(ok){st.done[st.cur]=1;save()}
+  nextBtn.disabled=!ok;
+  const label=NEXT_LABEL[s.k]||"Continuă";
+  nextBtn.innerHTML=ok?`<span>${label}</span>${s.k==="end"?"":ICON.arrow}`:`${ICON.lock}<span>${s.k==="end"?label:"Continuă"}</span>`;
+  const lm=stage.querySelector(".lockmsg");
+  if(lm){lm.className="lockmsg"+(ok?" ok":"");lm.innerHTML=(ok?ICON.check:ICON.lock)+`<span>${esc(ok?(lm.dataset.done||"Gata! Poți merge mai departe."):text)}</span>`}
+  renderDots();
+}
+function renderDots(){
+  dots.innerHTML=STEPS.map((s,i)=>`<button class="dot ${i===st.cur?"cur":(st.done[i]?"done":"")}" ${i<=st.max?"":"disabled"} aria-label="${esc(s.label)}${i>st.max?" (blocat)":""}" data-i="${i}"></button>`).join("");
+  $("#stepcount").textContent=`Pasul ${st.cur+1} din ${STEPS.length} · ${STEPS[st.cur].label}`;
+}
+dots.addEventListener("click",e=>{const b=e.target.closest(".dot");if(b&&!b.disabled)go(+b.dataset.i)});
+function go(i){
+  stopAudio();pauseVideos();
+  st.cur=Math.max(0,Math.min(STEPS.length-1,i));st.max=Math.max(st.max,st.cur);save();
+  backBtn.hidden=st.cur===0;
+  stage.innerHTML="";
+  const s=STEPS[st.cur];
+  RENDER[s.k](s);
+  try{window.scrollTo({top:0,behavior:"instant"})}catch(e){window.scrollTo(0,0)}
+}
+nextBtn.onclick=()=>{if(!canNext)return;if(st.cur<STEPS.length-1){st.max=Math.max(st.max,st.cur+1);go(st.cur+1)}};
+backBtn.onclick=()=>go(st.cur-1);
+function lockmsg(doneText){return `<div class="lockmsg" data-done="${esc(doneText||"")}"></div>`}
+function add(html){const d=document.createElement("section");d.className="step";d.innerHTML=html;stage.appendChild(d);return d}
+
+/* ---------- renderers ---------- */
+const RENDER={};
+
+RENDER.expr=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Pasul 6 · Vocabular</span><h2>Expresii pentru cumpărături</h2><p>Citește expresia, ghicește traducerea, apoi apasă pe card ca să-l întorci și să auzi pronunția. Deschide toate cele 5 categorii.</p></div>
+  ${lockmsg("Super! Ai văzut toate categoriile.")}
+  <div class="tabs" role="tablist"></div><div class="cards"></div>`);
+  const tabs=el.querySelector(".tabs"),cards=el.querySelector(".cards");
+  st.ans.tabs=st.ans.tabs||{};
+  function check(){const n=Object.keys(st.ans.tabs).length;save();
+    if(n>=groups.length)setReady(true);else setReady(false,`Deschide toate categoriile: ${n} din ${groups.length}.`)}
+  function show(gi){
+    st.ans.tabs[gi]=1;
+    tabs.innerHTML=groups.map((g,i)=>`<button class="tab" role="tab" type="button" aria-selected="${i===gi}" data-i="${i}">${st.ans.tabs[i]&&i!==gi?'<span class="ck">✓</span>':""}${esc(g.n)} · ${g.items.length}</button>`).join("");
+    cards.innerHTML=groups[gi].items.map((it,k)=>`<button class="card" type="button" data-k="${k}"><span class="emo" aria-hidden="true">${it[0]}</span>${it[4]?`<span class="tag">${esc(it[4])}</span>`:""}<span class="phrase">${esc(it[1])}</span><span class="tap">Apasă · ascultă</span><span class="tr">${esc(it[2])}</span><span class="ex">${esc(it[3])}</span></button>`).join("");
+    cards.querySelectorAll(".card").forEach(c=>c.onclick=()=>{const f=c.classList.toggle("flipped");c.classList.remove("flip-anim");void c.offsetWidth;c.classList.add("flip-anim");if(f)play(`d2_g${gi}_${c.dataset.k}`)});
+    check();
+  }
+  tabs.addEventListener("click",e=>{const t=e.target.closest(".tab");if(t){show(+t.dataset.i);t.scrollIntoView({inline:"nearest",block:"nearest"})}});
+  show(0);
+};
+
+RENDER.mist=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Pasul 8 · Atenție</span><h2>Greșeli tipice ale vorbitorilor de română</h2><p>Când traducem din română cuvânt cu cuvânt, iese ciudat. Ghicește varianta corectă, apoi apasă pe fiecare card ca s-o vezi.</p></div>
+  ${lockmsg("Bravo! Acum știi cum spun americanii.")}
+  <div class="mist">${mistakes.map((m,k)=>`<button type="button" class="m" data-k="${k}"><span><span class="mark x">✕</span><span class="wrong">${esc(m[0])}</span></span><span class="hint">Apasă · vezi corect</span><span class="right"><span class="mark v">✓</span>${esc(m[1])}</span><span class="why">${esc(m[2])}</span></button>`).join("")}</div>`);
+  st.ans.mist=st.ans.mist||{};
+  const cards=[...el.querySelectorAll(".m")];
+  cards.forEach(c=>{if(st.ans.mist[c.dataset.k])c.classList.add("open");c.onclick=()=>{c.classList.add("open");st.ans.mist[c.dataset.k]=1;check()}});
+  function check(){save();const n=Object.keys(st.ans.mist).length;if(n>=mistakes.length)setReady(true);else setReady(false,`Deschide toate cardurile: ${n} din ${mistakes.length}.`)}
+  check();
+};
+
+RENDER.ex1=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 1 din 4</span><h2>Alege răspunsul potrivit</h2><p>Ce răspunzi când auzi…?</p></div>
+  ${lockmsg("Gata! Ai răspuns la toate întrebările.")}
+  <div class="box"><div class="qs" style="display:flex;flex-direction:column;gap:22px"></div><div class="score"></div></div>`);
+  st.ans.ex1=st.ans.ex1||{};
+  const host=el.querySelector(".qs"),score=el.querySelector(".score");
+  mcq.forEach((q,qi)=>{
+    const d=document.createElement("div");d.className="q";
+    d.innerHTML=`<div class="prompt">${qi+1}. ${esc(q[0])}</div><div class="opts">${q[1].map((o,oi)=>`<button type="button" class="opt" data-i="${oi}">${esc(o)}</button>`).join("")}</div>`;
+    const mark=pick=>{d.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok");if(+x.dataset.i===pick&&pick!==q[2])x.classList.add("no")})};
+    if(st.ans.ex1[qi]!==undefined)mark(st.ans.ex1[qi]);
+    d.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const p=+b.dataset.i;st.ans.ex1[qi]=p;mark(p);upd()});
+    host.appendChild(d);
+  });
+  function upd(){save();const a=st.ans.ex1,n=Object.keys(a).length,ok=Object.keys(a).filter(k=>a[k]===mcq[k][2]).length;
+    score.textContent=`Scor: ${ok} / ${mcq.length}`+(n===mcq.length?(ok===mcq.length?" · Perfect!":" · Bravo!"):"");
+    if(n===mcq.length)setReady(true);else setReady(false,`Răspunde la toate întrebările: ${n} din ${mcq.length}.`)}
+  upd();
+};
+
+RENDER.ex2=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 2 din 4</span><h2>${esc(fillTitle)}</h2><p>Spațiul roz e cel activ. Apasă cuvântul potrivit de mai jos.</p></div>
+  ${lockmsg("Excelent! Conversația e completă.")}
+  <div class="box"><p class="fill"></p><div class="bank"></div><div class="row"><button class="sbtn rst" type="button">De la capăt</button><span class="fb" aria-live="polite"></span></div></div>`);
+  const fill=el.querySelector(".fill"),bk=el.querySelector(".bank"),fb=el.querySelector(".fb");
+  const answers=fillParts.filter(p=>typeof p!=="string").map(p=>p[0]);
+  let pos=st.ans.ex2||0;
+  function draw(){
+    let n=0;
+    fill.innerHTML=fillParts.map(p=>{if(typeof p==="string")return esc(p);const i=n++;return `<span class="gap ${i<pos?"filled":(i===pos?"active":"")}">${i<pos?esc(answers[i]):"&nbsp;"}</span>`}).join("");
+    const used=answers.slice(0,pos);
+    bk.innerHTML=bank.map(w=>`<button type="button" class="word ${used.includes(w)?"used":""}">${esc(w)}</button>`).join("");
+    bk.querySelectorAll(".word").forEach(b=>b.onclick=()=>{
+      if(pos>=answers.length)return;
+      if(b.textContent===answers[pos]){pos++;st.ans.ex2=pos;save();fb.textContent="";draw()}
+      else{b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake");fb.textContent="Nu se potrivește aici. Mai încearcă!";fb.className="fb no"}
+    });
+    if(pos>=answers.length){fb.textContent="Perfect! 6 din 6.";fb.className="fb ok";setReady(true)}
+    else if(!st.done[st.cur])setReady(false,`Completează toate spațiile: ${pos} din ${answers.length}.`);
+  }
+  el.querySelector(".rst").onclick=()=>{pos=0;st.ans.ex2=0;save();fb.textContent="";draw()};
+  draw();
+};
+
+RENDER.ex3=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 3 din 4</span><h2>${esc(orderTitle)}</h2><p>Apasă replicile în ordinea corectă. Dacă greșești, apasă pe replică din „Conversația ta” ca s-o scoți.</p></div>
+  ${lockmsg("Perfect! Exact așa sună la casă.")}
+  <div class="box"><div class="col-label">Conversația ta</div><div class="built"></div><div class="col-label">Replici amestecate</div><div class="pool"></div>
+  <div class="row"><button class="sbtn rst" type="button">De la capăt</button><span class="fb" aria-live="polite"></span></div></div>`);
+  const pool=el.querySelector(".pool"),built=el.querySelector(".built"),fb=el.querySelector(".fb");
+  let b=st.ans.ex3||[];
+  function draw(){
+    built.innerHTML=b.length?"":'<div class="empty">Apasă pe prima replică a conversației…</div>';
+    b.forEach((i,p)=>{const x=document.createElement("button");x.type="button";x.className="opt";x.textContent=order[i];x.onclick=()=>{b.splice(p,1);st.ans.ex3=b;save();draw()};built.appendChild(x)});
+    pool.innerHTML="";
+    shuffled.filter(i=>!b.includes(i)).forEach(i=>{const x=document.createElement("button");x.type="button";x.className="opt";x.textContent=order[i];x.onclick=()=>{b.push(i);st.ans.ex3=b;save();draw()};pool.appendChild(x)});
+    if(b.length===order.length){
+      const nodes=built.querySelectorAll(".opt");let ok=0;b.forEach((v,p)=>{nodes[p].classList.add(v===p?"ok":"no");if(v===p)ok++});
+      if(ok===order.length){fb.textContent="Perfect!";fb.className="fb ok";setReady(true)}
+      else{fb.textContent=`${ok} din ${order.length} sunt la locul lor. Scoate replicile roșii și încearcă din nou.`;fb.className="fb no";if(!st.done[st.cur])setReady(false,"Pune toate replicile în ordinea corectă.")}
+    }else{fb.textContent="";if(!st.done[st.cur])setReady(false,`Pune toate replicile în ordine: ${b.length} din ${order.length}.`)}
+  }
+  el.querySelector(".rst").onclick=()=>{b=[];st.ans.ex3=b;save();draw()};
+  draw();
+};
+
+RENDER.start=()=>{
+  add(`<div class="hero">
+    <div><div class="day">Ziua 2</div><div class="date">marți, 13 octombrie</div></div>
+    <h1>La cumpărături</h1>
+    <div class="sub">Supermarket, haine și returnări</div>
+    <p class="lead">Azi învățăm să găsim produse în magazin, să întrebăm cât costă, să plătim la casă, să probăm haine și să returnăm ceva care nu ne vine. Plus: cum citesc americanii prețurile.</p>
+    <div class="chips"><span class="chip"><i></i>Nivel A2</span><span class="chip"><i></i>cca. 40 de minute</span></div>
+  </div>
+  <div class="head"><span class="eyebrow">Cum funcționează</span><h2>Lecția are 14 pași</h2><p>Treci prin ei pe rând. Pasul următor se deschide după ce îl termini pe cel de acum. Progresul tău se salvează pe acest telefon.</p></div>
+  <ol class="plan">
+    <li>4 dialoguri din magazin<span>pașii 2–5</span></li>
+    <li>Expresii pe carduri<span>pasul 6</span></li>
+    <li>Cumpărături în SUA<span>pasul 7</span></li>
+    <li>Greșeli tipice<span>pasul 8</span></li>
+    <li>4 exerciții<span>pașii 9–12</span></li>
+    <li>Tema pentru acasă<span>pasul 13</span></li>
+  </ol>`);
+  setReady(true);
+};
+
+/* Dialog: video when the dialog has one, otherwise line-by-line audio */
+RENDER.dlg=s=>{
+  const d=dialogs[s.i],hasVideo=!!d.video;
+  const el=add(`<div class="head"><span class="eyebrow">Dialogul ${s.i+1} din 4</span><h2>${esc(d.t)}</h2><p>${esc(d.w)}</p></div>
+  ${hasVideo?`<div class="vwrap"><video controls playsinline preload="metadata" poster="video/d2_poster${s.i}.jpg" src="video/d2_v${s.i}.mp4"></video></div>`
+  :`<div class="player"><button class="playall" type="button">${ICON.play}<span>Ascultă tot dialogul</span></button><div class="pbar"><i></i></div></div>`}
+  ${lockmsg(hasVideo?"Bravo! Ai văzut tot dialogul.":"Bravo! Ai ascultat tot dialogul.")}
+  <div class="tools">
+    <button class="tbtn trb" aria-pressed="false" type="button">${ICON.tr}<span>Traducere</span></button>
+    <button class="tbtn rpt" aria-pressed="false" type="button">${ICON.repeat}<span>Repetă după mine</span></button>
+  </div>
+  <p class="tip">Apasă pe o replică ca s-o auzi din nou. În modul „Repetă după mine”, ${hasVideo?"videoul":"dialogul"} face pauză după fiecare replică, iar tu o repeți cu voce tare.</p>
+  <div class="banner-slot"></div>
+  <div class="chat">${d.lines.map((l,k)=>`<button type="button" class="line ${l[1]}" data-k="${k}"><span class="who">${esc(l[0])}</span><span class="bub"><span class="en">${esc(l[2])}</span><span class="ro">${esc(l[3])}</span></span></button>`).join("")}</div>
+  <div class="note">${d.note}</div>`);
+  const chat=el.querySelector(".chat"),lines=[...chat.querySelectorAll(".line")];
+  const trb=el.querySelector(".trb"),rpt=el.querySelector(".rpt"),slot=el.querySelector(".banner-slot");
+  trb.onclick=()=>{const on=chat.classList.toggle("show-ro");trb.setAttribute("aria-pressed",on)};
+  if(hasVideo){videoMode(el,d,lines,chat,rpt,slot);return}
+  if(st.done[st.cur])setReady(true);else setReady(false,"Ascultă tot dialogul ca să mergi mai departe.");
+  function hi(k){lines.forEach((n,j)=>n.classList.toggle("now",j===k));if(k>=0){const r=lines[k].getBoundingClientRect();if(r.top<90||r.bottom>innerHeight-100)lines[k].scrollIntoView({block:"center",behavior:"smooth"})}}
+  function banner(t){slot.innerHTML=t?`<div class="repeat-banner">${t}</div>`:""}
+  let repeat=false,run=0,waitT=null;
+  const heard=new Set(st.ans["h"+s.i]||[]);
+  const bar=el.querySelector(".pbar i"),pa=el.querySelector(".playall");
+  function mark(k){heard.add(k);st.ans["h"+s.i]=[...heard];save();if(bar)bar.style.width=(heard.size/d.lines.length*100)+"%";if(heard.size>=d.lines.length&&!canNext)setReady(true)}
+  if(bar)bar.style.width=(heard.size/d.lines.length*100)+"%";
+  function stop(){run++;clearInterval(waitT);banner("");stopAudio();hi(-1);if(pa)pa.querySelector("span").textContent="Ascultă tot dialogul"}
+  function sayLine(k,cb){
+    stopAudio();const a=new Audio(`audio/d2_d${s.i}_${k}.mp3`);curAudio=a;hi(k);
+    let fired=false;const done=()=>{if(fired)return;fired=true;mark(k);cb&&cb()};
+    a.onended=done;a.onerror=done;const p=a.play();if(p&&p.catch)p.catch(done);
+  }
+  function seq(k,token){
+    if(token!==run||k>=d.lines.length){if(token===run)stop();return}
+    sayLine(k,()=>{
+      if(token!==run)return;
+      if(repeat){let left=Math.max(3,Math.ceil(d.lines[k][2].split(" ").length*0.6));banner(`🎤 Repetă acum cu voce tare! ${left}`);
+        clearInterval(waitT);waitT=setInterval(()=>{if(token!==run){clearInterval(waitT);return}left--;if(left<=0){clearInterval(waitT);banner("");seq(k+1,token)}else banner(`🎤 Repetă acum cu voce tare! ${left}`)},1000)}
+      else setTimeout(()=>seq(k+1,token),350);
+    });
+  }
+  if(pa)pa.onclick=()=>{const playing=pa.dataset.on==="1";stop();pa.dataset.on=playing?"0":"1";if(playing)return;pa.querySelector("span").textContent="Stop";seq(0,run)};
+  lines.forEach((n,k)=>n.onclick=()=>{stop();if(pa)pa.dataset.on="0";if(repeat){if(pa){pa.dataset.on="1";pa.querySelector("span").textContent="Stop"}seq(k,run)}else sayLine(k,()=>hi(-1))});
+  rpt.onclick=()=>{repeat=!repeat;rpt.setAttribute("aria-pressed",repeat);stop();if(pa)pa.dataset.on="0";
+    if(repeat){if(pa){pa.dataset.on="1";pa.querySelector("span").textContent="Stop"}seq(0,run)}};
+};
+
+function videoMode(el,d,lines,chat,rpt,slot){
+  const v=el.querySelector("video");
+  if(st.done[st.cur])setReady(true);else setReady(false,"Privește videoul până la final ca să mergi mai departe.");
+  let watched=0,lastT=0,repeat=false,stopAt=null,waitT=null,hold=null;
+  const startOf=k=>d.times[k],endOf=k=>k+1<d.times.length?d.times[k+1]:d.end;
+  const idxAt=t=>{let r=-1;d.times.forEach((x,k)=>{if(t>=x-0.05)r=k});return r};
+  function hi(k){lines.forEach((n,j)=>n.classList.toggle("now",j===k))}
+  function banner(t){slot.innerHTML=t?`<div class="repeat-banner">${t}</div>`:""}
+  v.addEventListener("timeupdate",()=>{
+    const t=v.currentTime;
+    if(t>lastT&&t-lastT<1.5)watched+=t-lastT; lastT=t;
+    hi(v.paused&&hold!==null?hold:idxAt(t));
+    if(!canNext&&v.duration&&watched>=v.duration*0.85)setReady(true);
+    if(stopAt!==null&&t>=stopAt){
+      const done=stopAt;stopAt=null;v.pause();hold=idxAt(done-0.1);hi(hold);
+      if(repeat){const k2=idxAt(done-0.1);let left=Math.max(3,Math.min(7,Math.ceil((endOf(k2)-startOf(k2))*1.3)));
+        banner(`🎤 Repetă acum cu voce tare! ${left}`);clearInterval(waitT);
+        waitT=setInterval(()=>{left--;if(left<=0){clearInterval(waitT);banner("");if(repeat&&k2+1<d.times.length){stopAt=endOf(k2+1);v.play().catch(()=>{})}}else banner(`🎤 Repetă acum cu voce tare! ${left}`)},1000)}
+    }
+  });
+  v.addEventListener("seeked",()=>{lastT=v.currentTime});
+  v.addEventListener("ended",()=>{setReady(true);hi(-1);banner("")});
+  v.addEventListener("error",()=>{if(!canNext)setReady(true)});
+  v.addEventListener("play",()=>{hold=null;stopAudio();if(repeat&&stopAt===null){stopAt=endOf(Math.max(0,idxAt(v.currentTime)))}});
+  lines.forEach((n,k)=>n.onclick=()=>{clearInterval(waitT);banner("");v.currentTime=startOf(k);stopAt=endOf(k);v.play().catch(()=>{})});
+  rpt.onclick=()=>{repeat=!repeat;rpt.setAttribute("aria-pressed",repeat);clearInterval(waitT);banner("");
+    if(repeat){const k=Math.max(0,idxAt(v.currentTime));v.currentTime=startOf(k);stopAt=endOf(k);v.play().catch(()=>{})}else stopAt=null};
+}
+
+RENDER.recipe=()=>{
+  add(`<div class="head"><span class="eyebrow">Pasul 7 · Viața în America</span><h2>Cumpărături în SUA: ce trebuie să știi</h2><p>Câteva lucruri care îi surprind pe cei care abia au venit.</p></div>
+  <div class="formula"><h3>Cum citești prețul</h3><ol class="steps">
+    <li><i class="n">1</i><div><b>$4.99 → „four ninety-nine”</b><span>În magazin americanii nu spun „dollars” și „cents”. Spun doar cifrele.</span></div></li>
+    <li><i class="n">2</i><div><b>$0.99 → „ninety-nine cents”</b><span>Sub un dolar spui „cents”.</span></div></li>
+    <li><i class="n">3</i><div><b>$20 → „twenty dollars”</b><span>Când prețul e fix, spui „dollars”.</span></div></li></ol></div>
+  <div class="formula"><h3>4 surprize la cumpărături</h3><ol class="steps">
+    <li><i class="n">1</i><div><b>Prețul de pe etichetă nu e prețul final</b><span>Taxa (<b>sales tax</b>) se adaugă la casă. Un produs de $10 poate costa $10.70.</span></div></li>
+    <li><i class="n">2</i><div><b>Poți returna aproape orice</b><span>De obicei în 30 de zile. Păstrează bonul (<b>receipt</b>).</span></div></li>
+    <li><i class="n">3</i><div><b>Card de fidelitate</b><span>Casierul te întreabă de „rewards card”. Dacă nu ai, spui „No, I don't.” Cu el primești reduceri.</span></div></li>
+    <li><i class="n">4</i><div><b>BOGO</b><span>„Buy one, get one free”: cumperi un produs, primești încă unul gratis.</span></div></li></ol>
+    <div class="note"><b>Pronunție:</b> în <b>receipt</b>, litera „p” nu se citește: <b>ri-SIIT</b>.</div></div>`);
+  setReady(true);
+};
+
+RENDER.ex4=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 4 din 4</span><h2>Spune prețul ca un american</h2><p>Citește prețul cu voce tare, apoi apasă pe card ca să verifici și să auzi cum se spune.</p></div>
+  ${lockmsg("Bravo! Ai terminat toate exercițiile.")}
+  <div class="cards">${prices.map((r,k)=>`<button class="card" type="button" data-k="${k}"><span class="emo" aria-hidden="true">🏷️</span><span class="phrase price">${esc(r[0])}</span><span class="tap">Apasă să verifici</span><span class="tr">„${esc(r[1])}”</span><span class="ex">${esc(r[2])}</span></button>`).join("")}</div>`);
+  st.ans.ex4=st.ans.ex4||{};
+  el.querySelectorAll(".card").forEach(c=>c.onclick=()=>{const f=c.classList.toggle("flipped");c.classList.remove("flip-anim");void c.offsetWidth;c.classList.add("flip-anim");if(f){play("d2_p"+c.dataset.k);st.ans.ex4[c.dataset.k]=1;check()}});
+  function check(){save();const n=Object.keys(st.ans.ex4).length;if(n>=prices.length)setReady(true);else setReady(false,`Verifică toate prețurile: ${n} din ${prices.length}.`)}
+  check();
+};
+
+RENDER.hw=()=>{
+  add(`<div class="head"><span class="eyebrow">Pasul 13 · Pentru acasă</span><h2>Tema pentru Ziua 2</h2><p>Trimite tema până mâine, înainte de lecția Zilei 3. Primești feedback personal de la Felicia.</p></div>
+  <div class="task"><div class="big">1</div><div class="min0"><h3>Lista ta de cumpărături (scris)</h3><p>Scrie 6 produse pe care le cumperi des. Apoi scrie o întrebare pentru 3 dintre ele, ca în model.</p>
+    <div class="template">Excuse me, where can I find the <span class="blank">&nbsp;</span>?<br>How much is the <span class="blank">&nbsp;</span>?<br>Do you have <span class="blank">&nbsp;</span>?</div></div></div>
+  <div class="task"><div class="big">2</div><div class="min0"><h3>În magazinul de haine (audio, 20–30 de secunde)</h3><p>Înregistrează-te jucând rolul clientului: spune ce cauți, ce mărime porți, cere să probezi și întreabă cât costă. Folosește dialogul 3 ca model.</p></div></div>
+  <div class="task"><div class="big">3</div><div class="min0"><h3>Citește prețurile (audio)</h3><p>Spune aceste prețuri ca un american și trimite înregistrarea: <b>$3.49 · $15.99 · $0.75 · $40 · $2.50</b></p></div></div>
+  <div class="task bonus"><div class="big">★</div><div class="min0"><h3>Provocare bonus: în magazin real</h3><p>Data viitoare când ești la magazin, întreabă un angajat „Excuse me, where can I find…?” sau răspunde la casă „Yes, thank you!”. Scrie-ne cum a fost!</p></div></div>`);
+  setReady(true);
+};
+
+RENDER.end=()=>{
+  const el=add(`<div class="confetti" aria-hidden="true">🛍️</div>
+  <div class="head" style="text-align:center"><h2>Felicitări! Ai terminat Ziua 2</h2><p>Bifează ce poți face acum. Ne vedem mâine la Ziua 3!</p></div>
+  <section class="check" aria-label="Ce pot face după Ziua 2"><h2>Ce pot face după Ziua 2</h2><div class="bar"><i></i></div><div class="gl" style="display:flex;flex-direction:column;gap:12px"></div></section>
+  <div class="row" style="justify-content:center"><button class="sbtn again" type="button">Reia lecția de la început</button></div>
+  <footer>Real Life English · <b>English Crush Academy</b> · @englishcrushacademy</footer>`);
+  st.ans.goals=st.ans.goals||{};
+  const gl=el.querySelector(".gl"),bar=el.querySelector(".bar i");
+  goals.forEach((g,i)=>{const l=document.createElement("label");l.innerHTML=`<input type="checkbox" id="goal${i}" ${st.ans.goals[i]?"checked":""}><span>${esc(g)}</span>`;gl.appendChild(l)});
+  const upd=()=>{gl.querySelectorAll("input").forEach((c,i)=>{if(c.checked)st.ans.goals[i]=1;else delete st.ans.goals[i]});save();bar.style.width=(Object.keys(st.ans.goals).length/goals.length*100)+"%"};
+  gl.addEventListener("change",upd);upd();
+  el.querySelector(".again").onclick=()=>go(0);
+  setReady(true);nextBtn.disabled=true;nextBtn.innerHTML=ICON.check+"<span>Lecție terminată</span>";
+};
+
+go(st.cur);
+})();
+</script>
+
+</body></html>
