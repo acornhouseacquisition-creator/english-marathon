@@ -1,0 +1,685 @@
+<!doctype html><html><head>
+<meta name="robots" content="noindex, nofollow"><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Ziua 5 · Transport & aeroport</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a lesson "stepper" — one step on screen at a time, sticky progress on top, fixed nav at the bottom; later steps stay locked until the current one is done */
+:root{
+  --bg:#FFF9FB; --surface:#FFFFFF; --soft:#F8E8EF; --soft-2:#FDF2F6;
+  --pink:#C63D6C; --pink-ink:#A52E58; --plum:#26152C; --muted:#6A5571; --line:#EFD9E3;
+  --sun:#F4C04B; --sun-soft:#FFF4D6; --sun-ink:#7A5500;
+  --ok:#2E8A5C; --ok-soft:#E3F4EA; --bad:#C2403A; --bad-soft:#FBE6E4;
+  --bubble-b:#C63D6C; --bubble-b-fg:#FFFFFF; --lock:#B9A6B4;
+  --f-display:"Bricolage Grotesque","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --f-body:"Figtree","Avenir Next","Segoe UI",system-ui,sans-serif;
+  --r:18px; --nav-h:76px;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#1A1119; --surface:#251824; --soft:#3A2033; --soft-2:#2E1C2B;
+  --pink:#F07CA2; --pink-ink:#F59BB8; --plum:#F7EAF0; --muted:#C7B0C2; --line:#40283A;
+  --sun:#F4C04B; --sun-soft:#3A3018; --sun-ink:#F4C04B; --ok:#6FD3A0; --ok-soft:#1D3328; --bad:#F08C86; --bad-soft:#3D1F1D;
+  --bubble-b:#B73663; --bubble-b-fg:#FFFFFF; --lock:#6E5868; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --bg:#1A1119; --surface:#251824; --soft:#3A2033; --soft-2:#2E1C2B;
+  --pink:#F07CA2; --pink-ink:#F59BB8; --plum:#F7EAF0; --muted:#C7B0C2; --line:#40283A;
+  --sun:#F4C04B; --sun-soft:#3A3018; --sun-ink:#F4C04B; --ok:#6FD3A0; --ok-soft:#1D3328; --bad:#F08C86; --bad-soft:#3D1F1D;
+  --bubble-b:#B73663; --bubble-b-fg:#FFFFFF; --lock:#6E5868; color-scheme:dark;}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;scroll-padding-bottom:calc(var(--nav-h) + 20px);scroll-padding-top:80px}
+body{background:var(--bg);color:var(--plum);font-family:var(--f-body);font-size:17px;line-height:1.55}
+h1,h2,h3{font-family:var(--f-display);line-height:1.15;text-wrap:balance;margin:0}
+p{margin:0}
+button{font:inherit;cursor:pointer;color:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent}
+:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+
+/* Top progress */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.top-in{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:10px;display:flex;flex-direction:column;gap:8px}
+.top-row{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.brand{font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:18px;white-space:nowrap}
+.stepcount{font-size:13px;font-weight:700;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dots{display:flex;gap:4px}
+.dot{flex:1;height:8px;border-radius:99px;background:var(--line);border:0;padding:0;min-width:0}
+.dot.done{background:var(--pink)}
+.dot.cur{background:var(--sun)}
+.dot:disabled{cursor:default}
+
+/* Stage */
+main{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:22px calc(var(--nav-h) + 40px + env(safe-area-inset-bottom,0px))}
+.step{display:flex;flex-direction:column;gap:18px;animation:in .35s ease}
+@keyframes in{from{transform:translateY(8px)}to{transform:none}}
+@media (prefers-reduced-motion:reduce){.step{animation:none}}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--pink)}
+.head{display:flex;flex-direction:column;gap:6px}
+.head h2{font-size:clamp(26px,6vw,34px);font-weight:800}
+.head p{color:var(--muted)}
+
+/* Bottom nav */
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:6;background:var(--surface);border-top:1px solid var(--line);padding-bottom:env(safe-area-inset-bottom,0px)}
+.nav-in{max-width:760px;margin:0 auto;padding-inline:16px;padding-block:12px;display:flex;gap:10px;align-items:center}
+.nbtn{border:0;border-radius:14px;padding:14px 18px;font-weight:700;font-size:16px;min-height:52px}
+.back{background:var(--soft);color:var(--plum)}
+.next{flex:1;background:var(--pink);color:#fff;display:flex;align-items:center;justify-content:center;gap:8px}
+.next:disabled{background:var(--soft);color:var(--muted);cursor:not-allowed}
+.next svg{width:18px;height:18px}
+
+/* Chips / misc */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{display:inline-flex;align-items:center;gap:8px;background:var(--soft);font-weight:600;font-size:14px;padding:7px 14px;border-radius:999px}
+.chip i{width:9px;height:9px;border-radius:50%;background:var(--pink)}
+.chip.live i{background:#D9534F}
+.note{background:var(--sun-soft);border-radius:14px;padding:12px 16px;font-size:15px}
+.note b{color:var(--pink-ink)}
+.lockmsg{display:flex;gap:10px;align-items:center;font-size:14px;font-weight:600;color:var(--muted);background:var(--soft-2);border:1px dashed var(--line);border-radius:14px;padding:10px 14px}
+.lockmsg.ok{color:var(--ok);background:var(--ok-soft);border-color:transparent}
+.lockmsg svg{width:18px;height:18px;flex:none}
+
+/* Hero */
+.hero{background:var(--surface);border-radius:22px;border-bottom:4px solid var(--sun);padding:24px;display:flex;flex-direction:column;gap:12px}
+.day{font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:clamp(44px,12vw,64px);line-height:1}
+.date{color:var(--muted);font-weight:500;font-size:15px}
+.hero h1{font-size:clamp(28px,7vw,40px);font-weight:800}
+.hero .sub{color:var(--pink);font-weight:700;font-size:19px}
+.hero .lead{color:var(--muted)}
+.plan{display:grid;gap:8px;counter-reset:p;list-style:none;margin:0;padding:0}
+.plan li{display:flex;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:10px 14px;font-weight:600}
+.plan li span{font-size:13px;color:var(--muted);font-weight:500;margin-left:auto;white-space:nowrap}
+.plan li::before{counter-increment:p;content:counter(p);flex:none;width:28px;height:28px;border-radius:50%;background:var(--soft);color:var(--pink);font-family:var(--f-display);font-weight:800;display:grid;place-items:center;font-size:14px}
+
+/* Video + dialog */
+.vwrap{border-radius:var(--r);overflow:hidden;background:#000;aspect-ratio:16/9;max-width:100%}
+.vwrap video{width:100%;height:100%;display:block}
+.tools{display:flex;gap:8px;flex-wrap:wrap}
+.tbtn{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;font-weight:700;font-size:14px;display:inline-flex;gap:6px;align-items:center;min-height:44px}
+.tbtn[aria-pressed="true"]{background:var(--pink);border-color:var(--pink);color:#fff}
+.tbtn svg{width:16px;height:16px}
+.chat{display:flex;flex-direction:column;gap:10px}
+.line{display:flex;flex-direction:column;max-width:88%;gap:2px;border:0;background:none;padding:0;text-align:left}
+.line .who{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);padding-inline:6px}
+.line .bub{padding:10px 14px;border-radius:18px;background:var(--surface);border:1px solid var(--line);transition:box-shadow .2s, transform .2s}
+.line .en{font-weight:600}
+.line .ro{display:none;font-size:15px;color:var(--muted);margin-top:4px;font-style:italic}
+.line.b{align-self:flex-end;align-items:flex-end}
+.line.b .bub{background:var(--bubble-b);color:var(--bubble-b-fg);border-color:transparent}
+.line.b .ro{color:#FBE2EB}
+.show-ro .ro{display:block}
+.line.now .bub{box-shadow:0 0 0 3px var(--sun);transform:scale(1.02)}
+.repeat-banner{position:sticky;top:calc(env(safe-area-inset-top,0px) + 70px);z-index:3;background:var(--sun);color:#3A2600;font-weight:800;border-radius:14px;padding:12px 16px;text-align:center;font-size:17px}
+.tip{font-size:14px;color:var(--muted)}
+
+/* Audio player (dialogs without video) */
+.player{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:flex;flex-direction:column;gap:12px}
+.playall{border:0;border-radius:14px;background:var(--pink);color:#fff;font-weight:800;font-size:17px;min-height:56px;display:flex;align-items:center;justify-content:center;gap:10px}
+.playall svg{width:20px;height:20px}
+.playall[data-on="1"]{background:var(--plum);color:var(--bg)}
+.pbar{height:8px;background:var(--soft);border-radius:99px;overflow:hidden}
+.pbar i{display:block;height:100%;width:0;background:var(--sun);transition:width .3s}
+.card .phrase.price{font-size:34px;font-weight:800;color:var(--pink);font-variant-numeric:tabular-nums}
+
+/* Expression cards */
+.tabs{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tab{flex:none;border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 14px;font-weight:700;font-size:14px;min-height:44px;display:inline-flex;gap:6px;align-items:center}
+.tab[aria-selected="true"]{background:var(--pink);border-color:var(--pink);color:#fff}
+.tab .ck{color:var(--ok);font-weight:800}
+.tab[aria-selected="true"] .ck{color:#fff}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,220px),1fr));gap:12px}
+.card{border:2px solid var(--line);background:var(--surface);border-radius:var(--r);padding:16px;text-align:left;min-height:140px;display:flex;flex-direction:column;gap:8px}
+.card .emo{font-size:26px;line-height:1}
+.card .phrase{font-family:var(--f-display);font-weight:600;font-size:20px;line-height:1.2}
+.card .tap{margin-top:auto;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pink)}
+.card .tr{display:none;font-family:var(--f-display);font-weight:600;font-size:19px;line-height:1.25}
+.card .ex{display:none;font-size:14px;font-style:italic;margin-top:auto;opacity:.92}
+.card.flipped{background:var(--pink);border-color:var(--pink);color:#fff}
+.card.flipped .phrase,.card.flipped .tap,.card.flipped .tag{display:none}
+.card.flipped .tr,.card.flipped .ex{display:block}
+.card.flip-anim{animation:flip .3s ease}
+@keyframes flip{0%{transform:scaleX(1)}50%{transform:scaleX(.05)}100%{transform:scaleX(1)}}
+@media (prefers-reduced-motion:reduce){.card.flip-anim{animation:none}}
+.tag{align-self:flex-start;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;background:var(--sun);color:#3A2600;padding:3px 9px;border-radius:6px}
+.card .seen{font-size:12px;font-weight:700;color:var(--ok)}
+
+/* Formula */
+.formula{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px}
+.formula h3{font-size:20px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px}
+.steps li{display:grid;grid-template-columns:32px 1fr;gap:12px;align-items:start}
+.steps .n{width:32px;height:32px;border-radius:50%;background:var(--soft);color:var(--pink);font-weight:800;display:grid;place-items:center;font-family:var(--f-display);font-style:normal}
+.steps div>b{display:block}
+.steps span b{color:var(--plum)}
+.steps span{color:var(--muted);font-size:15px}
+
+/* Mistakes (tap to reveal) */
+.mist{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px}
+.m{border:2px solid var(--line);background:var(--surface);border-radius:var(--r);padding:14px 16px;display:flex;flex-direction:column;gap:8px;text-align:left}
+.m .wrong{color:var(--bad);font-weight:700}
+.m.open .wrong{text-decoration:line-through;text-decoration-thickness:2px}
+.m .right,.m .why{display:none}
+.m.open .right{display:block;color:var(--ok);font-weight:800}
+.m.open .why{display:block;font-size:14px;color:var(--muted)}
+.m .hint{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--pink)}
+.m.open .hint{display:none}
+.m.open{border-color:var(--ok)}
+.mark{display:inline-grid;place-items:center;width:20px;height:20px;border-radius:50%;font-size:12px;font-weight:800;margin-right:6px;vertical-align:1px}
+.mark.x{background:var(--bad-soft);color:var(--bad)}
+.mark.v{background:var(--ok-soft);color:var(--ok)}
+
+/* Exercises */
+.box{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:16px}
+.q{display:flex;flex-direction:column;gap:10px}
+.q .prompt{font-weight:700}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{border:2px solid var(--line);background:var(--bg);border-radius:14px;padding:12px 14px;text-align:left;font-weight:500;min-height:48px;width:100%}
+.opt.ok{border-color:var(--ok);background:var(--ok-soft);color:var(--plum)}
+.opt.no{border-color:var(--bad);background:var(--bad-soft);color:var(--plum)}
+.opt:disabled{cursor:default}
+.score{font-family:var(--f-display);font-weight:800;color:var(--pink);font-size:18px}
+.fill{line-height:2.3;font-size:17px}
+.gap{display:inline-block;min-width:74px;text-align:center;border-bottom:3px solid var(--line);padding-inline:6px;font-weight:700;line-height:1.4;border-radius:4px}
+.gap.active{border-color:var(--pink);background:var(--soft)}
+.gap.filled{border-color:var(--ok);color:var(--ok)}
+.bank{display:flex;flex-wrap:wrap;gap:8px}
+.word{border:2px solid var(--sun);background:var(--sun-soft);border-radius:12px;padding:10px 16px;font-weight:700;min-height:46px}
+.word.used{opacity:.35;pointer-events:none}
+.word.shake{animation:shake .35s;border-color:var(--bad);background:var(--bad-soft)}
+@keyframes shake{25%{transform:translateX(-5px)}75%{transform:translateX(5px)}}
+.col-label{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.pool,.built{display:flex;flex-direction:column;gap:8px}
+.built{background:var(--soft-2);border:2px dashed var(--line);border-radius:14px;padding:10px;min-height:64px;counter-reset:o}
+.built .opt{counter-increment:o;background:var(--surface)}
+.built .opt::before{content:counter(o) ". ";font-weight:800;color:var(--pink)}
+.built .empty{color:var(--muted);font-size:14px;padding:8px}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.sbtn{border:0;border-radius:12px;padding:10px 16px;font-weight:700;background:var(--soft);min-height:44px}
+.fb{font-weight:700}
+.fb.ok{color:var(--ok)} .fb.no{color:var(--bad)}
+
+/* Homework */
+.task{display:grid;grid-template-columns:auto 1fr;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:18px}
+.task .big{font-family:var(--f-display);font-weight:800;font-size:32px;color:var(--pink);line-height:1;width:34px}
+.task h3{font-size:19px;margin-bottom:6px}
+.task p{color:var(--muted)}
+.task.bonus{background:var(--sun-soft);border-color:var(--sun)}
+.task.bonus .big{color:var(--sun-ink)}
+.template{margin-top:10px;background:var(--soft-2);border-radius:12px;padding:14px;line-height:2}
+.blank{display:inline-block;min-width:60px;border-bottom:2px solid var(--pink);line-height:1.3}
+.min0{min-width:0}
+
+/* Final */
+.check{background:var(--pink);color:#fff;border-radius:22px;padding:22px;display:flex;flex-direction:column;gap:14px}
+.check h2{font-size:28px}
+.check label{display:flex;gap:12px;align-items:flex-start;font-weight:600;cursor:pointer}
+.check input{width:24px;height:24px;accent-color:var(--sun);flex:none;margin-top:1px}
+.bar{height:10px;background:rgba(255,255,255,.25);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--sun);transition:width .3s}
+.confetti{font-size:54px;text-align:center;line-height:1}
+footer{text-align:center;color:var(--muted);font-size:14px}
+footer b{color:var(--pink)}
+</style>
+
+<header class="top">
+  <div class="top-in">
+    <div class="top-row"><span class="brand">Ziua 5</span><span class="stepcount" id="stepcount"></span></div>
+    <div class="dots" id="dots"></div>
+  </div>
+</header>
+
+<main id="stage" aria-live="polite"></main>
+
+<nav class="nav" aria-label="Navigare lecție">
+  <div class="nav-in">
+    <button class="nbtn back" id="backBtn" type="button">Înapoi</button>
+    <button class="nbtn next" id="nextBtn" type="button"></button>
+  </div>
+</nav>
+
+<script>
+(function(){
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ICON={
+ play:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg>',
+ lock:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>',
+ check:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+ arrow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+ repeat:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3z"/><path d="M19 11a7 7 0 0 1-14 0M12 18v3"/></svg>',
+ tr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5h8M8 3v2M5.5 5c1 3.5 3.5 6 6.5 7M10.5 5c-1 4-3.5 7-6.5 8"/><path d="M13 21l4-9 4 9M14.5 18h5"/></svg>'
+};
+
+/* ---------- audio for cards ---------- */
+let curAudio=null;
+function stopAudio(){if(curAudio){try{curAudio.pause()}catch(e){}curAudio=null}}
+function play(id){stopAudio();pauseVideos();const a=new Audio("audio/"+id+".mp3");curAudio=a;const p=a.play();if(p&&p.catch)p.catch(()=>{})}
+function pauseVideos(){document.querySelectorAll("video").forEach(v=>{try{v.pause()}catch(e){}})}
+
+/* ---------- content ---------- */
+const dialogs=[
+ {t:"În autobuz",video:1,end:26.1,times:[0.0, 3.4, 5.4, 7.9, 12.4, 16.4, 19.4, 20.9, 23.9],w:"Ana urcă în autobuz",lines:[
+  ["Ana","b","Excuse me, does this bus go downtown?","Scuzați-mă, autobuzul acesta merge în centru?"],
+  ["Șofer","a","Yes, it does.","Da, merge."],
+  ["Ana","b","How much is the fare?","Cât costă biletul?"],
+  ["Șofer","a","It's $2.50. You can tap your card here.","Costă 2,50 $. Puteți apropia cardul aici."],
+  ["Ana","b","Okay. Can you tell me when we get to Main Street?","Bine. Îmi puteți spune când ajungem pe Main Street?"],
+  ["Șofer","a","Sure. It's the fifth stop.","Sigur. E a cincea stație."],
+  ["Ana","b","Thank you!","Mulțumesc!"],
+  ["Șofer","a","Main Street is next!","Următoarea stație e Main Street!"],
+  ["Ana","b","Thanks! Have a good day!","Mersi! O zi bună!"]
+ ],note:"<b>Truc:</b> „Does this bus go to…?” te salvează de multe ori. Întreabă mereu șoferul înainte să urci."},
+ {t:"Cu Uber la aeroport",video:1,end:32.6,times:[0.0, 1.9, 5.4, 9.4, 12.4, 16.9, 20.4, 24.9, 26.4, 29.4],w:"Ana comandă un Uber",lines:[
+  ["Șofer","a","Hi! Are you Ana?","Bună! Sunteți Ana?"],
+  ["Ana","b","Yes, that's me. Hi!","Da, eu sunt. Bună!"],
+  ["Șofer","a","Great. You're going to the airport, right?","Super. Mergeți la aeroport, nu?"],
+  ["Ana","b","Yes, Terminal B, please.","Da, la Terminalul B, vă rog."],
+  ["Șofer","a","No problem. Can I put your suitcase in the trunk?","Nicio problemă. Pot să vă pun valiza în portbagaj?"],
+  ["Ana","b","Yes, thank you. How long will it take?","Da, mulțumesc. Cât durează drumul?"],
+  ["Șofer","a","About twenty minutes. The traffic is okay today.","Cam douăzeci de minute. Traficul e ok azi."],
+  ["Ana","b","Perfect.","Perfect."],
+  ["Șofer","a","Here we are. Terminal B.","Am ajuns. Terminalul B."],
+  ["Ana","b","Thank you so much! Have a good one!","Mulțumesc mult! O zi bună!"]
+ ],note:"<b>Siguranță:</b> Înainte să urci într-un Uber, verifică numele șoferului și numărul mașinii din aplicație. Șoferul te întreabă „Are you Ana?”, iar tu poți întreba „Are you Mike?”."},
+ {t:"Check-in la aeroport",w:"Ana își lasă bagajul",lines:[
+  ["Agentă","a","Hi! Where are you flying today?","Bună! Unde zburați azi?"],
+  ["Ana","b","To Chicago.","La Chicago."],
+  ["Agentă","a","Can I see your ID, please?","Pot vedea actul de identitate, vă rog?"],
+  ["Ana","b","Here you go.","Poftiți."],
+  ["Agentă","a","Thank you. Are you checking any bags?","Mulțumesc. Predați vreun bagaj?"],
+  ["Ana","b","Yes, one suitcase.","Da, o valiză."],
+  ["Agentă","a","Okay. Would you like a window or an aisle seat?","Bine. Doriți loc la geam sau la culoar?"],
+  ["Ana","b","A window seat, please.","La geam, vă rog."],
+  ["Agentă","a","Here's your boarding pass. Your gate is B12, and boarding starts at 3:15.","Poftiți tichetul de îmbarcare. Poarta e B12, iar îmbarcarea începe la 3:15."],
+  ["Ana","b","Thank you! Where is security?","Mulțumesc! Unde e controlul de securitate?"],
+  ["Agentă","a","It's on your right. Have a nice flight!","E în dreapta. Zbor plăcut!"]
+ ],note:"<b>Reține:</b> <b>boarding pass</b> = tichetul de îmbarcare. <b>gate</b> = poarta. <b>aisle seat</b> = loc la culoar (se citește „ail”, s nu se aude)."},
+ {t:"La poartă",w:"Zborul Anei întârzie",lines:[
+  ["Ana","b","Excuse me, is this the gate for the flight to Chicago?","Scuzați-mă, aceasta e poarta pentru zborul spre Chicago?"],
+  ["Agent","a","Yes, it is. But the flight is delayed.","Da, este. Dar zborul are întârziere."],
+  ["Ana","b","Oh no! How long is the delay?","O, nu! Cât e întârzierea?"],
+  ["Agent","a","About one hour. The new departure time is 4:30.","Cam o oră. Noua oră de plecare e 4:30."],
+  ["Ana","b","Okay. Is there a coffee shop near here?","Bine. E vreo cafenea pe aproape?"],
+  ["Agent","a","Yes, there's one next to gate B10.","Da, e una lângă poarta B10."],
+  ["Ana","b","Great. Will you make an announcement before boarding?","Super. O să faceți un anunț înainte de îmbarcare?"],
+  ["Agent","a","Yes, we will. Please listen for your group number.","Da. Vă rog să fiți atentă la numărul grupei dumneavoastră."],
+  ["Ana","b","Okay, thank you!","Bine, mulțumesc!"]
+ ],note:"<b>Bine de știut:</b> În SUA te îmbarci pe grupe (<b>Group 1, Group 2…</b>). Numărul grupei e scris pe boarding pass."}
+];
+const groups=[
+ {n:"Autobuz",items:[
+  ["🚌","Does this bus go downtown?","Autobuzul acesta merge în centru?","Excuse me, does this bus go downtown?","Super util"],
+  ["💵","How much is the fare?","Cât costă biletul?","— How much is the fare? — It's two fifty."],
+  ["🚏","Where is the bus stop?","Unde e stația de autobuz?","Excuse me, where is the bus stop?"],
+  ["⬇️","I get off here.","Eu cobor aici.","This is my stop. I get off here."],
+  ["🔔","next stop","stația următoare","Main Street is the next stop."],
+  ["💺","Is this seat taken?","E liber locul acesta?","Excuse me, is this seat taken?"],
+  ["🎟️","one-way / round-trip ticket","bilet dus / dus-întors","A round-trip ticket, please."]
+ ]},
+ {n:"Uber & taxi",items:[
+  ["🚗","Are you Ana?","Sunteți Ana?","Hi! Are you Ana? I'm your driver."],
+  ["✈️","I'm going to the airport.","Merg la aeroport.","Hi, I'm going to the airport, please."],
+  ["⏱️","How long will it take?","Cât durează drumul?","How long will it take to get downtown?"],
+  ["🧳","Can you open the trunk?","Puteți deschide portbagajul?","Can you open the trunk, please?"],
+  ["📍","You can drop me off here.","Mă puteți lăsa aici.","Thanks! You can drop me off here."],
+  ["📲","I'll be there in five minutes.","Ajung în cinci minute.","Hi, it's your driver. I'll be there in five minutes."]
+ ]},
+ {n:"Check-in",items:[
+  ["🌍","Where are you flying today?","Unde zburați azi?","— Where are you flying today? — To Miami."],
+  ["🧳","I'm checking one bag.","Predau un bagaj.","Hi, I'm checking one bag."],
+  ["🎒","carry-on","bagaj de mână","I only have a carry-on."],
+  ["🎫","boarding pass","tichet de îmbarcare","Here's your boarding pass."],
+  ["🪟","A window seat, please.","Loc la geam, vă rog.","Can I have a window seat, please?"],
+  ["🚶","aisle seat","loc la culoar","I'd like an aisle seat.","s nu se aude"]
+ ]},
+ {n:"Securitate & poartă",items:[
+  ["🛂","Where is security?","Unde e controlul de securitate?","Excuse me, where is security?"],
+  ["👟","Please take off your shoes.","Vă rog să vă descălțați.","Please take off your shoes and your belt."],
+  ["💻","Put your laptop in the bin.","Puneți laptopul în tavă.","Please put your laptop in the bin."],
+  ["🚪","What gate is it?","Ce poartă e?","— What gate is it? — Gate B12."],
+  ["⏳","The flight is delayed.","Zborul are întârziere.","Sorry, the flight is delayed one hour."],
+  ["❌","The flight is canceled.","Zborul e anulat.","Oh no, my flight is canceled!"],
+  ["🛫","Boarding starts at 3:15.","Îmbarcarea începe la 3:15.","Boarding starts at 3:15 at gate B12."]
+ ]},
+ {n:"Direcții",items:[
+  ["🗺️","How do I get to Main Street?","Cum ajung pe Main Street?","Excuse me, how do I get to Main Street?","Super util"],
+  ["⬅️","Turn left.","Faceți la stânga.","Turn left at the light."],
+  ["➡️","Turn right.","Faceți la dreapta.","Turn right after the bank."],
+  ["⬆️","Go straight.","Mergeți drept înainte.","Go straight for two blocks."],
+  ["👉","It's on your right.","E pe dreapta.","The pharmacy is on your right."],
+  ["📌","It's next to the bank.","E lângă bancă.","The coffee shop is next to the bank."]
+ ]}
+];
+const mistakes=[
+ ["I go with the bus.","I take the bus.","Cu mijloacele de transport folosești „take”: take the bus, take an Uber."],
+ ["Where is the station of bus?","Where is the bus stop?","Stația de autobuz = bus stop."],
+ ["I lost the bus.","I missed the bus.","„A pierde” autobuzul = miss the bus."],
+ ["I go down here.","I get off here.","„A coborî” din autobuz = get off."],
+ ["The plane has delay.","The flight is delayed.","Întârzierea se spune cu „is delayed”."],
+ ["I want a place at the window.","I'd like a window seat.","Loc în avion = seat. „Place” nu se folosește aici."],
+ ["hand luggage","carry-on","În America bagajul de mână e „carry-on”."],
+ ["The flight is at 15:30.","The flight is at 3:30 p.m.","Americanii nu folosesc ora 15:30. Spun 3:30 p.m."]
+];
+const mcq=[
+ ["„Where are you flying today?”",["I fly good.","To Chicago.","Yes, today."],1],
+ ["„Are you checking any bags?”",["Yes, one suitcase.","I check, yes.","My bags are nice."],0],
+ ["„Window or aisle?”",["Yes, please.","I like airplane.","Window, please."],2],
+ ["„Hi! Are you Ana?”",["Yes, I'm.","Yes, that's me.","Ana is me."],1],
+ ["„The flight is delayed.”",["Great, thank you!","Delayed is good.","Oh no! How long is the delay?"],2],
+ ["„How do I get to Main Street?”",["Go straight and turn left.","Yes, you get.","Main Street is street."],0]
+];
+const fillTitle="Completează conversația de la aeroport";
+const fillParts=["Hi! I'm ",["checking"]," one bag. Can I have a ",["window"]," seat, please? Here's my ",["ID"],". … Excuse me, what ",["gate"]," is it? Oh no, the flight is ",["delayed"],"! When does ",["boarding"]," start?"];
+const bank=["gate","boarding","window","delayed","checking","ID"];
+const orderTitle="Pune conversația din autobuz în ordine";
+const order=["Excuse me, does this bus go downtown?","Yes, it does.","How much is the fare?","It's $2.50. You can tap your card.","Can you tell me when we get to Main Street?","Sure, no problem."];
+const shuffled=[4,1,5,0,3,2];
+const clock=[
+ ["3:15","three fifteen","Simplu: ora + minutele."],
+ ["7:30","seven thirty","Sau: half past seven."],
+ ["9:45","nine forty-five","Sau: quarter to ten."],
+ ["4:05","four oh five","Zero se citește „oh”."],
+ ["10:00","ten o'clock","Fix: o'clock."],
+ ["12:00 p.m.","noon","Miezul zilei = noon."]
+];
+const goals=["Pot să întreb dacă autobuzul merge unde am nevoie","Pot să vorbesc cu șoferul de Uber","Pot să fac check-in la aeroport","Înțeleg „delayed”, „gate” și „boarding”","Pot să cer și să înțeleg direcții","Pot să spun ora ca un american","Am trimis tema pentru Ziua 5"];
+
+/* ---------- state ---------- */
+const KEY="eca-d5-v1";
+let st={cur:0,max:0,done:{},ans:{}};
+try{const s=JSON.parse(localStorage.getItem(KEY)||"null");if(s&&typeof s.cur==="number")st=Object.assign(st,s)}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}}
+
+/* ---------- steps ---------- */
+const STEPS=[
+ {k:"start",label:"Start"},
+ {k:"dlg",i:0,label:"Dialogul 1"},{k:"dlg",i:1,label:"Dialogul 2"},{k:"dlg",i:2,label:"Dialogul 3"},{k:"dlg",i:3,label:"Dialogul 4"},
+ {k:"expr",label:"Expresii"},{k:"recipe",label:"Transport în SUA"},{k:"mist",label:"Greșeli tipice"},
+ {k:"ex1",label:"Exercițiul 1"},{k:"ex2",label:"Exercițiul 2"},{k:"ex3",label:"Exercițiul 3"},{k:"ex4",label:"Exercițiul 4"},
+ {k:"hw",label:"Tema"},{k:"end",label:"Final"}
+];
+
+const NEXT_LABEL={start:"Începe lecția",end:"Lecție terminată"};
+const stage=$("#stage"),nextBtn=$("#nextBtn"),backBtn=$("#backBtn"),dots=$("#dots");
+let canNext=false,lockText="";
+
+function setReady(ok,text){
+  canNext=ok;lockText=text||"";
+  const s=STEPS[st.cur];
+  if(ok){st.done[st.cur]=1;save()}
+  nextBtn.disabled=!ok;
+  const label=NEXT_LABEL[s.k]||"Continuă";
+  nextBtn.innerHTML=ok?`<span>${label}</span>${s.k==="end"?"":ICON.arrow}`:`${ICON.lock}<span>${s.k==="end"?label:"Continuă"}</span>`;
+  const lm=stage.querySelector(".lockmsg");
+  if(lm){lm.className="lockmsg"+(ok?" ok":"");lm.innerHTML=(ok?ICON.check:ICON.lock)+`<span>${esc(ok?(lm.dataset.done||"Gata! Poți merge mai departe."):text)}</span>`}
+  renderDots();
+}
+function renderDots(){
+  dots.innerHTML=STEPS.map((s,i)=>`<button class="dot ${i===st.cur?"cur":(st.done[i]?"done":"")}" ${i<=st.max?"":"disabled"} aria-label="${esc(s.label)}${i>st.max?" (blocat)":""}" data-i="${i}"></button>`).join("");
+  $("#stepcount").textContent=`Pasul ${st.cur+1} din ${STEPS.length} · ${STEPS[st.cur].label}`;
+}
+dots.addEventListener("click",e=>{const b=e.target.closest(".dot");if(b&&!b.disabled)go(+b.dataset.i)});
+function go(i){
+  stopAudio();pauseVideos();
+  st.cur=Math.max(0,Math.min(STEPS.length-1,i));st.max=Math.max(st.max,st.cur);save();
+  backBtn.hidden=st.cur===0;
+  stage.innerHTML="";
+  const s=STEPS[st.cur];
+  RENDER[s.k](s);
+  try{window.scrollTo({top:0,behavior:"instant"})}catch(e){window.scrollTo(0,0)}
+}
+nextBtn.onclick=()=>{if(!canNext)return;if(st.cur<STEPS.length-1){st.max=Math.max(st.max,st.cur+1);go(st.cur+1)}};
+backBtn.onclick=()=>go(st.cur-1);
+function lockmsg(doneText){return `<div class="lockmsg" data-done="${esc(doneText||"")}"></div>`}
+function add(html){const d=document.createElement("section");d.className="step";d.innerHTML=html;stage.appendChild(d);return d}
+
+/* ---------- renderers ---------- */
+const RENDER={};
+
+RENDER.expr=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Pasul 6 · Vocabular</span><h2>Expresii pentru transport și aeroport</h2><p>Citește expresia, ghicește traducerea, apoi apasă pe card ca să-l întorci și să auzi pronunția. Deschide toate cele 5 categorii.</p></div>
+  ${lockmsg("Super! Ai văzut toate categoriile.")}
+  <div class="tabs" role="tablist"></div><div class="cards"></div>`);
+  const tabs=el.querySelector(".tabs"),cards=el.querySelector(".cards");
+  st.ans.tabs=st.ans.tabs||{};
+  function check(){const n=Object.keys(st.ans.tabs).length;save();
+    if(n>=groups.length)setReady(true);else setReady(false,`Deschide toate categoriile: ${n} din ${groups.length}.`)}
+  function show(gi){
+    st.ans.tabs[gi]=1;
+    tabs.innerHTML=groups.map((g,i)=>`<button class="tab" role="tab" type="button" aria-selected="${i===gi}" data-i="${i}">${st.ans.tabs[i]&&i!==gi?'<span class="ck">✓</span>':""}${esc(g.n)} · ${g.items.length}</button>`).join("");
+    cards.innerHTML=groups[gi].items.map((it,k)=>`<button class="card" type="button" data-k="${k}"><span class="emo" aria-hidden="true">${it[0]}</span>${it[4]?`<span class="tag">${esc(it[4])}</span>`:""}<span class="phrase">${esc(it[1])}</span><span class="tap">Apasă · ascultă</span><span class="tr">${esc(it[2])}</span><span class="ex">${esc(it[3])}</span></button>`).join("");
+    cards.querySelectorAll(".card").forEach(c=>c.onclick=()=>{const f=c.classList.toggle("flipped");c.classList.remove("flip-anim");void c.offsetWidth;c.classList.add("flip-anim");if(f)play(`d5_g${gi}_${c.dataset.k}`)});
+    check();
+  }
+  tabs.addEventListener("click",e=>{const t=e.target.closest(".tab");if(t){show(+t.dataset.i);t.scrollIntoView({inline:"nearest",block:"nearest"})}});
+  show(0);
+};
+
+RENDER.mist=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Pasul 8 · Atenție</span><h2>Greșeli tipice ale vorbitorilor de română</h2><p>Când traducem din română cuvânt cu cuvânt, iese ciudat. Ghicește varianta corectă, apoi apasă pe fiecare card ca s-o vezi.</p></div>
+  ${lockmsg("Bravo! Acum știi cum spun americanii.")}
+  <div class="mist">${mistakes.map((m,k)=>`<button type="button" class="m" data-k="${k}"><span><span class="mark x">✕</span><span class="wrong">${esc(m[0])}</span></span><span class="hint">Apasă · vezi corect</span><span class="right"><span class="mark v">✓</span>${esc(m[1])}</span><span class="why">${esc(m[2])}</span></button>`).join("")}</div>`);
+  st.ans.mist=st.ans.mist||{};
+  const cards=[...el.querySelectorAll(".m")];
+  cards.forEach(c=>{if(st.ans.mist[c.dataset.k])c.classList.add("open");c.onclick=()=>{c.classList.add("open");st.ans.mist[c.dataset.k]=1;check()}});
+  function check(){save();const n=Object.keys(st.ans.mist).length;if(n>=mistakes.length)setReady(true);else setReady(false,`Deschide toate cardurile: ${n} din ${mistakes.length}.`)}
+  check();
+};
+
+RENDER.ex1=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 1 din 4</span><h2>Alege răspunsul potrivit</h2><p>Ce răspunzi când auzi…?</p></div>
+  ${lockmsg("Gata! Ai răspuns la toate întrebările.")}
+  <div class="box"><div class="qs" style="display:flex;flex-direction:column;gap:22px"></div><div class="score"></div></div>`);
+  st.ans.ex1=st.ans.ex1||{};
+  const host=el.querySelector(".qs"),score=el.querySelector(".score");
+  mcq.forEach((q,qi)=>{
+    const d=document.createElement("div");d.className="q";
+    d.innerHTML=`<div class="prompt">${qi+1}. ${esc(q[0])}</div><div class="opts">${q[1].map((o,oi)=>`<button type="button" class="opt" data-i="${oi}">${esc(o)}</button>`).join("")}</div>`;
+    const mark=pick=>{d.querySelectorAll(".opt").forEach(x=>{x.disabled=true;if(+x.dataset.i===q[2])x.classList.add("ok");if(+x.dataset.i===pick&&pick!==q[2])x.classList.add("no")})};
+    if(st.ans.ex1[qi]!==undefined)mark(st.ans.ex1[qi]);
+    d.querySelectorAll(".opt").forEach(b=>b.onclick=()=>{const p=+b.dataset.i;st.ans.ex1[qi]=p;mark(p);upd()});
+    host.appendChild(d);
+  });
+  function upd(){save();const a=st.ans.ex1,n=Object.keys(a).length,ok=Object.keys(a).filter(k=>a[k]===mcq[k][2]).length;
+    score.textContent=`Scor: ${ok} / ${mcq.length}`+(n===mcq.length?(ok===mcq.length?" · Perfect!":" · Bravo!"):"");
+    if(n===mcq.length)setReady(true);else setReady(false,`Răspunde la toate întrebările: ${n} din ${mcq.length}.`)}
+  upd();
+};
+
+RENDER.ex2=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 2 din 4</span><h2>${esc(fillTitle)}</h2><p>Spațiul roz e cel activ. Apasă cuvântul potrivit de mai jos.</p></div>
+  ${lockmsg("Excelent! Conversația e completă.")}
+  <div class="box"><p class="fill"></p><div class="bank"></div><div class="row"><button class="sbtn rst" type="button">De la capăt</button><span class="fb" aria-live="polite"></span></div></div>`);
+  const fill=el.querySelector(".fill"),bk=el.querySelector(".bank"),fb=el.querySelector(".fb");
+  const answers=fillParts.filter(p=>typeof p!=="string").map(p=>p[0]);
+  let pos=st.ans.ex2||0;
+  function draw(){
+    let n=0;
+    fill.innerHTML=fillParts.map(p=>{if(typeof p==="string")return esc(p);const i=n++;return `<span class="gap ${i<pos?"filled":(i===pos?"active":"")}">${i<pos?esc(answers[i]):"&nbsp;"}</span>`}).join("");
+    const used=answers.slice(0,pos);
+    bk.innerHTML=bank.map(w=>`<button type="button" class="word ${used.includes(w)?"used":""}">${esc(w)}</button>`).join("");
+    bk.querySelectorAll(".word").forEach(b=>b.onclick=()=>{
+      if(pos>=answers.length)return;
+      if(b.textContent===answers[pos]){pos++;st.ans.ex2=pos;save();fb.textContent="";draw()}
+      else{b.classList.remove("shake");void b.offsetWidth;b.classList.add("shake");fb.textContent="Nu se potrivește aici. Mai încearcă!";fb.className="fb no"}
+    });
+    if(pos>=answers.length){fb.textContent="Perfect! 6 din 6.";fb.className="fb ok";setReady(true)}
+    else if(!st.done[st.cur])setReady(false,`Completează toate spațiile: ${pos} din ${answers.length}.`);
+  }
+  el.querySelector(".rst").onclick=()=>{pos=0;st.ans.ex2=0;save();fb.textContent="";draw()};
+  draw();
+};
+
+RENDER.ex3=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 3 din 4</span><h2>${esc(orderTitle)}</h2><p>Apasă replicile în ordinea corectă. Dacă greșești, apasă pe replică din „Conversația ta” ca s-o scoți.</p></div>
+  ${lockmsg("Perfect! Exact așa sună în autobuz.")}
+  <div class="box"><div class="col-label">Conversația ta</div><div class="built"></div><div class="col-label">Replici amestecate</div><div class="pool"></div>
+  <div class="row"><button class="sbtn rst" type="button">De la capăt</button><span class="fb" aria-live="polite"></span></div></div>`);
+  const pool=el.querySelector(".pool"),built=el.querySelector(".built"),fb=el.querySelector(".fb");
+  let b=st.ans.ex3||[];
+  function draw(){
+    built.innerHTML=b.length?"":'<div class="empty">Apasă pe prima replică a conversației…</div>';
+    b.forEach((i,p)=>{const x=document.createElement("button");x.type="button";x.className="opt";x.textContent=order[i];x.onclick=()=>{b.splice(p,1);st.ans.ex3=b;save();draw()};built.appendChild(x)});
+    pool.innerHTML="";
+    shuffled.filter(i=>!b.includes(i)).forEach(i=>{const x=document.createElement("button");x.type="button";x.className="opt";x.textContent=order[i];x.onclick=()=>{b.push(i);st.ans.ex3=b;save();draw()};pool.appendChild(x)});
+    if(b.length===order.length){
+      const nodes=built.querySelectorAll(".opt");let ok=0;b.forEach((v,p)=>{nodes[p].classList.add(v===p?"ok":"no");if(v===p)ok++});
+      if(ok===order.length){fb.textContent="Perfect!";fb.className="fb ok";setReady(true)}
+      else{fb.textContent=`${ok} din ${order.length} sunt la locul lor. Scoate replicile roșii și încearcă din nou.`;fb.className="fb no";if(!st.done[st.cur])setReady(false,"Pune toate replicile în ordinea corectă.")}
+    }else{fb.textContent="";if(!st.done[st.cur])setReady(false,`Pune toate replicile în ordine: ${b.length} din ${order.length}.`)}
+  }
+  el.querySelector(".rst").onclick=()=>{b=[];st.ans.ex3=b;save();draw()};
+  draw();
+};
+
+RENDER.dlg=s=>{
+  const d=dialogs[s.i],hasVideo=!!d.video;
+  const el=add(`<div class="head"><span class="eyebrow">Dialogul ${s.i+1} din 4</span><h2>${esc(d.t)}</h2><p>${esc(d.w)}</p></div>
+  ${hasVideo?`<div class="vwrap"><video controls playsinline preload="metadata" poster="video/d5_poster${s.i}.jpg" src="video/d5_v${s.i}.mp4"></video></div>`
+  :`<div class="player"><button class="playall" type="button">${ICON.play}<span>Ascultă tot dialogul</span></button><div class="pbar"><i></i></div></div>`}
+  ${lockmsg(hasVideo?"Bravo! Ai văzut tot dialogul.":"Bravo! Ai ascultat tot dialogul.")}
+  <div class="tools">
+    <button class="tbtn trb" aria-pressed="false" type="button">${ICON.tr}<span>Traducere</span></button>
+    <button class="tbtn rpt" aria-pressed="false" type="button">${ICON.repeat}<span>Repetă după mine</span></button>
+  </div>
+  <p class="tip">Apasă pe o replică ca s-o auzi din nou. În modul „Repetă după mine”, ${hasVideo?"videoul":"dialogul"} face pauză după fiecare replică, iar tu o repeți cu voce tare.</p>
+  <div class="banner-slot"></div>
+  <div class="chat">${d.lines.map((l,k)=>`<button type="button" class="line ${l[1]}" data-k="${k}"><span class="who">${esc(l[0])}</span><span class="bub"><span class="en">${esc(l[2])}</span><span class="ro">${esc(l[3])}</span></span></button>`).join("")}</div>
+  <div class="note">${d.note}</div>`);
+  const chat=el.querySelector(".chat"),lines=[...chat.querySelectorAll(".line")];
+  const trb=el.querySelector(".trb"),rpt=el.querySelector(".rpt"),slot=el.querySelector(".banner-slot");
+  trb.onclick=()=>{const on=chat.classList.toggle("show-ro");trb.setAttribute("aria-pressed",on)};
+  if(hasVideo){videoMode(el,d,lines,chat,rpt,slot);return}
+  if(st.done[st.cur])setReady(true);else setReady(false,"Ascultă tot dialogul ca să mergi mai departe.");
+  function hi(k){lines.forEach((n,j)=>n.classList.toggle("now",j===k));if(k>=0){const r=lines[k].getBoundingClientRect();if(r.top<90||r.bottom>innerHeight-100)lines[k].scrollIntoView({block:"center",behavior:"smooth"})}}
+  function banner(t){slot.innerHTML=t?`<div class="repeat-banner">${t}</div>`:""}
+  let repeat=false,run=0,waitT=null;
+  const heard=new Set(st.ans["h"+s.i]||[]);
+  const bar=el.querySelector(".pbar i"),pa=el.querySelector(".playall");
+  function mark(k){heard.add(k);st.ans["h"+s.i]=[...heard];save();if(bar)bar.style.width=(heard.size/d.lines.length*100)+"%";if(heard.size>=d.lines.length&&!canNext)setReady(true)}
+  if(bar)bar.style.width=(heard.size/d.lines.length*100)+"%";
+  function stop(){run++;clearInterval(waitT);banner("");stopAudio();hi(-1);if(pa)pa.querySelector("span").textContent="Ascultă tot dialogul"}
+  function sayLine(k,cb){
+    stopAudio();const a=new Audio(`audio/d5_d${s.i}_${k}.mp3`);curAudio=a;hi(k);
+    let fired=false;const done=()=>{if(fired)return;fired=true;mark(k);cb&&cb()};
+    a.onended=done;a.onerror=done;const p=a.play();if(p&&p.catch)p.catch(done);
+  }
+  function seq(k,token){
+    if(token!==run||k>=d.lines.length){if(token===run)stop();return}
+    sayLine(k,()=>{
+      if(token!==run)return;
+      if(repeat){let left=Math.max(3,Math.ceil(d.lines[k][2].split(" ").length*0.6));banner(`🎤 Repetă acum cu voce tare! ${left}`);
+        clearInterval(waitT);waitT=setInterval(()=>{if(token!==run){clearInterval(waitT);return}left--;if(left<=0){clearInterval(waitT);banner("");seq(k+1,token)}else banner(`🎤 Repetă acum cu voce tare! ${left}`)},1000)}
+      else setTimeout(()=>seq(k+1,token),350);
+    });
+  }
+  if(pa)pa.onclick=()=>{const playing=pa.dataset.on==="1";stop();pa.dataset.on=playing?"0":"1";if(playing)return;pa.querySelector("span").textContent="Stop";seq(0,run)};
+  lines.forEach((n,k)=>n.onclick=()=>{stop();if(pa)pa.dataset.on="0";if(repeat){if(pa){pa.dataset.on="1";pa.querySelector("span").textContent="Stop"}seq(k,run)}else sayLine(k,()=>hi(-1))});
+  rpt.onclick=()=>{repeat=!repeat;rpt.setAttribute("aria-pressed",repeat);stop();if(pa)pa.dataset.on="0";
+    if(repeat){if(pa){pa.dataset.on="1";pa.querySelector("span").textContent="Stop"}seq(0,run)}};
+};
+
+function videoMode(el,d,lines,chat,rpt,slot){
+  const v=el.querySelector("video");
+  if(st.done[st.cur])setReady(true);else setReady(false,"Privește videoul până la final ca să mergi mai departe.");
+  let watched=0,lastT=0,repeat=false,stopAt=null,waitT=null,hold=null;
+  const startOf=k=>d.times[k],endOf=k=>k+1<d.times.length?d.times[k+1]:d.end;
+  const idxAt=t=>{let r=-1;d.times.forEach((x,k)=>{if(t>=x-0.05)r=k});return r};
+  function hi(k){lines.forEach((n,j)=>n.classList.toggle("now",j===k))}
+  function banner(t){slot.innerHTML=t?`<div class="repeat-banner">${t}</div>`:""}
+  v.addEventListener("timeupdate",()=>{
+    const t=v.currentTime;
+    if(t>lastT&&t-lastT<1.5)watched+=t-lastT; lastT=t;
+    hi(v.paused&&hold!==null?hold:idxAt(t));
+    if(!canNext&&v.duration&&watched>=v.duration*0.85)setReady(true);
+    if(stopAt!==null&&t>=stopAt){
+      const done=stopAt;stopAt=null;v.pause();hold=idxAt(done-0.1);hi(hold);
+      if(repeat){const k2=idxAt(done-0.1);let left=Math.max(3,Math.min(7,Math.ceil((endOf(k2)-startOf(k2))*1.3)));
+        banner(`🎤 Repetă acum cu voce tare! ${left}`);clearInterval(waitT);
+        waitT=setInterval(()=>{left--;if(left<=0){clearInterval(waitT);banner("");if(repeat&&k2+1<d.times.length){stopAt=endOf(k2+1);v.play().catch(()=>{})}}else banner(`🎤 Repetă acum cu voce tare! ${left}`)},1000)}
+    }
+  });
+  v.addEventListener("seeked",()=>{lastT=v.currentTime});
+  v.addEventListener("ended",()=>{setReady(true);hi(-1);banner("")});
+  v.addEventListener("error",()=>{if(!canNext)setReady(true)});
+  v.addEventListener("play",()=>{hold=null;stopAudio();if(repeat&&stopAt===null){stopAt=endOf(Math.max(0,idxAt(v.currentTime)))}});
+  lines.forEach((n,k)=>n.onclick=()=>{clearInterval(waitT);banner("");v.currentTime=startOf(k);stopAt=endOf(k);v.play().catch(()=>{})});
+  rpt.onclick=()=>{repeat=!repeat;rpt.setAttribute("aria-pressed",repeat);clearInterval(waitT);banner("");
+    if(repeat){const k=Math.max(0,idxAt(v.currentTime));v.currentTime=startOf(k);stopAt=endOf(k);v.play().catch(()=>{})}else stopAt=null};
+}
+
+RENDER.start=()=>{
+  add(`<div class="hero">
+    <div><div class="day">Ziua 5</div><div class="date">vineri, 16 octombrie</div></div>
+    <h1>Transport &amp; aeroport</h1>
+    <div class="sub">Autobuz, Uber, check-in și direcții</div>
+    <p class="lead">Azi învățăm să luăm autobuzul, să vorbim cu șoferul de Uber, să facem check-in la aeroport și să înțelegem ce se întâmplă când zborul întârzie. Plus: cum ceri direcții și cum spui ora ca un american.</p>
+    <div class="chips"><span class="chip"><i></i>Nivel A2</span><span class="chip"><i></i>cca. 40 de minute</span></div>
+  </div>
+  <div class="head"><span class="eyebrow">Cum funcționează</span><h2>Lecția are 14 pași</h2><p>Treci prin ei pe rând. Pasul următor se deschide după ce îl termini pe cel de acum. Progresul tău se salvează pe acest telefon.</p></div>
+  <ol class="plan">
+    <li>4 dialoguri: autobuz, Uber, aeroport<span>pașii 2–5</span></li>
+    <li>Expresii pe carduri<span>pasul 6</span></li>
+    <li>Transport în SUA<span>pasul 7</span></li>
+    <li>Greșeli tipice<span>pasul 8</span></li>
+    <li>4 exerciții<span>pașii 9–12</span></li>
+    <li>Tema pentru acasă<span>pasul 13</span></li>
+  </ol>`);
+  setReady(true);
+};
+
+RENDER.recipe=()=>{
+  add(`<div class="head"><span class="eyebrow">Pasul 7 · Viața în America</span><h2>Transport în SUA: ce trebuie să știi</h2><p>Sfaturi practice pentru drumurile din oraș și pentru aeroport.</p></div>
+  <div class="formula"><h3>Autobuz și Uber</h3><ol class="steps">
+    <li><i class="n">1</i><div><b>Plătești când urci</b><span>Cu cardul sau cu bani exacți. Șoferul de obicei nu are rest.</span></div></li>
+    <li><i class="n">2</i><div><b>Anunți că vrei să cobori</b><span>Apeși butonul sau tragi cordonul (<b>stop request</b>) înainte de stația ta.</span></div></li>
+    <li><i class="n">3</i><div><b>La Uber verifici mașina</b><span>Numele șoferului și numărul mașinii trebuie să fie ca în aplicație.</span></div></li></ol></div>
+  <div class="formula"><h3>La aeroport</h3><ol class="steps">
+    <li><i class="n">1</i><div><b>Vino cu 2 ore înainte</b><span>Pentru zborurile din SUA. Pentru zboruri internaționale: 3 ore.</span></div></li>
+    <li><i class="n">2</i><div><b>Lichidele în bagajul de mână</b><span>Maximum 3.4 oz (100 ml) fiecare, într-o pungă transparentă.</span></div></li>
+    <li><i class="n">3</i><div><b>La securitate</b><span>De obicei îți dai jos pantofii, iar laptopul îl pui separat în tavă.</span></div></li></ol></div>
+  <div class="formula"><h3>Ora în stil american</h3><ol class="steps">
+    <li><i class="n">1</i><div><b>Fără ora 15:00</b><span>Americanii folosesc ceasul de 12 ore: 3:00 p.m., nu 15:00.</span></div></li>
+    <li><i class="n">2</i><div><b>a.m. și p.m.</b><span><b>a.m.</b> = dimineața (până la prânz). <b>p.m.</b> = după-amiaza și seara.</span></div></li>
+    <li><i class="n">3</i><div><b>Spui cifrele simplu</b><span>3:15 = „three fifteen”. 4:05 = „four oh five”.</span></div></li></ol></div>`);
+  setReady(true);
+};
+
+RENDER.ex4=()=>{
+  const el=add(`<div class="head"><span class="eyebrow">Exercițiul 4 din 4</span><h2>Spune ora ca un american</h2><p>Citește ora cu voce tare, apoi apasă pe card ca să verifici și să auzi cum se spune.</p></div>
+  ${lockmsg("Bravo! Ai terminat toate exercițiile.")}
+  <div class="cards">${clock.map((r,k)=>`<button class="card" type="button" data-k="${k}"><span class="emo" aria-hidden="true">🕒</span><span class="phrase price">${esc(r[0])}</span><span class="tap">Apasă să verifici</span><span class="tr">„${esc(r[1])}”</span><span class="ex">${esc(r[2])}</span></button>`).join("")}</div>`);
+  st.ans.ex4=st.ans.ex4||{};
+  el.querySelectorAll(".card").forEach(c=>c.onclick=()=>{const f=c.classList.toggle("flipped");c.classList.remove("flip-anim");void c.offsetWidth;c.classList.add("flip-anim");if(f){play("d5_p"+c.dataset.k);st.ans.ex4[c.dataset.k]=1;check()}});
+  function check(){save();const n=Object.keys(st.ans.ex4).length;if(n>=clock.length)setReady(true);else setReady(false,`Verifică toate orele: ${n} din ${clock.length}.`)}
+  check();
+};
+
+RENDER.hw=()=>{
+  add(`<div class="head"><span class="eyebrow">Pasul 13 · Pentru acasă</span><h2>Tema pentru Ziua 5</h2><p>Trimite tema până mâine, înainte de lecția Zilei 6. Primești feedback personal de la Felicia.</p></div>
+  <div class="task"><div class="big">1</div><div class="min0"><h3>Drumul tău (scris)</h3><p>Scrie cum ajungi la muncă sau la magazin, ca în model.</p>
+    <div class="template">I take the <span class="blank">&nbsp;</span> to <span class="blank">&nbsp;</span>.<br>It takes <span class="blank">&nbsp;</span> minutes.<br>I leave home at <span class="blank">&nbsp;</span> a.m.</div></div></div>
+  <div class="task"><div class="big">2</div><div class="min0"><h3>Check-in la aeroport (audio, 20–30 de secunde)</h3><p>Înregistrează-te jucând rolul pasagerului: spui unde zbori, că predai un bagaj, ceri loc la geam sau la culoar și întrebi unde e securitatea. Folosește dialogul 3 ca model.</p></div></div>
+  <div class="task"><div class="big">3</div><div class="min0"><h3>Direcții (scris)</h3><p>Scrie cum ajungi de acasă la cel mai apropiat magazin. Folosește: <b>Go straight · Turn left · Turn right · It's on your right/left</b>.</p></div></div>
+  <div class="task bonus"><div class="big">★</div><div class="min0"><h3>Provocare bonus: pe drum</h3><p>Data viitoare când iei autobuzul sau un Uber, spune o frază în engleză: „Does this bus go to…?” sau „Hi! Are you…?”. Scrie-ne cum a fost!</p></div></div>`);
+  setReady(true);
+};
+
+RENDER.end=()=>{
+  const el=add(`<div class="confetti" aria-hidden="true">✈️</div>
+  <div class="head" style="text-align:center"><h2>Felicitări! Ai terminat Ziua 5</h2><p>Bifează ce poți face acum. Ne vedem mâine la Ziua 6!</p></div>
+  <section class="check" aria-label="Ce pot face după Ziua 5"><h2>Ce pot face după Ziua 5</h2><div class="bar"><i></i></div><div class="gl" style="display:flex;flex-direction:column;gap:12px"></div></section>
+  <div class="row" style="justify-content:center"><button class="sbtn again" type="button">Reia lecția de la început</button></div>
+  <footer>Real Life English · <b>English Crush Academy</b> · @englishcrushacademy</footer>`);
+  st.ans.goals=st.ans.goals||{};
+  const gl=el.querySelector(".gl"),bar=el.querySelector(".bar i");
+  goals.forEach((g,i)=>{const l=document.createElement("label");l.innerHTML=`<input type="checkbox" id="goal${i}" ${st.ans.goals[i]?"checked":""}><span>${esc(g)}</span>`;gl.appendChild(l)});
+  const upd=()=>{gl.querySelectorAll("input").forEach((c,i)=>{if(c.checked)st.ans.goals[i]=1;else delete st.ans.goals[i]});save();bar.style.width=(Object.keys(st.ans.goals).length/goals.length*100)+"%"};
+  gl.addEventListener("change",upd);upd();
+  el.querySelector(".again").onclick=()=>go(0);
+  setReady(true);nextBtn.disabled=true;nextBtn.innerHTML=ICON.check+"<span>Lecție terminată</span>";
+};
+
+go(st.cur);
+})();
+</script>
+
+</body></html>
